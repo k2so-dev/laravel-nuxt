@@ -1,0 +1,21 @@
+{
+  "files.associations": {
+      "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+      "strings": true
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["ui:\\s*{([^)]*)\\s*}", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["/\\*ui\\*/\\s*{([^;]*)}", ":\\s*[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "ui"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": true,
+  "editor.tabSize": 2
+}

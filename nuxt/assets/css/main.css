@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#__nuxt {
+  @apply min-h-screen flex flex-col;
+}
+
+@layer base {
+  html {
+    @apply text-gray-800 dark:bg-gray-900;
+  }
+
+  html.dark {
+    @apply text-gray-50 bg-gray-900;
+  }
+
+  button, a, [role="button"] {
+    @apply transition-colors;
+  }
+
+  input[type="checkbox"], input[type="radio"] {
+    @apply transition-all;
+  }
+}
