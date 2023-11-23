@@ -6,6 +6,7 @@
 
 [![](https://img.shields.io/badge/Laravel-v10.33-ff2e21.svg)](https://laravel.com)
 [![](https://img.shields.io/badge/nuxt.js-v3.8-04C690.svg)](https://nuxt.com)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_shield&issueType=license)
 
 The goal of the project is to create a simple template for quickly starting development on Laravel and Nuxt.
 
