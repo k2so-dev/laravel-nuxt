@@ -74,3 +74,4 @@ https://github.com/k2so-dev/laravel-nuxt/assets/15279423/095e0da3-ce9c-460a-87fd
 * [TailwindCSS](https://tailwindcss.com/)
 * [Laravel 10x](https://laravel.com/docs/10.x)
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_large&issueType=license)
