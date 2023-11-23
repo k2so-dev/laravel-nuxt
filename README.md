@@ -11,13 +11,13 @@
 The goal of the project is to create a simple template for quickly starting development on Laravel and Nuxt.
 
 The project includes:
- - **Laravel 10** and **Nuxt 3**
-  - **Laravel Octane** is a library for fast backend work.
- - **Sanctum** Token-based authorization is compatible with **SSR** and  **CSR**
-  - Basic authorization methods have been implemented: registration, login, password recovery by email, confirmation by email. For methods of working with mail, Throttle is used.
- - **"ofetch"** preset for working with Laravel API, which makes it possible
+ - [**Laravel 10**](https://laravel.com/docs/10.x) and [**Nuxt 3**](https://nuxt.com/)
+ - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) is a library for fast backend work.
+ - [**Sanctum**](https://laravel.com/docs/10.x/sanctum) Token-based authorization is compatible with **SSR** and  **CSR**
+ - Basic authorization methods have been implemented: registration, login, password recovery by email, confirmation by email. For methods of working with mail, Throttle is used.
+ - [**ofetch**](https://github.com/unjs/ofetch) preset for working with Laravel API, which makes it possible
 use $**fetch** without having to resort to custom $**fetch** wrappers.
-  - UI library **"Nuxt UI"** based on **TailwindCSS** and **HeadlessUI**.
+ - UI library [**Nuxt UI**](https://ui.nuxt.com/) based on [**TailwindCSS**](https://tailwindui.com/) and [**HeadlessUI**](https://headlessui.com/).
 
 ### Installation
 1. clone repository
@@ -72,7 +72,7 @@ https://github.com/k2so-dev/laravel-nuxt/assets/15279423/095e0da3-ce9c-460a-87fd
 ### Documentation links
 * [Nuxt 3](https://nuxt.com/)
 * [Nuxt UI](https://ui.nuxt.com/)
-* [TailwindCSS](https://tailwindcss.com/)
+* [Tailwind CSS](https://tailwindcss.com/)
 * [Laravel 10x](https://laravel.com/docs/10.x)
 
 ## License
