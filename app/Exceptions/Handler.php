@@ -6,6 +6,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -40,6 +41,13 @@ class Handler extends ExceptionHandler
         });
     }
 
+    /**
+     * Convert an authentication exception into a response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->is('api/*')) {
@@ -50,5 +58,26 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest(route('login'));
+    }
+
+    /**
+     * Convert a validation exception into a JSON response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Validation\ValidationException  $exception
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json([
+            'ok' => false,
+            'message' => $exception->getMessage(),
+            'errors' => array_map(function($field, $errors) {
+                return [
+                    'path' => $field,
+                    'message' => implode(' ', $errors)
+                ];
+            }, array_keys($exception->errors()), $exception->errors()),
+        ], $exception->status);
     }
 }

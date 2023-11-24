@@ -24,9 +24,11 @@ async function onSubmit(event: any) {
 
   loading.value = false;
 
-  if (error.value?.data) return form.value.setErrors(error.value.data);
+  if (error.value?.statusCode === 422) {
+    return form.value.setErrors(error.value.data.errors);
+  }
 
-  if (data.value.ok) {
+  if (data.value?.ok) {
     token.value = data.value.token;
     await router.push("/");
   } else if (data.value.action && data.value.action === "verify_email") {

@@ -13,31 +13,32 @@ const state = reactive({
 
 async function onSubmit(event: any) {
   form.value.clear();
-  loading.value = true;
 
-  const { error } = await useFetch<any>("register", {
+  const { data, error } = await useFetch<any>("register", {
     method: "POST",
     body: { ...event.data },
   });
 
-  loading.value = false;
+  if (error.value?.statusCode === 422) {
+    return form.value.setErrors(error.value.data.errors);
+  }
 
-  if (error.value?.data) return form.value.setErrors(error.value.data);
+  if (data.value?.ok) {
+    useToast().add({
+      icon: "i-heroicons-check-circle-20-solid",
+      title: "You have been registered successfully.",
+      color: "emerald",
+      actions: [
+        {
+          label: "Log In now",
+          to: "/auth/login",
+          color: "emerald",
+        },
+      ],
+    });
 
-  useToast().add({
-    icon: "i-heroicons-check-circle-20-solid",
-    title: "You have been registered successfully.",
-    color: "emerald",
-    actions: [
-      {
-        label: "Log In now",
-        to: "/auth/login",
-        color: "emerald",
-      },
-    ],
-  });
-
-  router.push("/auth/login");
+    router.push("/auth/login");
+  }
 }
 </script>
 
