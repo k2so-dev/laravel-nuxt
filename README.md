@@ -1,7 +1,7 @@
 &nbsp;
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/k2so-dev/laravel-nuxt/main/art/logo.svg" width="500" />
+  <img src="https://repository-images.githubusercontent.com/718640833/e7a792db-b7d9-4c83-bc75-b3379cac5ba1" width="100%" />
 </p>
 
 &nbsp;
