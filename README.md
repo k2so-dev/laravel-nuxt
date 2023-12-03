@@ -14,7 +14,26 @@
 
 The goal of the project is to create a template for development on Laravel and Nuxt with maximum API performance, ready-made authorization methods, image uploading with optimization and ready-made user roles.
 
-The project includes:
+<!-- TOC -->
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Nuxt $fetch](#nuxt-fetch)
+    - [Authentication](#authentication)
+    - [Nuxt Middleware](#nuxt-middleware)
+    - [Laravel Middleware](#laravel-middleware)
+- [Examples](#examples)
+    - [Route list](#route-list)
+    - [Demo](#demo)
+- [Links](#links)
+- [License](#license)
+
+<!-- /TOC -->
+
+## Features
+
  - [**Laravel 10**](https://laravel.com/docs/10.x) and [**Nuxt 3**](https://nuxt.com/)
  - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) is a library for fast backend work.
  - [**Laravel Telescope**](https://laravel.com/docs/10.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
@@ -27,7 +46,13 @@ The project includes:
  - [**ofetch**](https://github.com/unjs/ofetch) preset for working with Laravel API, which makes it possible
 use $**fetch** without having to resort to custom $**fetch** wrappers.
 
-### Installation
+## Requirements
+
+ - PHP 8.2, Node 20+
+ - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/10.x/routing#throttling-with-redis) feature
+ - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) supports 2 operating modes: Swoole (php extension) or Roadrunner
+
+## Installation
 1. clone repository
 2. `composer install`
 3. `cp .env.example .env && php artisan key:generate && php artisan storage:link`
@@ -37,6 +62,8 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
 7. `yarn dev`
 
 > Nuxt port is set in package.json scripts via **cross-env**
+
+## Usage
 
 ### Nuxt $fetch
 
@@ -73,19 +100,32 @@ Data returned by **useAuthStore**:
 * `logout`: Function, remove local data and call API to remove token
 * `fetchUser`: Function, fetch user data
 
-### Examples
+### Nuxt Middleware
 
-#### Route list
+Supports middleware:
+* `guest`: Only for unauthorized users
+* `auth`: Only for authorized users
+* `verified`: Only for users who have confirmed their email
+* `role-user`: Only for users with the 'user' role
+* `role-admin`: Only for users with the 'admin' role
+
+### Laravel Middleware
+
+All built-in middleware from Laravel + middleware based on roles [**Spatie Laravel Permissions Middleware**](https://spatie.be/docs/laravel-permission/v6/basic-usage/middleware)
+
+## Examples
+
+### Route list
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/k2so-dev/laravel-nuxt/main/art/routes.png" width="100%" />
 </p>
 
-#### Demo
+### Demo
 
 https://github.com/k2so-dev/laravel-nuxt/assets/15279423/095e0da3-ce9c-460a-87fd-9282e8d8fb74
 
-### Documentation links
+## Links
 * [Nuxt 3](https://nuxt.com/)
 * [Nuxt UI](https://ui.nuxt.com/)
 * [Tailwind CSS](https://tailwindcss.com/)
