@@ -101,11 +101,11 @@ Data returned by **useAuthStore**:
 ### Nuxt Middleware
 
 The following middleware is supported:
-* `guest`: Only for unauthorized users
-* `auth`: Only for authorized users
-* `verified`: Only for users who have confirmed their email
-* `role-user`: Only for users with the 'user' role
-* `role-admin`: Only for users with the 'admin' role
+* `guest`: unauthorized users
+* `auth`: authorized users
+* `verified`: users who have confirmed their email
+* `role-user`: users with the 'user' role
+* `role-admin`: users with the 'admin' role
 
 ### Laravel Middleware
 
