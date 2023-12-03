@@ -6,19 +6,20 @@
 
 &nbsp;
 
-## Laravel Nuxt Boilerplate
+# Laravel Nuxt Boilerplate
 
 [![](https://img.shields.io/badge/Laravel-v10.33-ff2e21.svg)](https://laravel.com)
 [![](https://img.shields.io/badge/nuxt.js-v3.8-04C690.svg)](https://nuxt.com)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_shield)
 
-The goal of the project is to create a simple template for quickly starting development on Laravel and Nuxt.
+The goal of the project is to create a template for development on Laravel and Nuxt with maximum API performance, ready-made authorization methods, image uploading with optimization and ready-made user roles.
 
 The project includes:
  - [**Laravel 10**](https://laravel.com/docs/10.x) and [**Nuxt 3**](https://nuxt.com/)
  - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) is a library for fast backend work.
  - [**Laravel Telescope**](https://laravel.com/docs/10.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
  - [**Laravel Sanctum**](https://laravel.com/docs/10.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
+ - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
  - UI library [**Nuxt UI**](https://ui.nuxt.com/) based on [**TailwindCSS**](https://tailwindui.com/) and [**HeadlessUI**](https://headlessui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
  - Integrated pages: login, registration, password recovery, email confirmation, account information update, password change.
