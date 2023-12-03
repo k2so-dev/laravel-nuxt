@@ -28,7 +28,7 @@ const { pending, error } = useLazyFetch<any>(route.query.verify_url as string, {
       <div v-if="error && error.data?.message">{{ error.data?.message }}</div>
 
       <div class="text-sm">
-        <NuxtLink class="text-sm" to="/auth/login">Back to Log In</NuxtLink>
+        <NuxtLink class="text-sm" to="/">Back to Home</NuxtLink>
       </div>
     </div>
   </UCard>

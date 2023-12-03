@@ -22,6 +22,10 @@ export default defineNuxtConfig({
     },
   },
 
+  routeRules: {
+    'auth/verify': { ssr: false }
+  },
+
   css: [
     '@/assets/css/main.css',
   ],
