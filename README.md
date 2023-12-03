@@ -18,12 +18,13 @@ The project includes:
  - [**Laravel 10**](https://laravel.com/docs/10.x) and [**Nuxt 3**](https://nuxt.com/)
  - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) is a library for fast backend work.
  - [**Laravel Telescope**](https://laravel.com/docs/10.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
- - [**Sanctum**](https://laravel.com/docs/10.x/sanctum) Token-based authorization is compatible with **SSR** and  **CSR**
+ - [**Laravel Sanctum**](https://laravel.com/docs/10.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
+ - UI library [**Nuxt UI**](https://ui.nuxt.com/) based on [**TailwindCSS**](https://tailwindui.com/) and [**HeadlessUI**](https://headlessui.com/).
+ - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
  - Integrated pages: login, registration, password recovery, email confirmation, account information update, password change.
  - Temporary uploads with cropping and optimization of images.
  - [**ofetch**](https://github.com/unjs/ofetch) preset for working with Laravel API, which makes it possible
 use $**fetch** without having to resort to custom $**fetch** wrappers.
- - UI library [**Nuxt UI**](https://ui.nuxt.com/) based on [**TailwindCSS**](https://tailwindui.com/) and [**HeadlessUI**](https://headlessui.com/).
 
 ### Installation
 1. clone repository
@@ -40,7 +41,7 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
 
 To work with the api, the default path is **"/api/v1"**. All requests from **Nuxt** to the **Laravel API** can be executed without wrappers, as described in the **Nuxt.js** documentation. For example, the code for authorizing a user by email and password:
 ```ts
-const { token } = useAuth();
+const auth = useAuthStore();
 
 const state = reactive({
   email: "",
@@ -53,16 +54,17 @@ const { data } = await useFetch("login", {
 });
 
 if (data.value?.ok) {
-  token.value = data.value.token;
+  auth.token = data.value.token;
+  await auth.fetchUser();
   await router.push("/");
 }
 ```
 > In this example, a POST request will be made to the url **"/api/v1/login"**
 
 ### Authentication
-**useAuth() composable** has everything you need to work with authorization.
+**useAuthStore() pinia store** has everything you need to work with authorization.
 
-Data returned by **useAuth**:
+Data returned by **useAuthStore**:
 * `logged`: Boolean, whether the user is authorized
 * `token`: Cookie, sanctum token
 * `user`: User object, user stored in pinia store
