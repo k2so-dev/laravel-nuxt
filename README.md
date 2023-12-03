@@ -50,7 +50,8 @@ const state = reactive({
 
 const { data } = await useFetch("login", {
   method: "POST",
-  body: { ...state },
+  body: state,
+  watch: false,
 });
 
 if (data.value?.ok) {
