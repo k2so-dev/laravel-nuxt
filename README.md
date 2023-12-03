@@ -44,7 +44,7 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
 
 ## Requirements
 
- - PHP 8.2, Node 20+
+ - PHP 8.2 / Node 20+
  - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/10.x/routing#throttling-with-redis) feature
  - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) supports 2 operating modes: Swoole (php extension) or Roadrunner
 
