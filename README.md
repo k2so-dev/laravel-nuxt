@@ -87,7 +87,7 @@ if (data.value?.ok) {
 > In this example, a POST request will be made to the url **"/api/v1/login"**
 
 ### Authentication
-**useAuthStore() pinia store** has everything you need to work with authorization.
+**useAuthStore()** has everything you need to work with authorization.
 
 Data returned by **useAuthStore**:
 * `logged`: Boolean, whether the user is authorized
@@ -98,7 +98,7 @@ Data returned by **useAuthStore**:
 
 ### Nuxt Middleware
 
-Supports middleware:
+The following middleware is supported:
 * `guest`: Only for unauthorized users
 * `auth`: Only for authorized users
 * `verified`: Only for users who have confirmed their email
