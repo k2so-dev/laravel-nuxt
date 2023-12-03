@@ -6,10 +6,13 @@ export type User = {
   email: string;
   avatar: string;
   must_verify_email: boolean;
+  roles: string[];
 }
 
 export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig()
+  const nuxtApp = useNuxtApp()
+
   const user = ref(<User>{});
   const token = useCookie('token', {
     path: '/',
@@ -27,7 +30,9 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = ''
     user.value = <User>{}
 
-    useRouter().push('/')
+    return nuxtApp.runWithContext(() => {
+      return navigateTo('/')
+    })
   }
 
   async function fetchUser() {

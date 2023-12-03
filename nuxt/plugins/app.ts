@@ -65,20 +65,27 @@ export default defineNuxtPlugin({
       },
 
       async onResponseError({ response }) {
-        if (process.server) return;
-
         if (response.status === 401) {
-          useToast().add({
-            title: 'Please log in to continue',
-            icon: 'i-heroicons-exclamation-circle-solid',
-            color: 'primary',
-          })
+          if (auth.logged) {
+            auth.token = ''
+            auth.user = <User>{}
+          }
+
+          if (process.client) {
+            useToast().add({
+              title: 'Please log in to continue',
+              icon: 'i-heroicons-exclamation-circle-solid',
+              color: 'primary',
+            })
+          }
         } else if (response.status !== 422) {
-          useToast().add({
-            icon: 'i-heroicons-exclamation-circle-solid',
-            color: 'red',
-            title: response._data?.message ?? response.statusText ?? 'Something went wrong',
-          })
+          if (process.client) {
+            useToast().add({
+              icon: 'i-heroicons-exclamation-circle-solid',
+              color: 'red',
+              title: response._data?.message ?? response.statusText ?? 'Something went wrong',
+            })
+          }
         }
       }
     })
@@ -87,10 +94,4 @@ export default defineNuxtPlugin({
       await auth.fetchUser();
     }
   },
-  // hooks: {
-  //   'app:created'(nuxtApp) {
-  //     const config = useRuntimeConfig()
-  //     nuxtApp.provide('storage', (path: string): string => config.public.storageBase + path)
-  //   }
-  // },
 })

@@ -52,6 +52,7 @@ async function onSubmit(event: any) {
       <UFormGroup label="Password" name="password" required>
         <UInput
           v-model="state.password"
+          placeholder="********"
           type="password"
           autocomplete="current-password"
         />

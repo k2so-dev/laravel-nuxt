@@ -98,9 +98,7 @@ async function onSubmit(event: any) {
       color="red"
       variant="soft"
       title="Please confirm your email address."
-      description="A confirmation email has been
-    sent to your email address. Please click on the confirmation link in the email to
-    verify your email address."
+      description="A confirmation email has been sent to your email address. Please click on the confirmation link in the email to verify your email address."
       :actions="[
         {
           label: 'Resend verification email',

@@ -28,6 +28,16 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        RateLimiter::for('verification-notification', function (Request $request) {
+            return Limit::perMinute(1)->by($request->user()?->email ?: $request->ip());
+        });
+
+        RateLimiter::for('uploads', function (Request $request) {
+            return $request->user()?->hasRole('admin')
+                ? Limit::none()
+                : Limit::perMinute(10)->by($request->ip());
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->group(base_path('routes/api.php'));

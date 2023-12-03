@@ -15,7 +15,8 @@
         "laravel/octane": "^2.1",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "league/flysystem-aws-s3-v3": "^3.0"
+        "league/flysystem-aws-s3-v3": "^3.0",
+        "spatie/laravel-permission": "^6.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",

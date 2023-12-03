@@ -38,6 +38,8 @@ class AuthController extends Controller
         $user->ulid = Str::ulid()->toBase32();
         $user->save();
 
+        $user->assignRole('user');
+
         event(new Registered($user));
 
         return response()->json([
@@ -64,7 +66,7 @@ class AuthController extends Controller
                     now()->addMonth() :
                     now()->addDay()
             )->plainTextToken,
-        ], 200);
+        ]);
     }
 
     /**
@@ -76,7 +78,7 @@ class AuthController extends Controller
 
         return response()->json([
             'ok' => true,
-        ], 200);
+        ]);
     }
 
     /**
@@ -85,12 +87,15 @@ class AuthController extends Controller
     public function user(Request $request): JsonResponse
     {
         $user = $request->user();
-        $user->must_verify_email = $user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail();
 
         return response()->json([
             'ok' => true,
-            'user' => $user,
-        ], 200);
+            'user' => [
+                ...$user->toArray(),
+                'must_verify_email' => $user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail(),
+                'roles' => $user->roles()->select('name')->pluck('name'),
+            ],
+        ]);
     }
 
     /**
