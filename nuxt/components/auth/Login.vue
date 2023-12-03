@@ -1,15 +1,12 @@
 <script lang="ts" setup>
 const form = ref();
 const router = useRouter();
-const { token } = useAuth();
+const auth = useAuthStore();
 const loading = ref(false);
-const alertVisible = ref(false);
-const alertMessage = ref("");
-const alertActions = ref([] as any[]);
 
 const state = reactive({
-  email: "test@test.com",
-  password: "qweasd123",
+  email: "",
+  password: "",
   remember: false,
 });
 
@@ -17,60 +14,24 @@ async function onSubmit(event: any) {
   form.value.clear();
   loading.value = true;
 
-  const { data, error } = await useFetch<any>("login", {
+  const { data, error, status } = await useFetch<any>("login", {
     method: "POST",
-    body: { ...event.data },
+    body: event.data,
+    watch: false,
   });
 
-  loading.value = false;
-
   if (error.value?.statusCode === 422) {
-    return form.value.setErrors(error.value.data.errors);
+    form.value.setErrors(error.value.data.errors);
   }
 
-  if (data.value?.ok) {
-    token.value = data.value.token;
+  if (status.value === "success") {
+    auth.token = data.value.token;
+
+    await auth.fetchUser();
     await router.push("/");
-  } else if (data.value.action && data.value.action === "verify_email") {
-    const { execute, data: verificationData, error } = useFetch<any>(
-      "verification-notification",
-      {
-        immediate: false,
-        method: "POST",
-        body: { email: state.email },
-      }
-    );
-
-    const resendEmailLoading = ref(false);
-
-    alertVisible.value = true;
-    alertMessage.value = data.value.message;
-    alertActions.value = [
-      {
-        label: "Resend verification email",
-        color: "emerald",
-        variant: "outline",
-        loading: resendEmailLoading,
-        click: async () => {
-          resendEmailLoading.value = true;
-
-          try {
-            await execute();
-
-            if (verificationData.value.ok) {
-              useToast().add({
-                icon: "i-heroicons-check-circle-20-solid",
-                title: verificationData.value.message,
-                color: "emerald",
-              });
-            }
-          } catch (e) {}
-
-          resendEmailLoading.value = false;
-        },
-      },
-    ];
   }
+
+  loading.value = false;
 }
 </script>
 
@@ -105,18 +66,6 @@ async function onSubmit(event: any) {
         <UButton type="submit" label="Login" :loading="loading" />
       </div>
     </UForm>
-
-    <UNotification
-      v-if="alertVisible"
-      :close-button="{ disabled: true }"
-      icon="i-heroicons-information-circle-20-solid"
-      color="red"
-      :description="alertMessage"
-      :id="1"
-      :timeout="0"
-      :actions="alertActions"
-      title="Before log-in"
-    />
 
     <div class="text-sm">
       Don't have an account yet?

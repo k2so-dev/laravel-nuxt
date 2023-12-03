@@ -4,24 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class AuthController extends Controller
 {
     /**
      * Register new user
      */
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -34,34 +34,25 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-    
-        $user->ulid = (string) Str::ulid();
+
+        $user->ulid = Str::ulid()->toBase32();
         $user->save();
 
         event(new Registered($user));
 
         return response()->json([
             'ok' => true,
-            'must_verify_email' => !$user->hasVerifiedEmail() && $user->getEmailForVerification(),
         ], 201);
     }
 
     /**
      * Generate sanctum token on successful login
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
-        $request->authenticate();
-
         $user = User::where('email', $request->email)->first();
 
-        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
-            return response()->json([
-                'ok' => false,
-                'action' => 'verify_email',
-                'message' => __('Please confirm your email address'),
-            ]);
-        }
+        $request->authenticate($user);
 
         return response()->json([
             'ok' => true,
@@ -69,8 +60,8 @@ class AuthController extends Controller
             'token' => $user->createToken(
                 $request->userAgent(),
                 ['*'],
-                $request->remember ? 
-                    now()->addMonth():
+                $request->remember ?
+                    now()->addMonth() :
                     now()->addDay()
             )->plainTextToken,
         ], 200);
@@ -79,30 +70,33 @@ class AuthController extends Controller
     /**
      * Revoke token; only remove token that is used to perform logout (i.e. will not revoke all tokens)
      */
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'ok' => true
+            'ok' => true,
         ], 200);
     }
 
     /**
      * Get authenticated user details
      */
-    public function user(Request $request)
+    public function user(Request $request): JsonResponse
     {
+        $user = $request->user();
+        $user->must_verify_email = $user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail();
+
         return response()->json([
             'ok' => true,
-            'user' => $request->user()
+            'user' => $user,
         ], 200);
     }
 
     /**
      * Handle an incoming password reset link request.
      */
-    public function sendResetPasswordLink(Request $request)
+    public function sendResetPasswordLink(Request $request): JsonResponse
     {
         $request->validate([
             'email' => ['required', 'email'],
@@ -123,14 +117,14 @@ class AuthController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => __($status)
+            'message' => __($status),
         ]);
     }
 
     /**
      * Handle an incoming new password request.
      */
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): JsonResponse
     {
         $request->validate([
             'token' => ['required'],
@@ -161,28 +155,28 @@ class AuthController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => __($status)
+            'message' => __($status),
         ]);
     }
 
     /**
      * Mark the authenticated user's email address as verified.
      */
-    public function emailVirify(Request $request, $ulid, $hash): JsonResponse
+    public function verifyEmail(Request $request, $ulid, $hash): JsonResponse
     {
         $user = User::whereUlid($ulid)->first();
 
         abort_unless($user, 404);
         abort_unless(hash_equals(sha1($user->getEmailForVerification()), $hash), 403, __('Invalid verification link'));
 
-        if (!$user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
 
             event(new Verified($user));
         }
-    
+
         return response()->json([
-            'ok' => true
+            'ok' => true,
         ]);
     }
 
@@ -202,7 +196,7 @@ class AuthController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'Verification link sent!'
+            'message' => __('Verification link sent!'),
         ]);
     }
 }

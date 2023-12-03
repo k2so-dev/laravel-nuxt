@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { user } = useAuth();
+const router = useRouter();
+const auth = useAuthStore();
 const { showModal } = useModal();
 </script>
 
@@ -11,7 +12,7 @@ const { showModal } = useModal();
 
         <div class="flex gap-3">
           <UButton label="Modal" @click="showModal('demo')" color="gray" />
-          <UButton label="404 page" to="404" color="gray" />
+          <UButton label="404 page" color="gray" @click="router.push('/404')" />
         </div>
       </UCard>
     </div>
@@ -20,7 +21,7 @@ const { showModal } = useModal();
         <div class="font-bold text-lg leading-tight tracking-tighter mb-4">
           User Object
         </div>
-        <pre>{{ user }}</pre>
+        <pre>{{ auth.user }}</pre>
       </UCard>
     </div>
   </div>

@@ -2,11 +2,11 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
         if ($request->is('api/*')) {
             return response()->json([
                 'ok' => false,
-                'message' => __('Unauthenticated.')
+                'message' => __('Unauthenticated.'),
             ], 401, [], JSON_UNESCAPED_SLASHES);
         }
 
@@ -72,10 +72,10 @@ class Handler extends ExceptionHandler
         return response()->json([
             'ok' => false,
             'message' => $exception->getMessage(),
-            'errors' => array_map(function($field, $errors) {
+            'errors' => array_map(function ($field, $errors) {
                 return [
                     'path' => $field,
-                    'message' => implode(' ', $errors)
+                    'message' => implode(' ', $errors),
                 ];
             }, array_keys($exception->errors()), $exception->errors()),
         ], $exception->status);

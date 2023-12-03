@@ -1,70 +1,96 @@
 import { ofetch } from 'ofetch'
 import type { FetchOptions } from 'ofetch';
 
-export default defineNuxtPlugin((nuxtApp) => {
-  const config = useRuntimeConfig()
-  const userStore = useUserStore()
-  const { logged, token, fetchUser } = useAuth()
+export default defineNuxtPlugin({
+  name: 'app',
+  enforce: 'default',
+  parallel: true,
+  async setup(nuxtApp) {
+    const config = useRuntimeConfig()
+    const auth = useAuthStore()
 
-  nuxtApp.hook('app:created', () => {
+    nuxtApp.provide('storage', (path: string): string => path ? config.public.storageBase + path : '')
+
     globalThis.$fetch = ofetch.create(<FetchOptions>{
       retry: false,
+      credentials: 'include',
       baseURL: config.public.apiBase + config.public.apiPrefix,
-      onRequest({ options }) {
+      headers: {
+        Accept: 'application/json'
+      },
+
+      async onRequest({ request, options }) {
+        if (request.toString().includes('/_nuxt/builds/meta/')) {
+          options.baseURL = ''
+          return
+        }
+
         options.headers = (options.headers || {}) as { [key: string]: string }
 
         if (process.server) {
-          useRequestHeaders(['cookie'])
+          options.headers = {
+            referer: useRequestURL().toString(),
+            ...useRequestHeaders(['x-forwarded-for', 'user-agent', 'referer']),
+          }
 
-          options.baseURL = config.public.apiLocal + config.public.apiPrefix
-          options.headers.Referer = useRequestURL().toString()
+          if (options.baseURL === config.public.apiBase + config.public.apiPrefix) {
+            options.baseURL = config.apiLocal + config.public.apiPrefix
+          }
         }
 
-        if (logged.value) {
-          options.headers.Authorization = `Bearer ${token.value}`
+        if (auth.logged) {
+          options.headers['Authorization'] = 'Bearer ' + auth.token
+        }
+
+        if (!process.client) return
+
+        const method = options.method?.toLowerCase() ?? 'get'
+
+        if (!['post', 'put', 'delete', 'patch'].includes(method)) return
+
+        if (options.body instanceof FormData && method === 'put') {
+          options.method = 'POST';
+          options.body.append('_method', 'PUT');
         }
       },
+
       onRequestError({ error }) {
-        useToast().add({
-          icon: 'i-heroicons-exclamation-circle-solid',
-          color: 'red',
-          title: 'Something went wrong',
-          description: error.message,
-        })
-      },
-      onResponseError: ({ response }) => {
-        if (response.status === 401) {
-          token.value = null
-          userStore.user = {} as User
-
+        if (process.client) {
           useToast().add({
-            title: 'Session expired',
-            description: 'Please login again',
             icon: 'i-heroicons-exclamation-circle-solid',
             color: 'red',
+            title: error.message ?? 'Something went wrong',
           })
+        }
+      },
 
-          navigateTo('/auth/login')
+      async onResponseError({ response }) {
+        if (process.server) return;
+
+        if (response.status === 401) {
+          useToast().add({
+            title: 'Please log in to continue',
+            icon: 'i-heroicons-exclamation-circle-solid',
+            color: 'primary',
+          })
         } else if (response.status !== 422) {
-          if (process.client) {
-            useToast().add({
-              icon: 'i-heroicons-exclamation-circle-solid',
-              color: 'red',
-              title: 'Something went wrong',
-              description: response._data?.message || response.statusText,
-            })
-          }
+          useToast().add({
+            icon: 'i-heroicons-exclamation-circle-solid',
+            color: 'red',
+            title: response._data?.message ?? response.statusText ?? 'Something went wrong',
+          })
         }
       }
     })
-  })
 
-  nuxtApp.hook('app:created', async () => {
-    if (logged.value) await fetchUser()
-
-    watch(logged, async (value) => {
-      if (value) await fetchUser()
-    })
-  })
+    if (auth.logged) {
+      await auth.fetchUser();
+    }
+  },
+  // hooks: {
+  //   'app:created'(nuxtApp) {
+  //     const config = useRuntimeConfig()
+  //     nuxtApp.provide('storage', (path: string): string => config.public.storageBase + path)
+  //   }
+  // },
 })
-

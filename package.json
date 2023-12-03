@@ -3,28 +3,27 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "serve": "cross-env PORT=3000 node .output/server/index.mjs",
+    "serve": "cross-env PORT=3000 HOST=127.0.0.1 node .output/server/index.mjs",
     "build": "nuxi cleanup && nuxi build",
     "cleanup": "nuxi cleanup",
     "dev": "nuxt dev --port=3000 --host=127.0.0.1",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "api": "php artisan octane:start --watch --port=8000"
+    "api": "php artisan octane:start --watch --port=8000 --host=127.0.0.1"
   },
   "devDependencies": {
-    "@iconify-json/heroicons": "^1.1.13",
+    "@iconify-json/heroicons": "^1.1.15",
     "@iconify/vue": "^4.1.1",
-    "@nuxt/devtools": "^1.0.3",
+    "@nuxt/devtools": "^1.0.4",
     "@nuxt/image": "^1.1.0",
-    "@nuxt/ui": "^2.10.0",
+    "@nuxt/ui": "^2.11.0",
     "@pinia/nuxt": "^0.5.1",
     "chokidar": "^3.5.3",
     "cross-env": "^7.0.3",
     "dayjs-nuxt": "^2.1.9",
-    "get-browser-fingerprint": "^3.2.0",
     "nuxt": "^3.8.2",
-    "vue": "^3.3.8",
+    "vue": "^3.3.7",
     "vue-router": "^4.2.5"
   }
 }

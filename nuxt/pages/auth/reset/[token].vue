@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  middleware: "auth-guest",
+  middleware: ["guest"],
 });
 
 const router = useRouter();
@@ -24,12 +24,11 @@ async function onSubmit(event: any) {
   const { data, error } = await useFetch<any>("reset-password", {
     method: "POST",
     body: { ...event.data },
+    watch: false,
   });
 
-  loading.value = false;
-
   if (error.value?.statusCode === 422) {
-    return form.value.setErrors(error.value.data.errors);
+    form.value.setErrors(error.value.data.errors);
   }
 
   if (data.value?.ok) {
@@ -41,6 +40,8 @@ async function onSubmit(event: any) {
 
     await router.push("/auth/login");
   }
+
+  loading.value = false;
 }
 </script>
 <template>

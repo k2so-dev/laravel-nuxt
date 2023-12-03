@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-const { user, logged, logout } = useAuth();
+const auth = useAuthStore();
+const { $storage } = useNuxtApp();
 
 const userItems = [
   [
@@ -19,7 +20,7 @@ const userItems = [
   [
     {
       label: "Sign out",
-      click: logout,
+      click: auth.logout,
       icon: "i-heroicons-arrow-left-on-rectangle",
     },
   ],
@@ -85,15 +86,15 @@ defineShortcuts({
         <AppTheme />
 
         <UDropdown
-          v-if="logged"
+          v-if="auth.logged"
           :items="userItems"
           :ui="{ item: { disabled: 'cursor-text select-text' } }"
           :popper="{ placement: 'bottom-end' }"
         >
           <UAvatar
             size="sm"
-            :src="user.avatar"
-            :alt="user.name"
+            :src="$storage(auth.user.avatar)"
+            :alt="auth.user.name"
             :ui="{ rounded: 'rounded-md' }"
           />
 
@@ -101,7 +102,7 @@ defineShortcuts({
             <div class="text-left">
               <p>Signed in as</p>
               <p class="truncate font-medium text-gray-900 dark:text-white">
-                {{ user.email }}
+                {{ auth.user.email }}
               </p>
             </div>
           </template>

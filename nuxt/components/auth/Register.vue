@@ -1,29 +1,31 @@
 <script lang="ts" setup>
-// const api = useApi();
 const router = useRouter();
 const form = ref();
 const loading = ref(false);
 
 const state = reactive({
-  name: "test",
-  email: "test@test.com",
-  password: "qweasd123",
-  password_confirmation: "qweasd123",
+  name: "",
+  email: "",
+  password: "",
+  password_confirmation: "",
 });
 
 async function onSubmit(event: any) {
   form.value.clear();
 
-  const { data, error } = await useFetch<any>("register", {
+  loading.value = true;
+
+  const { status, error } = await useFetch<any>("register", {
     method: "POST",
-    body: { ...event.data },
+    body: event.data,
+    watch: false,
   });
 
   if (error.value?.statusCode === 422) {
     return form.value.setErrors(error.value.data.errors);
   }
 
-  if (data.value?.ok) {
+  if (status.value === "success") {
     useToast().add({
       icon: "i-heroicons-check-circle-20-solid",
       title: "You have been registered successfully.",
@@ -39,6 +41,8 @@ async function onSubmit(event: any) {
 
     router.push("/auth/login");
   }
+
+  loading.value = false;
 }
 </script>
 

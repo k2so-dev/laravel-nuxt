@@ -3,8 +3,10 @@
 /public/build
 /public/hot
 /public/storage
+/public/.well-known
 /storage/*.key
 /vendor
+/public/vendor
 .env
 .env.backup
 .env.production

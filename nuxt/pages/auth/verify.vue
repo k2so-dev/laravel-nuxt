@@ -4,8 +4,15 @@ definePageMeta({
 });
 
 const route = useRoute();
+const auth = useAuthStore();
 
-const { pending, error } = useFetch(route.query.verify_url as string);
+const { pending, error } = useLazyFetch<any>(route.query.verify_url as string, {
+  async onResponse({ response }) {
+    if (response._data?.ok) {
+      await auth.fetchUser();
+    }
+  },
+});
 </script>
 <template>
   <UCard class="w-full max-w-md mx-auto my-20">
@@ -18,6 +25,7 @@ const { pending, error } = useFetch(route.query.verify_url as string);
         <span v-else-if="error" class="text-red-500">Error</span>
         <span v-else class="text-emerald-500">Done</span>
       </h1>
+      <div v-if="error && error.data?.message">{{ error.data?.message }}</div>
 
       <div class="text-sm">
         <NuxtLink class="text-sm" to="/auth/login">Back to Log In</NuxtLink>

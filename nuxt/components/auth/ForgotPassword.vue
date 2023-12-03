@@ -4,7 +4,7 @@ const router = useRouter();
 
 const loading = ref(false);
 const state = reactive({
-  email: "test@test.com",
+  email: "",
 });
 
 async function onSubmit(event: any) {
@@ -13,7 +13,8 @@ async function onSubmit(event: any) {
 
   const { data, error } = await useFetch<any>("forgot-password", {
     method: "POST",
-    body: { ...event.data },
+    body: event.data,
+    watch: false,
   });
 
   loading.value = false;
