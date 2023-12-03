@@ -1,10 +1,6 @@
-&nbsp;
-
 <p align="center">
-  <img src="https://repository-images.githubusercontent.com/718640833/e7a792db-b7d9-4c83-bc75-b3379cac5ba1" width="100%" />
+  <img src="https://github.com/k2so-dev/laravel-nuxt/assets/15279423/ef4dc4b7-9ef4-4059-87db-ea8b51ffd98a" width="100%" />
 </p>
-
-&nbsp;
 
 # Laravel Nuxt Boilerplate
 
