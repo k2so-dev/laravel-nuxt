@@ -1,6 +1,10 @@
+&nbsp;
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/k2so-dev/laravel-nuxt/main/art/logo.svg" width="500" />
 </p>
+
+&nbsp;
 
 ## Laravel Nuxt Boilerplate
 
@@ -64,6 +68,12 @@ Data returned by **useAuth**:
 * `fetchUser`: Function, fetch user data
 
 ### Examples
+
+#### Route list
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/k2so-dev/laravel-nuxt/main/art/routes.png" width="100%" />
+</p>
 
 #### Demo
 
