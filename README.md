@@ -52,10 +52,12 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
 1. clone repository
 2. `composer install`
 3. `cp .env.example .env && php artisan key:generate && php artisan storage:link`
-4. `php artisan octane:install`
-5. `php artisan octane:start --watch --port=8000 --host=127.0.0.1`
-6. `yarn install`
-7. `yarn dev`
+4. `php artisan migrate`
+5. `php artisan db:seed`
+6. `php artisan octane:install`
+7. `php artisan octane:start --watch --port=8000 --host=127.0.0.1`
+8. `yarn install`
+9. `yarn dev`
 
 > Nuxt port is set in package.json scripts via **cross-env**
 
