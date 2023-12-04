@@ -45,8 +45,10 @@ async function onSubmit(event: any) {
 const providers = ref<{ [key: string]: Provider }>(config.public.providers);
 
 async function handleMessage(event: { data: any }): Promise<void> {
-  if (event.data.token) {
-    providers.value[event.data.provider].loading = false;
+  const provider = event.data.provider as string;
+
+  if (Object.keys(providers.value).includes(provider) && event.data.token) {
+    providers.value[provider].loading = false;
     auth.token = event.data.token;
 
     await auth.fetchUser();
