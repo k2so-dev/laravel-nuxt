@@ -36,6 +36,7 @@ The goal of the project is to create a template for development on Laravel and N
  - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
  - [**Laravel Telescope**](https://laravel.com/docs/10.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
  - [**Laravel Sanctum**](https://laravel.com/docs/10.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
+ - [**Laravel Socialite**](https://laravel.com/docs/10.x/socialite) OAuth providers
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
  - UI library [**Nuxt UI**](https://ui.nuxt.com/) based on [**TailwindCSS**](https://tailwindui.com/) and [**HeadlessUI**](https://headlessui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
