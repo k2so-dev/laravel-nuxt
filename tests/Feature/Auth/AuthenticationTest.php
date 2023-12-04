@@ -4,6 +4,8 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -14,34 +16,44 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->post('/login', [
+        $response = $this->postJson('/api/v1/login', [
             'email' => $user->email,
             'password' => 'password',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertNoContent();
+        $response->assertStatus(200);
+        $response->assertJson(fn (AssertableJson $json) => $json
+            ->hasAll(['ok', 'token', 'user'])
+        );
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
     {
         $user = User::factory()->create();
 
-        $this->post('/login', [
+        $response = $this->post('/api/v1/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
 
-        $this->assertGuest();
+        $response->assertJson(fn (AssertableJson $json) => $json
+            ->hasAll(['ok', 'message', 'errors'])
+            ->missing('token')
+        );
     }
 
     public function test_users_can_logout(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'ulid' => Str::ulid()->toBase32(),
+        ]);
 
-        $response = $this->actingAs($user)->post('/logout');
+        $token = $user->createToken('test-token')->plainTextToken;
 
-        $this->assertGuest();
-        $response->assertNoContent();
+        $response = $this->post('/api/v1/logout', [], [
+            'Authorization' => 'Bearer '.$token,
+        ]);
+
+        $response->assertJson(['ok' => true], true);
     }
 }
