@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 const form = ref();
-const router = useRouter();
 
 const loading = ref(false);
 const state = reactive({

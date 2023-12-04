@@ -6,7 +6,9 @@ export type User = {
   email: string;
   avatar: string;
   must_verify_email: boolean;
+  has_password: boolean;
   roles: string[];
+  providers: string[];
 }
 
 export const useAuthStore = defineStore('auth', () => {

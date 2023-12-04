@@ -38,6 +38,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@pinia/nuxt',
     'dayjs-nuxt',
+    'nuxt-security',
   ],
 
   ui: {
@@ -51,6 +52,16 @@ export default defineNuxtConfig({
     alias: {
       api: process.env.API_URL || 'http://127.0.0.1:8000'
     }
+  },
+
+  security: {
+    headers: {
+      crossOriginEmbedderPolicy: process.env.APP_ENV === 'production' ? 'require-corp' : 'unsafe-none',
+      crossOriginOpenerPolicy: 'same-origin-allow-popups',
+      contentSecurityPolicy: {
+        "img-src": ["'self'", "data:", "https://*"],
+      },
+    },
   },
 
   dayjs: {
@@ -69,6 +80,13 @@ export default defineNuxtConfig({
       apiBase: process.env.API_URL,
       apiPrefix: '/api/v1',
       storageBase: process.env.API_URL + '/storage/',
+      providers: {
+        google: {
+          name: "Google",
+          icon: "",
+          color: "gray",
+        },
+      },
     },
   },
 })

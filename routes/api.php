@@ -21,8 +21,10 @@ Route::get('/', function () {
 });
 
 Route::prefix('api/v1')->group(function () {
-    Route::post('register', [AuthController::class, 'register'])->name('register');
+    Route::get('login/{provider}/redirect', [AuthController::class, 'redirect'])->name('login.provider.redirect');
+    Route::get('login/{provider}/callback', [AuthController::class, 'callback'])->name('login.provider.callback');
     Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('forgot-password', [AuthController::class, 'sendResetPasswordLink'])->middleware('throttle:5,1')->name('password.email');
     Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('password.store');
     Route::post('verification-notification', [AuthController::class, 'verificationNotification'])->middleware('throttle:verification-notification')->name('verification.send');

@@ -1,19 +1,16 @@
 <script lang="ts" setup>
-definePageMeta({
-  middleware: ["guest"],
-});
-
 const router = useRouter();
 const route = useRoute();
+const auth = useAuthStore();
 
 const loading = ref(false);
 const form = ref();
 
 const state = reactive({
-  email: "test@test.com",
+  email: route.query.email as string,
   token: route.params.token,
-  password: "qweasd123",
-  password_confirmation: "qweasd123",
+  password: "",
+  password_confirmation: "",
 });
 
 async function onSubmit(event: any) {
@@ -23,7 +20,7 @@ async function onSubmit(event: any) {
 
   const { data, error } = await useFetch<any>("reset-password", {
     method: "POST",
-    body: { ...event.data },
+    body: event.data,
     watch: false,
   });
 
@@ -38,7 +35,12 @@ async function onSubmit(event: any) {
       color: "emerald",
     });
 
-    await router.push("/auth/login");
+    if (auth.logged) {
+      await auth.fetchUser();
+      await router.push("/");
+    } else {
+      await router.push("/auth/login");
+    }
   }
 
   loading.value = false;

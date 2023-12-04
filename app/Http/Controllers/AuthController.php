@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use App\Models\UserProvider;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -48,6 +51,81 @@ class AuthController extends Controller
     }
 
     /**
+     * Redirect to provider for authentication
+     */
+    public function redirect(Request $request, $provider)
+    {
+        return Socialite::driver($provider)->stateless()->redirect();
+    }
+
+    /**
+     * Handle callback from provider
+     */
+    public function callback(Request $request, string $provider): View
+    {
+        $oAuthUser = Socialite::driver($provider)->stateless()->user();
+
+        if (! $oAuthUser?->token) {
+            return view('oauth', [
+                'message' => [
+                    'ok' => false,
+                    'message' => __('Unable to authenticate with :provider', ['provider' => $provider]),
+                ],
+            ]);
+        }
+
+        $userProvider = UserProvider::select('id', 'user_id')
+            ->where('name', $provider)
+            ->where('provider_id', $oAuthUser->id)
+            ->first();
+
+        if (! $userProvider) {
+            if (User::where('email', $oAuthUser->email)->exists()) {
+                return view('oauth', [
+                    'message' => [
+                        'ok' => false,
+                        'message' => __('Unable to authenticate with :provider. User with email :email already exists. To connect a new service to your account, you can go to your account settings and go through the process of linking your account.', [
+                            'provider' => $provider,
+                            'email' => $oAuthUser->email,
+                        ]),
+                    ],
+                ]);
+            }
+
+            $user = new User();
+            $user->ulid = Str::ulid()->toBase32();
+            $user->avatar = $oAuthUser->picture ?? $oAuthUser->avatar_original ?? $oAuthUser->avatar;
+            $user->name = $oAuthUser->name;
+            $user->email = $oAuthUser->email;
+            $user->password = Hash::make(Str::random(32));
+            $user->has_password = false;
+            $user->email_verified_at = now();
+            $user->save();
+
+            $user->assignRole('user');
+
+            $user->userProviders()->create([
+                'provider_id' => $oAuthUser->id,
+                'name' => $provider,
+            ]);
+        } else {
+            $user = $userProvider->user;
+        }
+
+        return view('oauth', [
+            'message' => [
+                'ok' => true,
+                'provider' => $provider,
+                'token' => $user->createToken(
+                    $request->userAgent(),
+                    ['*'],
+                    now()->addMonth()
+                )->plainTextToken,
+            ],
+        ]);
+    }
+
+    /**
      * Generate sanctum token on successful login
      */
     public function login(LoginRequest $request): JsonResponse
@@ -58,7 +136,6 @@ class AuthController extends Controller
 
         return response()->json([
             'ok' => true,
-            'user' => $user,
             'token' => $user->createToken(
                 $request->userAgent(),
                 ['*'],
@@ -94,6 +171,7 @@ class AuthController extends Controller
                 ...$user->toArray(),
                 'must_verify_email' => $user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail(),
                 'roles' => $user->roles()->select('name')->pluck('name'),
+                'providers' => $user->userProviders()->select('name')->pluck('name'),
             ],
         ]);
     }
@@ -133,7 +211,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'token' => ['required'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'exists:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -146,6 +224,7 @@ class AuthController extends Controller
                 $user->forceFill([
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
+                    'has_password' => true,
                 ])->save();
 
                 event(new PasswordReset($user));

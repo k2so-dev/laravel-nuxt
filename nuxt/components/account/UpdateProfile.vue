@@ -95,15 +95,13 @@ async function onSubmit(event: any) {
     <UAlert
       v-if="auth.user.must_verify_email"
       icon="i-heroicons-information-circle-20-solid"
-      color="red"
-      variant="soft"
       title="Please confirm your email address."
       description="A confirmation email has been sent to your email address. Please click on the confirmation link in the email to verify your email address."
       :actions="[
         {
           label: 'Resend verification email',
           variant: 'solid',
-          color: 'red',
+          color: 'gray',
           loading: resendEmailLoading,
           click: sendEmailVerification,
         },

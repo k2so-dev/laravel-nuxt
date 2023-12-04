@@ -32,7 +32,7 @@ class AccountController extends Controller
             'avatar' => ['nullable', 'string', 'regex:/^avatars\/[a-z0-9]{26}\.([a-z]++)$/i', Rule::excludeIf($request->avatar === $user->avatar), new TemporaryFileExists],
         ]);
 
-        if ($user->avatar && $user->avatar !== $request->avatar) {
+        if ($user->avatar && Str::startsWith($user->avatar, 'avatars/') && $user->avatar !== $request->avatar) {
             Storage::disk('public')->delete($user->avatar);
         }
 
@@ -65,6 +65,7 @@ class AccountController extends Controller
         ]);
 
         $user = $request->user();
+        abort_unless($user->has_password, 403, __('Access denied.'));
 
         if (! Hash::check($request->current_password, $user->password)) {
             throw ValidationException::withMessages([

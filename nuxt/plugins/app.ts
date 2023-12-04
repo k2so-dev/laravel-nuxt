@@ -9,7 +9,13 @@ export default defineNuxtPlugin({
     const config = useRuntimeConfig()
     const auth = useAuthStore()
 
-    nuxtApp.provide('storage', (path: string): string => path ? config.public.storageBase + path : '')
+    nuxtApp.provide('storage', (path: string): string => {
+      if (!path) return ''
+
+      if (path.startsWith('http')) return path
+
+      return config.public.storageBase + path
+    })
 
     globalThis.$fetch = ofetch.create(<FetchOptions>{
       retry: false,
