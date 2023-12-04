@@ -3,8 +3,18 @@ name: Laravel
 on:
   push:
     branches: [ "main" ]
+    paths:
+    - 'app/**'
+    - 'config/**'
+    - 'tests/**'
+    - 'routes/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+    - 'app/**'
+    - 'config/**'
+    - 'tests/**'
+    - 'routes/**'
 
 jobs:
   laravel-tests:
