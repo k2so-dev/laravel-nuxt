@@ -31,7 +31,7 @@ The goal of the project is to create a template for development on Laravel and N
 ## Features
 
  - [**Laravel 10**](https://laravel.com/docs/10.x) and [**Nuxt 3**](https://nuxt.com/)
- - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) is a library for fast backend work.
+ - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
  - [**Laravel Telescope**](https://laravel.com/docs/10.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
  - [**Laravel Sanctum**](https://laravel.com/docs/10.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
