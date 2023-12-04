@@ -56,7 +56,7 @@ export default defineNuxtConfig({
 
   security: {
     headers: {
-      crossOriginEmbedderPolicy: process.env.APP_ENV === 'production' ? 'require-corp' : 'unsafe-none',
+      crossOriginEmbedderPolicy: 'unsafe-none',
       crossOriginOpenerPolicy: 'same-origin-allow-popups',
       contentSecurityPolicy: {
         "img-src": ["'self'", "data:", "https://*"],
