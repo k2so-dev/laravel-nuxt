@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/k2so-dev/laravel-nuxt/assets/15279423/1f030310-3bc4-4ae1-8cfc-a424bbec818a" width="100%" />
+  <img src="https://raw.githubusercontent.com/k2so-dev/laravel-nuxt/main/art/preview.png" width="100%" />
 </p>
 
 # Laravel Nuxt Boilerplate
