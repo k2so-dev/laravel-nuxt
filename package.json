@@ -13,18 +13,18 @@
     "api": "php artisan octane:start --watch --port=8000 --host=127.0.0.1"
   },
   "devDependencies": {
-    "@iconify-json/heroicons": "^1.1.15",
+    "@iconify-json/heroicons": "^1.1.16",
     "@iconify/vue": "^4.1.1",
-    "@nuxt/devtools": "^1.0.4",
+    "@nuxt/devtools": "^1.0.6",
     "@nuxt/image": "^1.1.0",
-    "@nuxt/ui": "^2.11.0",
+    "@nuxt/ui": "^2.11.1",
     "@pinia/nuxt": "^0.5.1",
     "chokidar": "^3.5.3",
     "cross-env": "^7.0.3",
     "dayjs-nuxt": "^2.1.9",
     "nuxt": "^3.8.2",
-    "nuxt-security": "^1.0.0-rc.4",
-    "vue": "^3.3.7",
+    "nuxt-security": "^1.0.0",
+    "vue": "^3.3.11",
     "vue-router": "^4.2.5"
   }
 }

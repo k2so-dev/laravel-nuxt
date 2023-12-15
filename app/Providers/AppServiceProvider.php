@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use App\Helpers\Image;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,29 +27,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         /**
-         * Convert uploaded image to any format and resize it
+         * Convert uploaded image to webp, jpeg or png format and resize it
          */
         UploadedFile::macro('convert', function (int $width = null, int $height = null, string $extension = 'webp', int $quality = 90): UploadedFile {
             return tap($this, function (UploadedFile $file) use ($width, $height, $extension, $quality) {
-                $image = Image::make($file->path());
-                $image->orientate();
-
-                $maxSize = 1920;
-
-                if ($width && $height) {
-                    $image->fit($width, $height);
-                } elseif ($width || $image->width() > $maxSize) {
-                    $image->resize($width ?? $maxSize, null, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                } elseif ($height || $image->height() > $maxSize) {
-                    $image->resize(null, $height ?? $maxSize, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                }
-
-                $image->save($file->path(), $quality, $extension);
-                $image->destroy();
+                Image::convert($file->path(), $file->path(), $width, $height, $extension, $quality);
             });
         });
 
