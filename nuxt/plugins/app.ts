@@ -12,65 +12,81 @@ export default defineNuxtPlugin({
     nuxtApp.provide('storage', (path: string): string => {
       if (!path) return ''
 
-      if (path.startsWith('http')) return path
-
-      return config.public.storageBase + path
+      return path.startsWith('http://') || path.startsWith('https://') ?
+        path
+        : config.public.storageBase + path
     })
+
+    function buildHeaders(headers = <HeadersInit>{}): HeadersInit {
+      return {
+        ...headers,
+        ...{
+          'Accept': 'application/json',
+        },
+        ...(
+          process.server ? {
+            'referer': useRequestURL().toString(),
+            ...useRequestHeaders(['x-forwarded-for', 'user-agent', 'referer']),
+          } : {}
+        ),
+        ...(
+          auth.logged ? {
+            'Authorization': `Bearer ${auth.token}`
+          } : {}
+        )
+      };
+    }
+
+    function buildBaseURL(baseURL: string): string {
+      if (baseURL) return baseURL;
+
+      return process.server ?
+        config.apiLocal + config.public.apiPrefix
+        : config.public.apiBase + config.public.apiPrefix;
+    }
+
+    function buildSecureMethod(options: FetchOptions): void {
+      if (process.server) return;
+
+      const method = options.method?.toLowerCase() ?? 'get'
+
+      if (options.body instanceof FormData && method === 'put') {
+        options.method = 'POST';
+        options.body.append('_method', 'PUT');
+      }
+    }
+
+    function isRequestWithAuth(path: string): boolean {
+      return !path.startsWith('/_nuxt')
+        && !path.startsWith('http://')
+        && !path.startsWith('https://');
+    }
 
     globalThis.$fetch = ofetch.create(<FetchOptions>{
       retry: false,
-      credentials: 'include',
-      baseURL: config.public.apiBase + config.public.apiPrefix,
-      headers: {
-        Accept: 'application/json'
-      },
 
-      async onRequest({ request, options }) {
-        if (request.toString().includes('/_nuxt/builds/meta/')) {
-          options.baseURL = ''
-          return
-        }
+      onRequest({ request, options }) {
+        if (!isRequestWithAuth(request.toString())) return
 
-        options.headers = (options.headers || {}) as { [key: string]: string }
+        options.credentials = 'include';
 
-        if (process.server) {
-          options.headers = {
-            referer: useRequestURL().toString(),
-            ...useRequestHeaders(['x-forwarded-for', 'user-agent', 'referer']),
-          }
+        options.baseURL = buildBaseURL(options.baseURL ?? '');
+        options.headers = buildHeaders(options.headers);
 
-          if (options.baseURL === config.public.apiBase + config.public.apiPrefix) {
-            options.baseURL = config.apiLocal + config.public.apiPrefix
-          }
-        }
-
-        if (auth.logged) {
-          options.headers['Authorization'] = 'Bearer ' + auth.token
-        }
-
-        if (!process.client) return
-
-        const method = options.method?.toLowerCase() ?? 'get'
-
-        if (!['post', 'put', 'delete', 'patch'].includes(method)) return
-
-        if (options.body instanceof FormData && method === 'put') {
-          options.method = 'POST';
-          options.body.append('_method', 'PUT');
-        }
+        buildSecureMethod(options);
       },
 
       onRequestError({ error }) {
-        if (process.client) {
-          useToast().add({
-            icon: 'i-heroicons-exclamation-circle-solid',
-            color: 'red',
-            title: error.message ?? 'Something went wrong',
-          })
-        }
+        if (process.server) return;
+
+        useToast().add({
+          icon: 'i-heroicons-exclamation-circle-solid',
+          color: 'red',
+          title: error.message ?? 'Something went wrong',
+        })
       },
 
-      async onResponseError({ response }) {
+      onResponseError({ response }) {
         if (response.status === 401) {
           if (auth.logged) {
             auth.token = ''

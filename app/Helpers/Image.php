@@ -31,7 +31,7 @@ class Image
         } else if ($extension === 'jpeg') {
             $image->toJpeg($quality)->save($target);
         } else if ($extension === 'png') {
-            $image->toPng($quality)->save($target);
+            $image->toPng()->save($target);
         }
     }
 }

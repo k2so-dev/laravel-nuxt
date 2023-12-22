@@ -14,8 +14,11 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('auth:clear-resets')->daily();
         $schedule->command('sanctum:prune-expired --hours=24')->daily();
-        $schedule->command('telescope:prune --hours=24')->hourly();
         $schedule->command('temporary:clear')->hourly();
+
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $schedule->command('telescope:prune --hours=24')->daily();
+        }
     }
 
     /**
