@@ -2,6 +2,18 @@
 const router = useRouter();
 const auth = useAuthStore();
 const { showModal } = useModal();
+
+//! Demo hooks
+// await useLazyFetch("user", {
+//   server: false,
+//   ...(<WithHooks>{
+//     hooks: {
+//       onResponse({ response }) {
+//         console.log(response);
+//       },
+//     },
+//   }),
+// });
 </script>
 
 <template>

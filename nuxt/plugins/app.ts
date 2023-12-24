@@ -1,5 +1,4 @@
 import { ofetch } from 'ofetch'
-import type { FetchOptions } from 'ofetch';
 
 export default defineNuxtPlugin({
   name: 'app',
@@ -45,7 +44,7 @@ export default defineNuxtPlugin({
         : config.public.apiBase + config.public.apiPrefix;
     }
 
-    function buildSecureMethod(options: FetchOptions): void {
+    function buildSecureMethod(options: FetchOptionsWithHooks): void {
       if (process.server) return;
 
       const method = options.method?.toLowerCase() ?? 'get'
@@ -62,32 +61,50 @@ export default defineNuxtPlugin({
         && !path.startsWith('https://');
     }
 
-    globalThis.$fetch = ofetch.create(<FetchOptions>{
+    globalThis.$fetch = ofetch.create(<FetchOptionsWithHooks>{
       retry: false,
 
-      onRequest({ request, options }) {
-        if (!isRequestWithAuth(request.toString())) return
+      async onRequest(context: FetchContextWithHooks) {
+        if (typeof context.options.hooks?.onRequest === 'function') {
+          await context.options.hooks.onRequest(context);
+        }
 
-        options.credentials = 'include';
+        if (!isRequestWithAuth(context.request.toString())) return
 
-        options.baseURL = buildBaseURL(options.baseURL ?? '');
-        options.headers = buildHeaders(options.headers);
+        context.options.credentials = 'include';
 
-        buildSecureMethod(options);
+        context.options.baseURL = buildBaseURL(context.options.baseURL ?? '');
+        context.options.headers = buildHeaders(context.options.headers);
+
+        buildSecureMethod(context.options);
       },
 
-      onRequestError({ error }) {
+      async onRequestError(context: FetchContextWithHooksRequestError) {
+        if (typeof context.options.hooks?.onRequestError === 'function') {
+          await context.options.hooks.onRequestError(context);
+        }
+
         if (process.server) return;
 
         useToast().add({
           icon: 'i-heroicons-exclamation-circle-solid',
           color: 'red',
-          title: error.message ?? 'Something went wrong',
+          title: context.error.message ?? 'Something went wrong',
         })
       },
 
-      onResponseError({ response }) {
-        if (response.status === 401) {
+      async onResponse(context: FetchContextWithHooksResponse) {
+        if (typeof context.options.hooks?.onResponse === 'function') {
+          await context.options.hooks.onResponse(context);
+        }
+      },
+
+      async onResponseError(context: FetchContextWithHooksResponse) {
+        if (typeof context.options.hooks?.onResponseError === 'function') {
+          await context.options.hooks.onResponseError(context);
+        }
+
+        if (context.response.status === 401) {
           if (auth.logged) {
             auth.token = ''
             auth.user = <User>{}
@@ -100,12 +117,12 @@ export default defineNuxtPlugin({
               color: 'primary',
             })
           }
-        } else if (response.status !== 422) {
+        } else if (context.response.status !== 422) {
           if (process.client) {
             useToast().add({
               icon: 'i-heroicons-exclamation-circle-solid',
               color: 'red',
-              title: response._data?.message ?? response.statusText ?? 'Something went wrong',
+              title: context.response._data?.message ?? context.response.statusText ?? 'Something went wrong',
             })
           }
         }
