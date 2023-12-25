@@ -56,8 +56,9 @@ export default defineNuxtPlugin({
       }
     }
 
-    function isRequestWithAuth(path: string): boolean {
-      return !path.startsWith('/_nuxt')
+    function isRequestWithAuth(baseURL: string, path: string): boolean {
+      return !baseURL
+        && !path.startsWith('/_nuxt')
         && !path.startsWith('http://')
         && !path.startsWith('https://');
     }
@@ -66,7 +67,7 @@ export default defineNuxtPlugin({
       retry: false,
 
       onRequest({ request, options }) {
-        if (!isRequestWithAuth(request.toString())) return
+        if (!isRequestWithAuth(options.baseURL ?? '', request.toString())) return
 
         options.credentials = 'include';
 
