@@ -22,7 +22,7 @@
     "chokidar": "^3.5.3",
     "cross-env": "^7.0.3",
     "dayjs-nuxt": "^2.1.9",
-    "nuxt": "^3.8.2",
+    "nuxt": "^3.9.0",
     "nuxt-security": "^1.0.0",
     "vue": "^3.3.13",
     "vue-router": "^4.2.5"
