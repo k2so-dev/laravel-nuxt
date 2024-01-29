@@ -75,7 +75,7 @@ defineShortcuts({
             <NuxtLink
               class="text-sm/6 font-semibold flex items-center gap-1 hover:text-primary"
               :to="item.to"
-              target="_blank"
+              :target="item.target"
               >{{ item.label }}</NuxtLink
             >
           </li>
