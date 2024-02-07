@@ -22,7 +22,7 @@ async function onSubmit(event: any) {
   });
 
   if (error.value?.statusCode === 422) {
-    return form.value.setErrors(error.value.data.errors);
+    form.value.setErrors(error.value.data.errors);
   }
 
   if (status.value === "success") {
