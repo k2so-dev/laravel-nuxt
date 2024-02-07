@@ -32,6 +32,8 @@ Route::prefix('api/v1')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+        Route::post('devices/disconnect', [AuthController::class, 'deviceDisconnect'])->name('devices.disconnect');
+        Route::get('devices', [AuthController::class, 'devices'])->name('devices');
         Route::get('user', [AuthController::class, 'user'])->name('user');
 
         Route::post('account/update', [AccountController::class, 'update'])->name('account.update');

@@ -13,8 +13,13 @@ const userItems = [
   [
     {
       label: "Account",
-      to: "/account",
-      icon: "i-heroicons-user-solid",
+      to: "/account/general",
+      icon: "i-heroicons-user",
+    },
+    {
+      label: "Devices",
+      to: "/account/devices",
+      icon: "i-heroicons-device-phone-mobile",
     },
   ],
   [

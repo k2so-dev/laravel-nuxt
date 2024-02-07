@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Models\UserProvider;
+use Browser;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -112,15 +114,23 @@ class AuthController extends Controller
             $user = $userProvider->user;
         }
 
+        $browser = Browser::parse($request->userAgent());
+        $device = $browser->platformName() . ' / ' . $browser->browserName();
+
+        $sanctumToken = $user->createToken(
+            $device,
+            ['*'],
+            now()->addMonth()
+        );
+
+        $sanctumToken->accessToken->ip = $request->ip();
+        $sanctumToken->accessToken->save();
+
         return view('oauth', [
             'message' => [
                 'ok' => true,
                 'provider' => $provider,
-                'token' => $user->createToken(
-                    $request->userAgent(),
-                    ['*'],
-                    now()->addMonth()
-                )->plainTextToken,
+                'token' => $sanctumToken->plainTextToken,
             ],
         ]);
     }
@@ -134,15 +144,23 @@ class AuthController extends Controller
 
         $request->authenticate($user);
 
+        $browser = Browser::parse($request->userAgent());
+        $device = $browser->platformName() . ' / ' . $browser->browserName();
+
+        $sanctumToken = $user->createToken(
+            $device,
+            ['*'],
+            $request->remember ?
+                now()->addMonth() :
+                now()->addDay()
+        );
+
+        $sanctumToken->accessToken->ip = $request->ip();
+        $sanctumToken->accessToken->save();
+
         return response()->json([
             'ok' => true,
-            'token' => $user->createToken(
-                $request->userAgent(),
-                ['*'],
-                $request->remember ?
-                    now()->addMonth() :
-                    now()->addDay()
-            )->plainTextToken,
+            'token' => $sanctumToken->plainTextToken,
         ]);
     }
 
@@ -281,6 +299,58 @@ class AuthController extends Controller
         return response()->json([
             'ok' => true,
             'message' => __('Verification link sent!'),
+        ]);
+    }
+
+    /**
+     * Get authenticated user devices
+     */
+    public function devices(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $devices = $user->tokens()
+            ->select('id', 'name', 'ip', 'last_used_at')
+            ->orderBy('last_used_at', 'DESC')
+            ->get();
+
+        $currentToken = $user->currentAccessToken();
+
+        foreach ($devices as $device) {
+            $device->hash = Crypt::encryptString($device->id);
+
+            if ($currentToken->id === $device->id) {
+                $device->is_current = true;
+            }
+
+            unset($device->id);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'devices' => $devices,
+        ]);
+    }
+
+    /**
+     * Revoke token by id
+     */
+    public function deviceDisconnect(Request $request): JsonResponse
+    {
+        $request->validate([
+            'hash' => 'required',
+        ]);
+
+        $user = $request->user();
+
+        $id = (int) Crypt::decryptString($request->hash);
+
+        if (!empty($id)) {
+            $user->tokens()->where('id', $id)->delete();
+        }
+
+        return response()->json([
+            'ok' => true,
         ]);
     }
 }

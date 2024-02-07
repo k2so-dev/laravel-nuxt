@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         color: "red",
       });
 
-      return navigateTo('/account')
+      return navigateTo('/account/general')
     })
   }
 })

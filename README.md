@@ -5,7 +5,7 @@
 # Laravel Nuxt Boilerplate
 
 [![](https://img.shields.io/badge/Laravel-v10-ff2e21.svg)](https://laravel.com)
-[![](https://img.shields.io/badge/nuxt.js-v3.9-04C690.svg)](https://nuxt.com)
+[![](https://img.shields.io/badge/nuxt.js-v3-04C690.svg)](https://nuxt.com)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_shield)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/k2so-dev/laravel-nuxt/laravel.yml)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/laravel.yml)
 [![CodeQL](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/github-code-scanning/codeql)
@@ -17,6 +17,7 @@ The goal of the project is to create a template for development on Laravel and N
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Upgrade](#upgrade)
 - [Usage](#usage)
     - [Nuxt $fetch](#nuxt-fetch)
     - [Authentication](#authentication)
@@ -42,6 +43,7 @@ The goal of the project is to create a template for development on Laravel and N
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
  - Integrated pages: login, registration, password recovery, email confirmation, account information update, password change.
  - Temporary uploads with cropping and optimization of images.
+ - Device management
  - [**ofetch**](https://github.com/unjs/ofetch) preset for working with Laravel API, which makes it possible
 use $**fetch** without having to resort to custom $**fetch** wrappers.
 
@@ -61,6 +63,10 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
 7. `php artisan octane:start --watch --port=8000 --host=127.0.0.1`
 8. `yarn install`
 9. `yarn dev`
+
+## Upgrade
+1. `npx nuxi upgrade`
+2. `composer update`
 
 > Nuxt port is set in package.json scripts via **cross-env**
 
