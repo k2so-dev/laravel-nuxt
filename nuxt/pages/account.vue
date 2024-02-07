@@ -3,8 +3,6 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const auth = useAuthStore();
-
 const links = [
   [
     {
@@ -16,7 +14,6 @@ const links = [
       label: "Devices",
       icon: "i-heroicons-device-phone-mobile",
       to: "/account/devices",
-      // badge: auth.user.tokens_count,
     },
   ],
 ];
