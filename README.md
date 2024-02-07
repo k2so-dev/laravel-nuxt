@@ -130,7 +130,7 @@ All built-in middleware from Laravel + middleware based on roles [**Spatie Larav
 
 ### Demo
 
-https://github.com/k2so-dev/laravel-nuxt/assets/15279423/095e0da3-ce9c-460a-87fd-9282e8d8fb74
+https://github.com/k2so-dev/laravel-nuxt/assets/15279423/9b134491-1444-4323-a7a3-d87833dcdc67
 
 ## Links
 * [Nuxt 3](https://nuxt.com/)
