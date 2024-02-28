@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('personal_access_tokens', function (Blueprint $table) {
-            $table->string('ip', 15)->after('name')->nullable();
+            $table->string('ip', 39)->after('name')->nullable();
         });
     }
 
