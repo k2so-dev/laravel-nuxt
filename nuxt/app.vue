@@ -9,9 +9,9 @@
 
   <AppFooter />
 
-  <ModalDemo />
-
   <NuxtLoadingIndicator class="!opacity-100" :throttle="0" />
+
+  <UModals />
 
   <UNotifications>
     <template #title="{ title }">

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-const { modal, hideModal } = useModal();
+const modal = useModal()
 </script>
 <template>
-  <UModal :model-value="modal === 'demo'" @close="hideModal">
+  <UModal>
     <UCard>
       <template #header>
         <div class="text-2xl leading-tight font-black">Welcome to LaravelNuxt</div>
@@ -11,7 +11,7 @@ const { modal, hideModal } = useModal();
       <USkeleton class="w-full h-60" />
 
       <template #footer>
-        <UButton label="Close" @click="hideModal" color="gray" />
+        <UButton label="Close" @click="modal.close" color="gray" />
       </template>
     </UCard>
   </UModal>

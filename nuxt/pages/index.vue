@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import { ModalDemo } from '#components'
+
+const modal = useModal();
 const router = useRouter();
 const auth = useAuthStore();
-const { showModal } = useModal();
+
+function openDemoModal() {
+  modal.open(ModalDemo)
+}
 </script>
 
 <template>
@@ -11,7 +17,7 @@ const { showModal } = useModal();
         <div class="font-bold text-lg leading-tight tracking-tighter mb-4">Demo</div>
 
         <div class="flex gap-3">
-          <UButton label="Modal" @click="showModal('demo')" color="gray" />
+          <UButton label="Modal" @click="openDemoModal" color="gray" />
           <UButton label="404 page" color="gray" @click="router.push('/404')" />
         </div>
       </UCard>
