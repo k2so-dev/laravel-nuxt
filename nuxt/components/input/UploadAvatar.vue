@@ -33,7 +33,7 @@ const onSelect = async (e: any) => {
   const formData = new FormData();
   formData.append("image", file);
 
-  const { data, error, status } = await useFetch<any>("upload", {
+  await $fetch<any>("upload", {
     method: "POST",
     body: formData,
     params: {
@@ -41,14 +41,21 @@ const onSelect = async (e: any) => {
       width: 300,
       height: 300,
     },
-    watch: false,
+    ignoreResponseError: true,
+    onResponse({ response }) {
+      if (response.status !== 200) {
+        useToast().add({
+          icon: 'i-heroicons-exclamation-circle-solid',
+          color: 'red',
+          title: response._data?.message ?? response.statusText ?? 'Something went wrong',
+        });
+      } else if (response._data?.ok) {
+        value.value = response._data?.path;
+      }
+
+      loading.value = false;
+    },
   });
-
-  if (status.value === "success") {
-    value.value = data.value?.path;
-  }
-
-  loading.value = false;
 };
 </script>
 

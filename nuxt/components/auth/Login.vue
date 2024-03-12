@@ -2,7 +2,6 @@
 const config = useRuntimeConfig();
 const router = useRouter();
 const auth = useAuthStore();
-const loading = ref(false);
 const form = ref();
 
 type Provider = {
@@ -18,29 +17,22 @@ const state = reactive({
   remember: false,
 });
 
-async function onSubmit(event: any) {
-  form.value.clear();
-  loading.value = true;
+const { refresh: onSubmit, status: loginStatus } = useFetch<any>("login", {
+  method: "POST",
+  body: state,
+  immediate: false,
+  watch: false,
+  async onResponse({ response }) {
+    if (response?.status === 422) {
+      form.value.setErrors(response._data?.errors);
+    } else if (response._data?.ok) {
+      auth.token = response._data.token;
 
-  const { data, error, status } = await useFetch<any>("login", {
-    method: "POST",
-    body: event.data,
-    watch: false,
-  });
-
-  if (error.value?.statusCode === 422) {
-    form.value.setErrors(error.value.data.errors);
+      await auth.fetchUser();
+      await router.push("/");
+    }
   }
-
-  if (status.value === "success") {
-    auth.token = data.value.token;
-
-    await auth.fetchUser();
-    await router.push("/");
-  }
-
-  loading.value = false;
-}
+});
 
 const providers = ref<{ [key: string]: Provider }>(config.public.providers);
 
@@ -128,7 +120,7 @@ onBeforeUnmount(() => window.removeEventListener("message", handleMessage));
 
       <div class="flex items-center justify-end space-x-4">
         <NuxtLink class="text-sm" to="/auth/forgot">Forgot your password?</NuxtLink>
-        <UButton type="submit" label="Login" :loading="loading" />
+        <UButton type="submit" label="Login" :loading="loginStatus === 'pending'" />
       </div>
     </UForm>
 

@@ -2,8 +2,6 @@
 const router = useRouter();
 const route = useRoute();
 const auth = useAuthStore();
-
-const loading = ref(false);
 const form = ref();
 
 const state = reactive({
@@ -13,38 +11,30 @@ const state = reactive({
   password_confirmation: "",
 });
 
-async function onSubmit(event: any) {
-  form.value.clear();
+const { refresh: onSubmit, status: resetStatus } = useFetch<any>("reset-password", {
+  method: "POST",
+  body: state,
+  immediate: false,
+  watch: false,
+  async onResponse({ response }) {
+    if (response?.status === 422) {
+      form.value.setErrors(response._data?.errors);
+    } else if (response._data?.ok) {
+      useToast().add({
+        title: "Success",
+        description: response._data.message,
+        color: "emerald",
+      });
 
-  loading.value = true;
-
-  const { data, error } = await useFetch<any>("reset-password", {
-    method: "POST",
-    body: event.data,
-    watch: false,
-  });
-
-  if (error.value?.statusCode === 422) {
-    form.value.setErrors(error.value.data.errors);
-  }
-
-  if (data.value?.ok) {
-    useToast().add({
-      title: "Success",
-      description: data.value.message,
-      color: "emerald",
-    });
-
-    if (auth.logged) {
-      await auth.fetchUser();
-      await router.push("/");
-    } else {
-      await router.push("/auth/login");
+      if (auth.logged) {
+        await auth.fetchUser();
+        await router.push("/");
+      } else {
+        await router.push("/auth/login");
+      }
     }
   }
-
-  loading.value = false;
-}
+});
 </script>
 <template>
   <UCard class="w-full max-w-md mx-auto my-20">
@@ -82,7 +72,7 @@ async function onSubmit(event: any) {
         </UFormGroup>
 
         <div class="flex items-center justify-end space-x-4">
-          <UButton type="submit" label="Reset password" :loading="loading" />
+          <UButton type="submit" label="Reset password" :loading="resetStatus === 'pending'" />
         </div>
       </UForm>
 

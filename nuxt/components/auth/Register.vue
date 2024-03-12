@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 const router = useRouter();
 const form = ref();
-const loading = ref(false);
 
 const state = reactive({
   name: "",
@@ -10,40 +9,32 @@ const state = reactive({
   password_confirmation: "",
 });
 
-async function onSubmit(event: any) {
-  form.value.clear();
+const { refresh: onSubmit, status: registerStatus } = useFetch<any>("register", {
+  method: "POST",
+  body: state,
+  immediate: false,
+  watch: false,
+  async onResponse({ response }) {
+    if (response?.status === 422) {
+      form.value.setErrors(response._data?.errors);
+    } else if (response._data?.ok) {
+      useToast().add({
+        icon: "i-heroicons-check-circle-20-solid",
+        title: "You have been registered successfully.",
+        color: "emerald",
+        actions: [
+          {
+            label: "Log In now",
+            to: "/auth/login",
+            color: "emerald",
+          },
+        ],
+      });
 
-  loading.value = true;
-
-  const { status, error } = await useFetch<any>("register", {
-    method: "POST",
-    body: event.data,
-    watch: false,
-  });
-
-  if (error.value?.statusCode === 422) {
-    form.value.setErrors(error.value.data.errors);
+      router.push("/auth/login");
+    }
   }
-
-  if (status.value === "success") {
-    useToast().add({
-      icon: "i-heroicons-check-circle-20-solid",
-      title: "You have been registered successfully.",
-      color: "emerald",
-      actions: [
-        {
-          label: "Log In now",
-          to: "/auth/login",
-          color: "emerald",
-        },
-      ],
-    });
-
-    router.push("/auth/login");
-  }
-
-  loading.value = false;
-}
+});
 </script>
 
 <template>
@@ -82,7 +73,7 @@ async function onSubmit(event: any) {
       </UFormGroup>
 
       <div class="flex items-center justify-end space-x-4">
-        <UButton type="submit" label="Sign Up" :loading="loading" />
+        <UButton type="submit" label="Sign Up" :loading="registerStatus === 'pending'" />
       </div>
     </UForm>
 

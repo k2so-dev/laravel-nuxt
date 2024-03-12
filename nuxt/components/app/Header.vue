@@ -45,8 +45,8 @@ const navItems = [
     icon: "i-heroicons-link-20-solid",
   },
   {
-    label: "Laravel 10.x",
-    to: "https://laravel.com/docs/10.x",
+    label: "Laravel 11.x",
+    to: "https://laravel.com/docs/11.x",
     target: "_blank",
     icon: "i-heroicons-link-20-solid",
   },

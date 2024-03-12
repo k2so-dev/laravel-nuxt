@@ -1,13 +1,19 @@
 {
   "files.associations": {
-      "*.css": "tailwindcss"
+    "*.css": "tailwindcss"
   },
   "editor.quickSuggestions": {
-      "strings": true
+    "strings": true
   },
   "tailwindCSS.experimental.classRegex": [
-    ["ui:\\s*{([^)]*)\\s*}", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["/\\*ui\\*/\\s*{([^;]*)}", ":\\s*[\"'`]([^\"'`]*).*?[\"'`]"]
+    [
+      "ui:\\s*{([^)]*)\\s*}",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ],
+    [
+      "/\\*ui\\*/\\s*{([^;]*)}",
+      ":\\s*[\"'`]([^\"'`]*).*?[\"'`]"
+    ]
   ],
   "tailwindCSS.classAttributes": [
     "class",
@@ -17,7 +23,6 @@
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "vue3snippets.enable-compile-vue-file-on-did-save-code": true,
-  "editor.tabSize": 2,
   "intelephense.completion.maxItems": 200,
   "editor.formatOnSave": true,
   "intelephense.format.enable": true,

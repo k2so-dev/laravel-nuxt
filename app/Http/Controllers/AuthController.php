@@ -9,7 +9,6 @@ use Browser;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -187,7 +186,7 @@ class AuthController extends Controller
             'ok' => true,
             'user' => [
                 ...$user->toArray(),
-                'must_verify_email' => $user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail(),
+                'must_verify_email' => $user->mustVerifyEmail(),
                 'roles' => $user->roles()->select('name')->pluck('name'),
                 'providers' => $user->userProviders()->select('name')->pluck('name'),
             ],
@@ -268,7 +267,7 @@ class AuthController extends Controller
     {
         $user = User::whereUlid($ulid)->first();
 
-        abort_unless($user, 404);
+        abort_unless(!!$user, 404);
         abort_unless(hash_equals(sha1($user->getEmailForVerification()), $hash), 403, __('Invalid verification link'));
 
         if (! $user->hasVerifiedEmail()) {
@@ -292,7 +291,7 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->whereNull('email_verified_at')->first();
-        abort_unless($user, 400);
+        abort_unless(!!$user, 400);
 
         $user->sendEmailVerificationNotification();
 

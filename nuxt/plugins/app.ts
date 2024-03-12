@@ -80,6 +80,8 @@ export default defineNuxtPlugin({
       onRequestError({ error }) {
         if (process.server) return;
 
+        if (error.name === 'AbortError') return;
+
         useToast().add({
           icon: 'i-heroicons-exclamation-circle-solid',
           color: 'red',

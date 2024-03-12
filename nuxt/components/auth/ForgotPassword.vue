@@ -1,35 +1,27 @@
 <script lang="ts" setup>
 const form = ref();
 
-const loading = ref(false);
 const state = reactive({
   email: "",
 });
 
-async function onSubmit(event: any) {
-  form.value.clear();
-  loading.value = true;
-
-  const { data, error } = await useFetch<any>("forgot-password", {
-    method: "POST",
-    body: event.data,
-    watch: false,
-  });
-
-  loading.value = false;
-
-  if (error.value?.statusCode === 422) {
-    return form.value.setErrors(error.value.data.errors);
+const { refresh: onSubmit, status: forgotStatus } = useFetch<any>("forgot-password", {
+  method: "POST",
+  body: state,
+  immediate: false,
+  watch: false,
+  async onResponse({ response }) {
+    if (response?.status === 422) {
+      form.value.setErrors(response._data?.errors);
+    } else if (response._data?.ok) {
+      useToast().add({
+        title: "Success",
+        description: response._data.message,
+        color: "emerald",
+      });
+    }
   }
-
-  if (data.value?.ok) {
-    useToast().add({
-      title: "Success",
-      description: data.value.message,
-      color: "emerald",
-    });
-  }
-}
+});
 </script>
 
 <template>
@@ -47,7 +39,7 @@ async function onSubmit(event: any) {
       </UFormGroup>
 
       <div class="flex items-center justify-end space-x-4">
-        <UButton type="submit" label="Send reset link" :loading="loading" />
+        <UButton type="submit" label="Send reset link" :loading="forgotStatus === 'pending'" />
       </div>
     </UForm>
 

@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 const form = ref();
-const loading = ref(false);
-const resendEmailLoading = ref(false);
 const auth = useAuthStore();
 
 const state = reactive({
@@ -12,59 +10,45 @@ const state = reactive({
   },
 });
 
-async function sendEmailVerification() {
-  resendEmailLoading.value = true;
-
-  try {
-    const { data } = await useFetch<any>("verification-notification", {
-      method: "POST",
-      body: { email: state.email },
-      watch: false,
-    });
-
-    if (data.value.ok) {
+const { refresh: sendEmailVerification, status: resendEmailStatus } = useFetch<any>("verification-notification", {
+  method: "POST",
+  body: { email: state.email },
+  immediate: false,
+  watch: false,
+  onResponse({ response }) {
+    if (response._data?.ok) {
       useToast().add({
         icon: "i-heroicons-check-circle-20-solid",
-        title: data.value.message,
+        title: response._data.message,
         color: "emerald",
       });
     }
-  } catch (error) {}
-
-  resendEmailLoading.value = false;
-}
-
-async function onSubmit(event: any) {
-  form.value.clear();
-
-  loading.value = true;
-
-  const { status, error } = await useFetch<any>("account/update", {
-    method: "POST",
-    body: event.data,
-    watch: false,
-  });
-
-  if (error.value?.statusCode === 422) {
-    form.value.setErrors(error.value.data.errors);
   }
+});
 
-  if (status.value === "success") {
-    useToast().add({
-      icon: "i-heroicons-check-circle-20-solid",
-      title: "Account details have been successfully updated.",
-      color: "emerald",
-    });
+const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("account/update", {
+  method: "POST",
+  body: state,
+  immediate: false,
+  watch: false,
+  async onResponse({ response }) {
+    if (response?.status === 422) {
+      form.value.setErrors(response._data?.errors);
+    } else if (response._data?.ok) {
+      useToast().add({
+        icon: "i-heroicons-check-circle-20-solid",
+        title: "Account details have been successfully updated.",
+        color: "emerald",
+      });
 
-    await auth.fetchUser();
+      await auth.fetchUser();
 
-    state.name = auth.user.name;
-    state.email = auth.user.email;
-    state.avatar = auth.user.avatar;
+      state.name = auth.user.name;
+      state.email = auth.user.email;
+      state.avatar = auth.user.avatar;
+    }
   }
-
-  loading.value = false;
-}
+});
 </script>
 
 <template>
@@ -102,14 +86,14 @@ async function onSubmit(event: any) {
           label: 'Resend verification email',
           variant: 'solid',
           color: 'gray',
-          loading: resendEmailLoading,
+          loading: resendEmailStatus === 'pending',
           click: sendEmailVerification,
         },
       ]"
     />
 
     <div class="pt-2">
-      <UButton type="submit" label="Save" :loading="loading" />
+      <UButton type="submit" label="Save" :loading="accountUpdateStatus === 'pending'" />
     </div>
   </UForm>
 </template>

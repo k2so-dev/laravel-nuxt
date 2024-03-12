@@ -4,7 +4,7 @@
 
 # Laravel Nuxt Boilerplate
 
-[![](https://img.shields.io/badge/Laravel-v10-ff2e21.svg)](https://laravel.com)
+[![](https://img.shields.io/badge/Laravel-v11-ff2e21.svg)](https://laravel.com)
 [![](https://img.shields.io/badge/nuxt.js-v3-04C690.svg)](https://nuxt.com)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_shield)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/k2so-dev/laravel-nuxt/laravel.yml)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/laravel.yml)
@@ -33,11 +33,11 @@ The goal of the project is to create a template for development on Laravel and N
 
 ## Features
 
- - [**Laravel 10**](https://laravel.com/docs/10.x) and [**Nuxt 3**](https://nuxt.com/)
- - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
- - [**Laravel Telescope**](https://laravel.com/docs/10.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
- - [**Laravel Sanctum**](https://laravel.com/docs/10.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
- - [**Laravel Socialite**](https://laravel.com/docs/10.x/socialite) OAuth providers
+ - [**Laravel 11**](https://laravel.com/docs/11.x) and [**Nuxt 3**](https://nuxt.com/)
+ - [**Laravel Octane**](https://laravel.com/docs/11.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
+ - [**Laravel Telescope**](https://laravel.com/docs/11.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
+ - [**Laravel Sanctum**](https://laravel.com/docs/11.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
+ - [**Laravel Socialite**](https://laravel.com/docs/11.x/socialite) OAuth providers
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
  - UI library [**Nuxt UI**](https://ui.nuxt.com/) based on [**TailwindCSS**](https://tailwindui.com/) and [**HeadlessUI**](https://headlessui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
@@ -50,8 +50,8 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
 ## Requirements
 
  - PHP 8.2 / Node 20+
- - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/10.x/routing#throttling-with-redis) feature
- - [**Laravel Octane**](https://laravel.com/docs/10.x/octane) supports 2 operating modes: Swoole (php extension) or Roadrunner
+ - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/11.x/routing#throttling-with-redis) feature
+ - [**Laravel Octane**](https://laravel.com/docs/11.x/octane) supports 2 operating modes: Swoole (php extension) or Roadrunner
 
 ## Installation
 1. clone repository
@@ -75,25 +75,63 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
 ### Nuxt $fetch
 
 To work with the api, the default path is **"/api/v1"**. All requests from **Nuxt** to the **Laravel API** can be executed without wrappers, as described in the **Nuxt.js** documentation. For example, the code for authorizing a user by email and password:
-```ts
+```vue
+<script lang="ts" setup>
+const router = useRouter();
 const auth = useAuthStore();
-
+const form = ref();
 const state = reactive({
   email: "",
   password: "",
+  remember: false,
 });
 
-const { data } = await useFetch("login", {
+const { refresh: onSubmit, status } = useFetch("login", {
   method: "POST",
   body: state,
+  immediate: false,
   watch: false,
+  async onResponse({ response }) {
+    if (response?.status === 422) {
+      form.value.setErrors(response._data?.errors);
+    } else if (response._data?.ok) {
+      auth.token = response._data.token;
+
+      await auth.fetchUser();
+      await router.push("/");
+    }
+  }
 });
 
-if (data.value?.ok) {
-  auth.token = data.value.token;
-  await auth.fetchUser();
-  await router.push("/");
-}
+const loading = computed(() => status.value === "pending");
+</script>
+<template>
+  <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
+    <UFormGroup label="Email" name="email" required>
+      <UInput
+        v-model="state.email"
+        placeholder="you@example.com"
+        icon="i-heroicons-envelope"
+        trailing
+        type="email"
+        autofocus
+      />
+    </UFormGroup>
+
+    <UFormGroup label="Password" name="password" required>
+      <UInput v-model="state.password" type="password" />
+    </UFormGroup>
+
+    <UTooltip text="for 1 month" :popper="{ placement: 'right' }">
+      <UCheckbox v-model="state.remember" label="Remember me" />
+    </UTooltip>
+
+    <div class="flex items-center justify-end space-x-4">
+      <NuxtLink class="text-sm" to="/auth/forgot">Forgot your password?</NuxtLink>
+      <UButton type="submit" label="Login" :loading="loading" />
+    </div>
+  </UForm>
+</template>
 ```
 > In this example, a POST request will be made to the url **"/api/v1/login"**
 
@@ -136,7 +174,7 @@ https://github.com/k2so-dev/laravel-nuxt/assets/15279423/9b134491-1444-4323-a7a3
 * [Nuxt 3](https://nuxt.com/)
 * [Nuxt UI](https://ui.nuxt.com/)
 * [Tailwind CSS](https://tailwindcss.com/)
-* [Laravel 10x](https://laravel.com/docs/10.x)
+* [Laravel 11x](https://laravel.com/docs/11.x)
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_large)

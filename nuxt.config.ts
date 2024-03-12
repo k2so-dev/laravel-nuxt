@@ -59,7 +59,7 @@ export default defineNuxtConfig({
       crossOriginEmbedderPolicy: 'unsafe-none',
       crossOriginOpenerPolicy: 'same-origin-allow-popups',
       contentSecurityPolicy: {
-        "img-src": ["'self'", "data:", "https://*"],
+        "img-src": ["'self'", "data:", "https://*", process.env.API_URL || 'http://127.0.0.1:8000'],
       },
     },
   },

@@ -24,26 +24,29 @@ export const useAuthStore = defineStore('auth', () => {
   })
   const logged = computed(() => !!token.value)
 
-  async function logout() {
-    await useFetch('logout', {
-      method: 'POST',
-    })
-
-    token.value = ''
-    user.value = <User>{}
-
-    return nuxtApp.runWithContext(() => {
-      return navigateTo('/')
-    })
-  }
-
-  async function fetchUser() {
-    const { data, status } = await useFetch<any>('user')
-
-    if (status.value === 'success') {
-      user.value = data.value.user
+  const { refresh: logout } = useFetch<any>('logout', {
+    method: 'POST',
+    immediate: false,
+    onResponse({ response }) {
+      if (response.status === 200) {
+        token.value = ''
+        user.value = <User>{}
+    
+        return nuxtApp.runWithContext(() => {
+          return navigateTo('/')
+        })
+      }
     }
-  }
+  })
+
+  const { refresh: fetchUser } = useFetch<any>('user', {
+    immediate: false,
+    onResponse({ response }) {
+      if (response.status === 200) {
+        user.value = response._data.user
+      }
+    }
+  })
 
   return { user, logged, logout, fetchUser, token }
 })

@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 const form = ref();
-const loading = ref(false);
 const auth = useAuthStore();
-const sendResetPasswordEmailLoading = ref(false);
 
 const state = reactive({
   current_password: "",
@@ -10,57 +8,43 @@ const state = reactive({
   password_confirmation: "",
 });
 
-async function onSubmit(event: any) {
-  form.value.clear();
+const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("account/password", {
+  method: "POST",
+  body: state,
+  immediate: false,
+  watch: false,
+  async onResponse({ response }) {
+    if (response?.status === 422) {
+      form.value.setErrors(response._data?.errors);
+    } else if (response._data?.ok) {
+      useToast().add({
+        icon: "i-heroicons-check-circle-20-solid",
+        title: "The password was successfully updated.",
+        color: "emerald",
+      });
 
-  loading.value = true;
-
-  const { status, error } = await useFetch<any>("account/password", {
-    method: "POST",
-    body: event.data,
-    watch: false,
-  });
-
-  if (error.value?.statusCode === 422) {
-    form.value.setErrors(error.value.data.errors);
+      state.current_password = "";
+      state.password = "";
+      state.password_confirmation = "";
+    }
   }
+});
 
-  if (status.value === "success") {
-    useToast().add({
-      icon: "i-heroicons-check-circle-20-solid",
-      title: "The password was successfully updated.",
-      color: "emerald",
-    });
-
-    state.current_password = "";
-    state.password = "";
-    state.password_confirmation = "";
+const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useFetch<any>("verification-notification", {
+  method: "POST",
+  body: { email: auth.user.email },
+  immediate: false,
+  watch: false,
+  onResponse({ response }) {
+    if (response._data?.ok) {
+      useToast().add({
+        icon: "i-heroicons-check-circle-20-solid",
+        title: "A link to reset your password has been sent to your email.",
+        color: "emerald",
+      });
+    }
   }
-
-  loading.value = false;
-}
-
-async function sendResetPasswordEmail() {
-  sendResetPasswordEmailLoading.value = true;
-
-  const { status } = await useFetch<any>("forgot-password", {
-    method: "POST",
-    body: {
-      email: auth.user.email,
-    },
-    watch: false,
-  });
-
-  if (status.value === "success") {
-    useToast().add({
-      icon: "i-heroicons-check-circle-20-solid",
-      title: "A link to reset your password has been sent to your email.",
-      color: "emerald",
-    });
-  }
-
-  sendResetPasswordEmailLoading.value = false;
-}
+});
 </script>
 
 <template>
@@ -95,7 +79,7 @@ async function sendResetPasswordEmail() {
       </UFormGroup>
 
       <div class="pt-2">
-        <UButton type="submit" label="Save" :loading="loading" />
+        <UButton type="submit" label="Save" :loading="accountPasswordStatus === 'pending'" />
       </div>
     </UForm>
 
@@ -109,7 +93,7 @@ async function sendResetPasswordEmail() {
           label: 'Send link to Email',
           variant: 'solid',
           color: 'gray',
-          loading: sendResetPasswordEmailLoading,
+          loading: resetPasswordEmailStatus === 'pending',
           click: sendResetPasswordEmail,
         },
       ]"
