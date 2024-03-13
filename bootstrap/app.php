@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware
-            ->throttleApi()
+            ->throttleApi(redis: true)
             ->trustProxies(at: [
                 '127.0.0.1',
             ])
