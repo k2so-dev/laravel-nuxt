@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/k2so-dev/laravel-nuxt/main/art/preview.png" width="100%" />
-</p>
+![preview](https://github.com/k2so-dev/laravel-nuxt/assets/15279423/0c427167-a683-4c9d-89c2-ada46f7c8da2)
 
 # Laravel Nuxt Boilerplate
 
@@ -162,9 +160,7 @@ All built-in middleware from Laravel + middleware based on roles [**Spatie Larav
 
 ### Route list
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/k2so-dev/laravel-nuxt/main/art/routes.png" width="100%" />
-</p>
+![routes](https://github.com/k2so-dev/laravel-nuxt/assets/15279423/39bb3021-a4d1-4472-8320-5a397809904d)
 
 ### Demo
 
