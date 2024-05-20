@@ -2,11 +2,21 @@
 export default defineNuxtConfig({
   srcDir: 'nuxt/',
 
+  /**
+   * Manually disable nuxt telemetry.
+   * @see [Nuxt Telemetry](https://github.com/nuxt/telemetry) for more information.
+   */
+  telemetry: true,
+
   $development: {
     ssr: true,
     devtools: {
       enabled: false,
     },
+  },
+
+  $production: {
+    ssr: true,
   },
 
   app: {
@@ -26,9 +36,9 @@ export default defineNuxtConfig({
     'auth/verify': { ssr: false }
   },
 
-  css: [
-    '@/assets/css/main.css',
-  ],
+  tailwindcss: {
+    cssPath: '@/assets/css/main.css',
+  },
 
   /**
    * @see https://v3.nuxtjs.org/api/configuration/nuxt.config#modules
@@ -47,10 +57,10 @@ export default defineNuxtConfig({
 
   image: {
     domains: [
-      process.env.API_URL || 'http://127.0.0.1:8000'
+      import.meta.env.API_URL || 'http://127.0.0.1:8000'
     ],
     alias: {
-      api: process.env.API_URL || 'http://127.0.0.1:8000'
+      api: import.meta.env.API_URL || 'http://127.0.0.1:8000'
     }
   },
 
@@ -59,7 +69,7 @@ export default defineNuxtConfig({
       crossOriginEmbedderPolicy: 'unsafe-none',
       crossOriginOpenerPolicy: 'same-origin-allow-popups',
       contentSecurityPolicy: {
-        "img-src": ["'self'", "data:", "https://*", process.env.API_URL || 'http://127.0.0.1:8000'],
+        "img-src": ["'self'", "data:", "https://*", import.meta.env.API_URL || 'http://127.0.0.1:8000'],
       },
     },
   },
@@ -68,18 +78,22 @@ export default defineNuxtConfig({
     locales: ['en'],
     plugins: ['relativeTime', 'utc', 'timezone'],
     defaultLocale: 'en',
-    defaultTimezone: 'America/New_York',
+    defaultTimezone: import.meta.env.APP_TIMEZONE,
+  },
+
+  typescript: {
+    strict: false,
   },
 
   /**
    * @see https://v3.nuxtjs.org/guide/features/runtime-config#exposing-runtime-config
    */
   runtimeConfig: {
-    apiLocal: process.env.API_LOCAL_URL,
+    apiLocal: import.meta.env.API_LOCAL_URL,
     public: {
-      apiBase: process.env.API_URL,
+      apiBase: import.meta.env.API_URL,
       apiPrefix: '/api/v1',
-      storageBase: process.env.API_URL + '/storage/',
+      storageBase: import.meta.env.API_URL + '/storage/',
       providers: {
         google: {
           name: "Google",

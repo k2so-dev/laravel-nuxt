@@ -1,5 +1,5 @@
-import { ofetch } from 'ofetch'
 import type { FetchOptions } from 'ofetch';
+import { ofetch } from 'ofetch';
 
 export default defineNuxtPlugin({
   name: 'app',
@@ -24,7 +24,7 @@ export default defineNuxtPlugin({
           'Accept': 'application/json',
         },
         ...(
-          process.server ? {
+          import.meta.server ? {
             'referer': useRequestURL().toString(),
             ...useRequestHeaders(['x-forwarded-for', 'user-agent', 'referer']),
           } : {}
@@ -40,13 +40,13 @@ export default defineNuxtPlugin({
     function buildBaseURL(baseURL: string): string {
       if (baseURL) return baseURL;
 
-      return process.server ?
+      return import.meta.server ?
         config.apiLocal + config.public.apiPrefix
         : config.public.apiBase + config.public.apiPrefix;
     }
 
     function buildSecureMethod(options: FetchOptions): void {
-      if (process.server) return;
+      if (import.meta.server) return;
 
       const method = options.method?.toLowerCase() ?? 'get'
 
@@ -78,7 +78,7 @@ export default defineNuxtPlugin({
       },
 
       onRequestError({ error }) {
-        if (process.server) return;
+        if (import.meta.server) return;
 
         if (error.name === 'AbortError') return;
 
@@ -96,7 +96,7 @@ export default defineNuxtPlugin({
             auth.user = <User>{}
           }
 
-          if (process.client) {
+          if (import.meta.client) {
             useToast().add({
               title: 'Please log in to continue',
               icon: 'i-heroicons-exclamation-circle-solid',
@@ -104,7 +104,7 @@ export default defineNuxtPlugin({
             })
           }
         } else if (response.status !== 422) {
-          if (process.client) {
+          if (import.meta.client) {
             useToast().add({
               icon: 'i-heroicons-exclamation-circle-solid',
               color: 'red',

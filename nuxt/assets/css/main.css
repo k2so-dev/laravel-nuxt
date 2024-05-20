@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-#__nuxt {
-  @apply min-h-screen flex flex-col;
-}
-
 @layer base {
+  #__nuxt {
+    @apply min-h-screen flex flex-col;
+  }
+
   html {
     @apply text-gray-800 dark:bg-gray-900;
   }

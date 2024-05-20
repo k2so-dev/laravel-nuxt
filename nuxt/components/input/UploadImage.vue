@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const props = defineProps(["modelValue", "entity", "accept", "maxSize"]);
+const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width", "height"]);
 const emit = defineEmits(["update:modelValue"]);
 
 const { $storage } = useNuxtApp();
@@ -38,8 +38,8 @@ const onSelect = async (e: any) => {
     body: formData,
     params: {
       entity: props.entity,
-      width: 300,
-      height: 300,
+      width: props.width ?? null,
+      height: props.height ?? null,
     },
     ignoreResponseError: true,
     onResponse({ response }) {

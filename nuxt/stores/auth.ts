@@ -31,9 +31,9 @@ export const useAuthStore = defineStore('auth', () => {
       if (response.status === 200) {
         token.value = ''
         user.value = <User>{}
-    
-        return nuxtApp.runWithContext(() => {
-          return navigateTo('/')
+
+        nuxtApp.runWithContext(() => {
+          return navigateTo('/');
         })
       }
     }

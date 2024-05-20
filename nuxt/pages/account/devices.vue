@@ -14,7 +14,7 @@ async function fetchData() {
   }
 
   loading.value = false;
-};
+}
 
 const columns = [
   {
@@ -54,7 +54,7 @@ const items = (row: any) => [
   ],
 ];
 
-if (process.client) {
+if (import.meta.client) {
   fetchData();
 }
 </script>

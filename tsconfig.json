@@ -12,5 +12,10 @@
     "./storage",
     "./tests",
     "./vendor"
-  ]
+  ],
+  "compilerOptions": {
+    "types": [
+      "vite/client"
+    ]
+  }
 }

@@ -54,11 +54,13 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
 <template>
   <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
     <UFormGroup label="" name="avatar" class="flex">
-      <InputUploadAvatar
+      <InputUploadImage
         v-model="state.avatar"
         accept=".png, .jpg, .jpeg, .webp"
         entity="avatars"
         max-size="2"
+        :width="300"
+        :height="300"
       />
     </UFormGroup>
 
