@@ -30,19 +30,19 @@ return Application::configure(basePath: dirname(__DIR__))
         /*
          * Format not found responses
          */
-        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+        $exceptions->render(static function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'ok' => false,
                     'message' => $e->getMessage(),
-                ], 404, [], JSON_UNESCAPED_SLASHES);
+                ], $e->getStatusCode(), [], JSON_UNESCAPED_SLASHES);
             }
         });
 
         /*
          * Format unauthorized responses
          */
-        $exceptions->render(function (AuthenticationException $e, Request $request) {
+        $exceptions->render(static function (AuthenticationException $e, Request $request): \Illuminate\Http\JsonResponse | \Illuminate\Http\RedirectResponse {
             if ($request->is('api/*')) {
                 return response()->json([
                     'ok' => false,
@@ -56,11 +56,11 @@ return Application::configure(basePath: dirname(__DIR__))
         /*
          * Format validation errors
          */
-        $exceptions->render(function (ValidationException $e, Request $request) {
+        $exceptions->render(static function (ValidationException $e, Request $request): \Illuminate\Http\JsonResponse {
             return response()->json([
                 'ok' => false,
                 'message' => $e->getMessage(),
-                'errors' => array_map(function ($field, $errors) {
+                'errors' => array_map(static function (string $field, array $errors): array {
                     return [
                         'path' => $field,
                         'message' => implode(' ', $errors),

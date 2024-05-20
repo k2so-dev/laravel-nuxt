@@ -5,7 +5,7 @@ namespace App\Rules;
 use App\Models\TemporaryUpload;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class TemporaryFileExists implements ValidationRule
 {
@@ -16,7 +16,10 @@ class TemporaryFileExists implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (! Storage::disk('public')->exists($value) || ! TemporaryUpload::where('path', $value)->exists()) {
+        if (
+            !Storage::disk('public')->exists($value) ||
+            !TemporaryUpload::where('path', $value)->exists()
+        ) {
             $fail(__('The :attribute does not exist.', ['attribute' => $attribute]));
         }
     }

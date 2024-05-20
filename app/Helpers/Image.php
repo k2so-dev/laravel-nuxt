@@ -2,15 +2,15 @@
 
 namespace App\Helpers;
 
-use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\ImageManager;
 
 class Image
 {
     /**
      * Convert image to webp, jpeg or png format and resize it
      */
-    public static function convert(string $source, string $target, int $width = null, int $height = null, string $extension = 'webp', int $quality = 90): void
+    public static function convert(string $source, string $target, ?int $width = null, ?int $height = null, string $extension = 'webp', int $quality = 90): void
     {
         $manager = new ImageManager(new GdDriver);
 

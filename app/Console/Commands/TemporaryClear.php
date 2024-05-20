@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\TemporaryUpload;
 use Illuminate\Console\Command;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class TemporaryClear extends Command
 {
@@ -25,7 +25,7 @@ class TemporaryClear extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $uploads = TemporaryUpload::where('created_at', '<', now()->subHour())->get();
 

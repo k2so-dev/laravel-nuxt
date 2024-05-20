@@ -7,10 +7,10 @@ use App\Rules\TemporaryFileExists;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Storage;
-use Str;
 
 class AccountController extends Controller
 {
@@ -56,6 +56,7 @@ class AccountController extends Controller
 
     /**
      * Update the user's password.
+     * @throws ValidationException
      */
     public function password(Request $request): JsonResponse
     {
@@ -67,7 +68,7 @@ class AccountController extends Controller
         $user = $request->user();
         abort_unless($user->has_password, 403, __('Access denied.'));
 
-        if (! Hash::check($request->current_password, $user->password)) {
+        if (!Hash::check($request->current_password, $user->password)) {
             throw ValidationException::withMessages([
                 'current_password' => __('auth.password'),
             ]);

@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Models\UserProvider;
-use Browser;
+use DeviceDetector\Parser\Client\Browser;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
@@ -29,7 +30,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -54,19 +55,20 @@ class AuthController extends Controller
     /**
      * Redirect to provider for authentication
      */
-    public function redirect(Request $request, $provider)
+    public function redirect(Request $request, string $provider): RedirectResponse
     {
         return Socialite::driver($provider)->stateless()->redirect();
     }
 
     /**
      * Handle callback from provider
+     * @throws \Exception
      */
     public function callback(Request $request, string $provider): View
     {
         $oAuthUser = Socialite::driver($provider)->stateless()->user();
 
-        if (! $oAuthUser?->token) {
+        if (!$oAuthUser?->token) {
             return view('oauth', [
                 'message' => [
                     'ok' => false,
@@ -80,7 +82,7 @@ class AuthController extends Controller
             ->where('provider_id', $oAuthUser->id)
             ->first();
 
-        if (! $userProvider) {
+        if (!$userProvider) {
             if (User::where('email', $oAuthUser->email)->exists()) {
                 return view('oauth', [
                     'message' => [
@@ -136,6 +138,7 @@ class AuthController extends Controller
 
     /**
      * Generate sanctum token on successful login
+     * @throws ValidationException
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -195,6 +198,7 @@ class AuthController extends Controller
 
     /**
      * Handle an incoming password reset link request.
+     * @throws ValidationException
      */
     public function sendResetPasswordLink(Request $request): JsonResponse
     {
@@ -209,7 +213,7 @@ class AuthController extends Controller
             $request->only('email')
         );
 
-        if ($status != Password::RESET_LINK_SENT) {
+        if ($status !== Password::RESET_LINK_SENT) {
             throw ValidationException::withMessages([
                 'email' => [__($status)],
             ]);
@@ -223,6 +227,7 @@ class AuthController extends Controller
 
     /**
      * Handle an incoming new password request.
+     * @throws ValidationException
      */
     public function resetPassword(Request $request): JsonResponse
     {
@@ -237,7 +242,7 @@ class AuthController extends Controller
         // database. Otherwise we will parse the error and return the response.
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
+            static function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
@@ -248,7 +253,7 @@ class AuthController extends Controller
             }
         );
 
-        if ($status != Password::PASSWORD_RESET) {
+        if ($status !== Password::PASSWORD_RESET) {
             throw ValidationException::withMessages([
                 'email' => [__($status)],
             ]);
@@ -263,14 +268,14 @@ class AuthController extends Controller
     /**
      * Mark the authenticated user's email address as verified.
      */
-    public function verifyEmail(Request $request, $ulid, $hash): JsonResponse
+    public function verifyEmail(Request $request, string $ulid, string $hash): JsonResponse
     {
-        $user = User::whereUlid($ulid)->first();
+        $user = User::where('ulid', $ulid)->first();
 
-        abort_unless(!!$user, 404);
-        abort_unless(hash_equals(sha1($user->getEmailForVerification()), $hash), 403, __('Invalid verification link'));
+        abort_if(!$user, 404);
+        abort_if(!hash_equals(sha1($user->getEmailForVerification()), $hash), 403, __('Invalid verification link'));
 
-        if (! $user->hasVerifiedEmail()) {
+        if (!$user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
 
             event(new Verified($user));
@@ -291,7 +296,7 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->whereNull('email_verified_at')->first();
-        abort_unless(!!$user, 400);
+        abort_if(!$user, 400);
 
         $user->sendEmailVerificationNotification();
 
