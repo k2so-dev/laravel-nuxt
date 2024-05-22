@@ -295,7 +295,8 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        $user = User::where('email', $request->email)->whereNull('email_verified_at')->first();
+        $user = $request->user()?: User::where('email', $request->email)->whereNull('email_verified_at')->first();
+
         abort_if(!$user, 400);
 
         $user->sendEmailVerificationNotification();
