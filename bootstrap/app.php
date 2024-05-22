@@ -31,7 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
          * Format not found responses
          */
         $exceptions->render(static function (NotFoundHttpException $e, Request $request) {
-            if ($request->is('api/*')) {
+            if ($request->is('api*')) {
                 return response()->json([
                     'ok' => false,
                     'message' => $e->getMessage(),
@@ -43,7 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
          * Format unauthorized responses
          */
         $exceptions->render(static function (AuthenticationException $e, Request $request): \Illuminate\Http\JsonResponse | \Illuminate\Http\RedirectResponse {
-            if ($request->is('api/*')) {
+            if ($request->is('api*')) {
                 return response()->json([
                     'ok' => false,
                     'message' => __('Unauthenticated.'),
