@@ -30,7 +30,7 @@ const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("acco
   }
 });
 
-const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useFetch<any>("verification-notification", {
+const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useFetch<any>("forgot-password", {
   method: "POST",
   body: { email: auth.user.email },
   immediate: false,
