@@ -70,7 +70,7 @@ const onSelect = async (e: any) => {
       />
 
       <UTooltip
-        text="Upload avatar"
+        text="Upload"
         class="absolute top-0 end-0 -m-2"
         :popper="{ placement: 'right' }"
       >
@@ -85,7 +85,7 @@ const onSelect = async (e: any) => {
         />
       </UTooltip>
       <UTooltip
-        text="Delete avatar"
+        text="Delete"
         class="absolute bottom-0 end-0 -m-2"
         :popper="{ placement: 'right' }"
       >
