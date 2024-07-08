@@ -15,6 +15,8 @@ The goal of the project is to create a template for development on Laravel and N
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
+    - [Standalone](#standalone)
+    - [Docker Deploy (Laravel Sail)](#docker-deploy-laravel-sail)
 - [Upgrade](#upgrade)
 - [Usage](#usage)
     - [Nuxt $fetch](#nuxt-fetch)
@@ -36,6 +38,7 @@ The goal of the project is to create a template for development on Laravel and N
  - [**Laravel Telescope**](https://laravel.com/docs/11.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
  - [**Laravel Sanctum**](https://laravel.com/docs/11.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
  - [**Laravel Socialite**](https://laravel.com/docs/11.x/socialite) OAuth providers
+ - [**Laravel Sail**](https://laravel.com/docs/11.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
  - UI library [**Nuxt UI**](https://ui.nuxt.com/) based on [**TailwindCSS**](https://tailwindui.com/) and [**HeadlessUI**](https://headlessui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
@@ -52,19 +55,53 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
  - [**Laravel Octane**](https://laravel.com/docs/11.x/octane) supports 2 operating modes: Swoole (php extension) or Roadrunner
 
 ## Installation
-1. clone repository
-2. `composer install`
-3. `cp .env.example .env && php artisan key:generate && php artisan storage:link`
-4. `php artisan migrate`
-5. `php artisan db:seed`
-6. `php artisan octane:install`
-7. `php artisan octane:start --watch --port=8000 --host=127.0.0.1`
-8. `yarn install`
-9. `yarn dev`
+### Standalone
+1. `composer install && yarn install`
+2. `cp .env.example .env && php artisan key:generate && php artisan storage:link`
+3. `php artisan migrate && php artisan db:seed`
+4. `php artisan octane:install`
+5. `php artisan octane:start --watch --port=8000 --host=127.0.0.1`
+6. `yarn dev`
+
+### Docker Deploy (Laravel Sail)
+[Laravel Sail](https://laravel.com/docs/11.x/sail) is a light-weight command-line interface for interacting with Laravel's default Docker development environment. Sail provides a great starting point for building a Laravel application using PHP, MySQL, and Redis without requiring prior Docker experience.
+
+At its heart, Sail is the `docker-compose.yml` file and the `sail` script that is stored at the root of your project. The sail script provides a CLI with convenient methods for interacting with the Docker containers defined by the docker-compose.yml file.
+
+Laravel Sail is supported on macOS, Linux, and Windows (via [WSL2](https://docs.microsoft.com/en-us/windows/wsl/about)).
+1. Installing Composer Dependencies
+```shell
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php83-composer:latest \
+    composer install --ignore-platform-reqs
+```
+2. Configuring A Shell Alias (Optional)
+```shell
+alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
+```
+To make sure this is always available, you may add this to your shell configuration file in your home directory, such as ~/.zshrc or ~/.bashrc, and then restart your shell.
+3. `sail up`
+4. `sail yarn install`
+5. `sail yarn dev`
+
+> Read the full [Laravel Sail](https://laravel.com/docs/11.x/sail) documentation to get the best user experience
 
 ## Upgrade
-1. `npx nuxi upgrade`
-2. `composer update`
+
+Standalone:
+```shell
+npx nuxi upgrade
+composer update
+```
+
+Sail:
+```shell
+sail npx nuxi upgrade
+sail composer update
+```
 
 > Nuxt port is set in package.json scripts via **cross-env**
 
