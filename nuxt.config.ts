@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  srcDir: 'nuxt/',
+  compatibilityDate: '2024-07-03',
+  rootDir: 'nuxt/',
+
+  future: {
+    compatibilityVersion: 4,
+  },
 
   /**
    * Manually disable nuxt telemetry.
@@ -21,7 +26,8 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Laravel/Nuxt Boilerplate',
+      title: 'Home',
+      titleTemplate: '%s | LaravelNuxt Boilerplate',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -57,10 +63,10 @@ export default defineNuxtConfig({
 
   image: {
     domains: [
-      import.meta.env.API_URL || 'http://127.0.0.1:8000'
+      import.meta.env.APP_URL || 'http://127.0.0.1:8000'
     ],
     alias: {
-      api: import.meta.env.API_URL || 'http://127.0.0.1:8000'
+      api: import.meta.env.APP_URL || 'http://127.0.0.1:8000'
     }
   },
 
@@ -69,7 +75,7 @@ export default defineNuxtConfig({
       crossOriginEmbedderPolicy: 'unsafe-none',
       crossOriginOpenerPolicy: 'same-origin-allow-popups',
       contentSecurityPolicy: {
-        "img-src": ["'self'", "data:", "https://*", import.meta.env.API_URL || 'http://127.0.0.1:8000'],
+        "img-src": ["'self'", "data:", "https://*", import.meta.env.APP_URL || 'http://127.0.0.1:8000'],
       },
     },
   },
@@ -91,9 +97,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiLocal: import.meta.env.API_LOCAL_URL,
     public: {
-      apiBase: import.meta.env.API_URL,
+      apiBase: import.meta.env.APP_URL,
       apiPrefix: '/api/v1',
-      storageBase: import.meta.env.API_URL + '/storage/',
+      storageBase: import.meta.env.APP_URL + '/storage/',
       providers: {
         google: {
           name: "Google",
