@@ -104,8 +104,6 @@ sail npx nuxi upgrade
 sail composer update
 ```
 
-> Nuxt port is set in .env
-
 ## Usage
 
 ### Nuxt $fetch
