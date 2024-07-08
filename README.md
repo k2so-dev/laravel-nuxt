@@ -83,6 +83,7 @@ docker run --rm \
 alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 ```
 To make sure this is always available, you may add this to your shell configuration file in your home directory, such as ~/.zshrc or ~/.bashrc, and then restart your shell.
+
 3. `sail up`
 4. `sail yarn install`
 5. `sail yarn dev`
