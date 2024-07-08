@@ -4,6 +4,10 @@ const props = defineProps({
 });
 
 const handleError = () => clearError({ redirect: "/" });
+
+useSeoMeta({
+  title: 'Error',
+})
 </script>
 
 <template>

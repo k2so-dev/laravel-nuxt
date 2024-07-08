@@ -2,6 +2,10 @@
 definePageMeta({
   middleware: ['guest'],
 });
+
+useSeoMeta({
+  title: 'Reset Password',
+})
 </script>
 <template>
   <UCard class="w-full max-w-md mx-auto my-20">

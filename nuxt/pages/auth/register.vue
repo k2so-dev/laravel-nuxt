@@ -2,6 +2,10 @@
 definePageMeta({
   middleware: ['guest'],
 });
+
+useSeoMeta({
+  title: 'Sign Up',
+})
 </script>
 <template>
   <UCard class="w-full max-w-md mx-auto my-20">

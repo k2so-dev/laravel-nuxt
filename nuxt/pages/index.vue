@@ -8,6 +8,10 @@ const auth = useAuthStore();
 function openDemoModal() {
   modal.open(ModalDemo)
 }
+
+useSeoMeta({
+  title: 'Home',
+})
 </script>
 
 <template>

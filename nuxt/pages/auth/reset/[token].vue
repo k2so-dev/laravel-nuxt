@@ -35,6 +35,10 @@ const { refresh: onSubmit, status: resetStatus } = useFetch<any>("reset-password
     }
   }
 });
+
+useSeoMeta({
+  title: 'Reset Password',
+})
 </script>
 <template>
   <UCard class="w-full max-w-md mx-auto my-20">

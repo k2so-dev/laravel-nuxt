@@ -13,6 +13,10 @@ const { pending, error } = useLazyFetch<any>(route.query.verify_url as string, {
     }
   },
 });
+
+useSeoMeta({
+  title: 'Email Verification',
+})
 </script>
 <template>
   <UCard class="w-full max-w-md mx-auto my-20">

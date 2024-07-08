@@ -1,4 +1,8 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+useSeoMeta({
+  title: 'Account',
+})
+</script>
 <template>
   <UCard :ui="{ body: { base: 'grid grid-cols-12 gap-6 md:gap-8' } }">
     <div class="col-span-12 lg:col-span-4">

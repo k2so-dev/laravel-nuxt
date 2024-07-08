@@ -1,5 +1,4 @@
 export default defineAppConfig({
-  name: 'Laravel/Nuxt Boilerplate',
   ui: {
     primary: 'emerald',
     strategy: 'override',
