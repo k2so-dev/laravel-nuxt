@@ -104,7 +104,7 @@ sail npx nuxi upgrade
 sail composer update
 ```
 
-> Nuxt port is set in package.json scripts via **cross-env**
+> Nuxt port is set in .env
 
 ## Usage
 
