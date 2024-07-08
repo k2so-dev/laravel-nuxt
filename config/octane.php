@@ -38,6 +38,8 @@ return [
     */
 
     'server' => env('OCTANE_SERVER', 'roadrunner'),
+    'host' => env('OCTANE_HOST', '127.0.0.1'),
+    'port' => env('OCTANE_PORT', '8000'),
 
     /*
     |--------------------------------------------------------------------------
