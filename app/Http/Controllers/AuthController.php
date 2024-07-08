@@ -100,8 +100,7 @@ class AuthController extends Controller
             $user->avatar = $oAuthUser->picture ?? $oAuthUser->avatar_original ?? $oAuthUser->avatar;
             $user->name = $oAuthUser->name;
             $user->email = $oAuthUser->email;
-            $user->password = Hash::make(Str::random(32));
-            $user->has_password = false;
+            $user->password = null;
             $user->email_verified_at = now();
             $user->save();
 
@@ -190,6 +189,7 @@ class AuthController extends Controller
             'user' => [
                 ...$user->toArray(),
                 'must_verify_email' => $user->mustVerifyEmail(),
+                'has_password' => (bool) $user->password,
                 'roles' => $user->roles()->select('name')->pluck('name'),
                 'providers' => $user->userProviders()->select('name')->pluck('name'),
             ],
@@ -246,7 +246,6 @@ class AuthController extends Controller
                 $user->forceFill([
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
-                    'has_password' => true,
                 ])->save();
 
                 event(new PasswordReset($user));
