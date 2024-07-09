@@ -19,7 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware
             ->throttleApi(redis: true)
-            ->trustProxies(at: ['*'])
+            ->trustProxies(at: [
+                '127.0.0.1',
+                '10.0.0.0/8',
+                '172.16.0.0/12',
+                '192.168.0.0/16',
+            ])
             ->api(prepend: [
                 JsonResponse::class,
             ]);
