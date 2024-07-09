@@ -66,7 +66,7 @@ class AccountController extends Controller
         ]);
 
         $user = $request->user();
-        abort_unless($user->has_password, 403, __('Access denied.'));
+        abort_if(!$user->password, 403, __('Access denied.'));
 
         if (!Hash::check($request->current_password, $user->password)) {
             throw ValidationException::withMessages([
