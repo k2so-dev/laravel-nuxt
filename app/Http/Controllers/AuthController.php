@@ -141,7 +141,13 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $user = User::where('email', $request->email)->first();
+        try {
+            $user = User::where('email', $request->email)->firstOrFail();
+        } catch (\Exception $e) {
+            throw ValidationException::withMessages([
+                'email' => [__('The provided credentials are incorrect.')],
+            ]);
+        }
 
         $request->authenticate($user);
 
