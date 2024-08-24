@@ -57,10 +57,6 @@ export default defineNuxtConfig({
     'nuxt-security',
   ],
 
-  ui: {
-    icons: ['heroicons'],
-  },
-
   image: {
     domains: [
       import.meta.env.APP_URL || 'http://127.0.0.1:8000'
