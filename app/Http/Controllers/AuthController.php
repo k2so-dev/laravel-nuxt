@@ -149,7 +149,7 @@ class AuthController extends Controller
         $token = $user->createDeviceToken(
             device: $request->deviceName(),
             ip: $request->ip(),
-            remember: $request->remember
+            remember: $request->input('remember', false)
         );
 
         return response()->json([
