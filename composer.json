@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "hisorange/browser-detect": "^5.0",
         "intervention/image": "^3.4",
         "laravel/framework": "^11.0",
         "laravel/octane": "^2.3",
@@ -17,6 +16,7 @@
         "laravel/socialite": "^5.12",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.24",
+        "reefki/laravel-device-detector": "^1.0",
         "spatie/laravel-permission": "^6.4"
     },
     "require-dev": {

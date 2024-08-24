@@ -60,4 +60,20 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this instanceof MustVerifyEmail && !$this->hasVerifiedEmail();
     }
+
+    public function createDeviceToken(string $device, string $ip, bool $remember = false): string
+    {
+        $sanctumToken = $this->createToken(
+            $device,
+            ['*'],
+            $remember ?
+                now()->addMonth() :
+                now()->addDay()
+        );
+
+        $sanctumToken->accessToken->ip = $ip;
+        $sanctumToken->accessToken->save();
+
+        return $sanctumToken->plainTextToken;
+    }
 }

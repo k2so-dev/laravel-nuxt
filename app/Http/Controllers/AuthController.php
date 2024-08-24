@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Models\UserProvider;
-use Browser;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
@@ -114,23 +112,17 @@ class AuthController extends Controller
             $user = $userProvider->user;
         }
 
-        $browser = Browser::parse($request->userAgent());
-        $device = $browser->platformName() . ' / ' . $browser->browserName();
-
-        $sanctumToken = $user->createToken(
-            $device,
-            ['*'],
-            now()->addMonth()
+        $token = $user->createDeviceToken(
+            device: $request->deviceName(),
+            ip: $request->ip(),
+            remember: true
         );
-
-        $sanctumToken->accessToken->ip = $request->ip();
-        $sanctumToken->accessToken->save();
 
         return view('oauth', [
             'message' => [
                 'ok' => true,
                 'provider' => $provider,
-                'token' => $sanctumToken->plainTextToken,
+                'token' => $token,
             ],
         ]);
     }
@@ -139,29 +131,30 @@ class AuthController extends Controller
      * Generate sanctum token on successful login
      * @throws ValidationException
      */
-    public function login(LoginRequest $request): JsonResponse
+    public function login(Request $request): JsonResponse
     {
-        $user = User::where('email', $request->email)->first();
+        $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
 
-        $request->authenticate($user);
+        $user = User::select(['id', 'password'])->where('email', $request->email)->first();
 
-        $browser = Browser::parse($request->userAgent());
-        $device = $browser->platformName() . ' / ' . $browser->browserName();
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
 
-        $sanctumToken = $user->createToken(
-            $device,
-            ['*'],
-            $request->remember ?
-                now()->addMonth() :
-                now()->addDay()
+        $token = $user->createDeviceToken(
+            device: $request->deviceName(),
+            ip: $request->ip(),
+            remember: $request->remember
         );
-
-        $sanctumToken->accessToken->ip = $request->ip();
-        $sanctumToken->accessToken->save();
 
         return response()->json([
             'ok' => true,
-            'token' => $sanctumToken->plainTextToken,
+            'token' => $token,
         ]);
     }
 
