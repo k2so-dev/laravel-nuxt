@@ -3,13 +3,15 @@
 /public/build
 /public/hot
 /public/storage
+/public/vendor
 /public/.well-known
 /storage/*.key
+/storage/pail
 /vendor
-/public/vendor
 .env
 .env.backup
 .env.production
+.phpactor.json
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -18,8 +20,10 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
+/.nova
 /.vscode/*
 !/.vscode/settings.json
+/.zed
 
 # Nuxt dev/build outputs
 .output
