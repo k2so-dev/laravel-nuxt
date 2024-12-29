@@ -56,12 +56,12 @@ use $**fetch** without having to resort to custom $**fetch** wrappers.
 
 ## Installation
 ### Standalone
-1. `composer install && yarn install`
+1. `composer install && bun install`
 2. `cp .env.example .env && php artisan key:generate && php artisan storage:link`
 3. `php artisan migrate && php artisan db:seed`
 4. `php artisan octane:install`
 5. `php artisan octane:start --watch --port=8000 --host=127.0.0.1`
-6. `yarn dev`
+6. `bun dev`
 
 ### Docker Deploy (Laravel Sail)
 [Laravel Sail](https://laravel.com/docs/11.x/sail) is a light-weight command-line interface for interacting with Laravel's default Docker development environment. Sail provides a great starting point for building a Laravel application using PHP, MySQL, and Redis without requiring prior Docker experience.
@@ -85,8 +85,8 @@ alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 To make sure this is always available, you may add this to your shell configuration file in your home directory, such as ~/.zshrc or ~/.bashrc, and then restart your shell.
 
 3. `sail up`
-4. `sail yarn install`
-5. `sail yarn dev`
+4. `sail bun install`
+5. `sail bun dev`
 
 > Read the full [Laravel Sail](https://laravel.com/docs/11.x/sail) documentation to get the best user experience
 
