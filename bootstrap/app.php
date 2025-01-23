@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware
             ->throttleApi(redis: true)
             ->trustProxies(at: [
-                '127.0.0.1',
+                '127.0.0.0/8',
                 '10.0.0.0/8',
                 '172.16.0.0/12',
                 '192.168.0.0/16',
@@ -65,7 +65,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'message' => $e->getMessage(),
                 'errors' => array_map(static function (string $field, array $errors): array {
                     return [
-                        'path' => $field,
+                        'name' => $field,
                         'message' => implode(' ', $errors),
                     ];
                 }, array_keys($e->errors()), $e->errors()),
