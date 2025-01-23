@@ -6,51 +6,44 @@ export default defineNuxtPlugin({
   enforce: 'default',
   parallel: true,
   async setup(nuxtApp) {
-    const config = useRuntimeConfig()
-    const auth = useAuthStore()
+    const config = useRuntimeConfig();
+    const auth = useAuthStore();
+    const toast = useToast();
 
     nuxtApp.provide('storage', (path: string): string => {
-      if (!path) return ''
+      if (!path) return '';
+      return path.startsWith('http://') || path.startsWith('https://')
+        ? path
+        : config.public.storageBase + path;
+    });
 
-      return path.startsWith('http://') || path.startsWith('https://') ?
-        path
-        : config.public.storageBase + path
-    })
+    function buildHeaders(headers: any): Headers {
+      const requestHeaders = import.meta.server
+        ? {
+          'referer': useRequestURL().toString(),
+          ...useRequestHeaders(['x-forwarded-for', 'user-agent', 'referer'])
+        }
+        : {};
 
-    function buildHeaders(headers = <HeadersInit>{}): HeadersInit {
       return {
+        Accept: 'application/json',
+        Authorization: auth.logged ? `Bearer ${auth.token}` : undefined,
         ...headers,
-        ...{
-          'Accept': 'application/json',
-        },
-        ...(
-          import.meta.server ? {
-            'referer': useRequestURL().toString(),
-            ...useRequestHeaders(['x-forwarded-for', 'user-agent', 'referer']),
-          } : {}
-        ),
-        ...(
-          auth.logged ? {
-            'Authorization': `Bearer ${auth.token}`
-          } : {}
-        )
+        ...requestHeaders
       };
     }
 
     function buildBaseURL(baseURL: string): string {
       if (baseURL) return baseURL;
 
-      return import.meta.server ?
-        config.apiLocal + config.public.apiPrefix
+      return import.meta.server
+        ? config.apiLocal + config.public.apiPrefix
         : config.public.apiBase + config.public.apiPrefix;
     }
 
     function buildSecureMethod(options: FetchOptions): void {
-      if (import.meta.server) return;
-
-      const method = options.method?.toLowerCase() ?? 'get'
-
-      if (options.body instanceof FormData && method === 'put') {
+      if (!import.meta.server && options.body instanceof FormData &&
+        (options.method?.toLowerCase() === 'put')) {
         options.method = 'POST';
         options.body.append('_method', 'PUT');
       }
@@ -65,55 +58,44 @@ export default defineNuxtPlugin({
 
     globalThis.$fetch = ofetch.create(<FetchOptions>{
       retry: false,
-
       onRequest({ request, options }) {
-        if (!isRequestWithAuth(options.baseURL ?? '', request.toString())) return
+        if (!isRequestWithAuth(options.baseURL ?? '', request.toString())) return;
 
         options.credentials = 'include';
-
         options.baseURL = buildBaseURL(options.baseURL ?? '');
         options.headers = buildHeaders(options.headers);
 
         buildSecureMethod(options);
       },
-
       onRequestError({ error }) {
-        if (import.meta.server) return;
+        if (import.meta.server || error.name === 'AbortError') return;
 
-        if (error.name === 'AbortError') return;
-
-        useToast().add({
+        toast.add({
           icon: 'i-heroicons-exclamation-circle-solid',
-          color: 'red',
-          title: error.message ?? 'Something went wrong',
-        })
+          color: "error",
+          title: error.message ?? 'Something went wrong'
+        });
       },
-
       onResponseError({ response }) {
         if (response.status === 401) {
-          if (auth.logged) {
-            auth.token = ''
-            auth.user = <User>{}
-          }
+          auth.reset();
 
           if (import.meta.client) {
-            useToast().add({
+            toast.add({
               title: 'Please log in to continue',
               icon: 'i-heroicons-exclamation-circle-solid',
-              color: 'primary',
-            })
+              color: 'warning'
+            });
           }
-        } else if (response.status !== 422) {
-          if (import.meta.client) {
-            useToast().add({
-              icon: 'i-heroicons-exclamation-circle-solid',
-              color: 'red',
-              title: response._data?.message ?? response.statusText ?? 'Something went wrong',
-            })
-          }
+        } else if (response.status !== 422 && import.meta.client) {
+          toast.add({
+            icon: 'i-heroicons-exclamation-circle-solid',
+            color: "error",
+            title: response._data?.message ?? response.statusText ?? 'Something went wrong'
+          });
         }
       }
-    })
+    });
 
     if (auth.logged) {
       await auth.fetchUser();
