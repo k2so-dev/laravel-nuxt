@@ -2,17 +2,12 @@
 const modal = useModal()
 </script>
 <template>
-  <UModal>
-    <UCard>
-      <template #header>
-        <div class="text-2xl leading-tight font-black">Welcome to LaravelNuxt</div>
-      </template>
-
+  <UModal title="Welcome to LaravelNuxt">
+    <template #body>
       <USkeleton class="w-full h-60" />
-
-      <template #footer>
-        <UButton label="Close" @click="modal.close" color="gray" />
-      </template>
-    </UCard>
+    </template>
+    <template #footer>
+      <UButton label="Close" @click="modal.close" color="neutral" variant="soft" />
+    </template>
   </UModal>
 </template>

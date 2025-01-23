@@ -1,13 +1,17 @@
 <script lang="ts" setup>
+import type { Form } from "#ui/types";
+
 const config = useRuntimeConfig();
 const router = useRouter();
 const auth = useAuthStore();
-const form = ref();
+const form = useTemplateRef<Form<any>>('form');
+const toast = useToast();
 
 type Provider = {
   name: string;
   icon: string;
-  color: string;
+  color: "error" | "success" | "primary" | "secondary" | "info" | "warning" | "neutral";
+  variant: "link" | "solid" | "outline" | "soft" | "subtle" | "ghost";
   loading?: boolean;
 };
 
@@ -46,9 +50,9 @@ async function handleMessage(event: { data: any }): Promise<void> {
     await auth.fetchUser();
     await router.push("/");
   } else if (event.data.message) {
-    useToast().add({
+    toast.add({
       icon: "i-heroicons-exclamation-circle-solid",
-      color: "red",
+      color: "error",
       title: event.data.message,
     });
   }
@@ -89,6 +93,7 @@ onBeforeUnmount(() => window.removeEventListener("message", handleMessage));
         :loading="provider.loading"
         :icon="provider.icon"
         :color="provider.color"
+        :variant="provider.variant"
         :label="provider.name"
         size="lg"
         class="w-full flex items-center justify-center"
@@ -99,23 +104,24 @@ onBeforeUnmount(() => window.removeEventListener("message", handleMessage));
     <UDivider label="OR" />
 
     <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
-      <UFormGroup label="Email" name="email" required>
+      <UFormField label="Email" name="email" required>
         <UInput
           v-model="state.email"
+          class="w-full"
           placeholder="you@example.com"
           icon="i-heroicons-envelope"
           trailing
           type="email"
           autofocus
         />
-      </UFormGroup>
+      </UFormField>
 
-      <UFormGroup label="Password" name="password" required>
-        <UInput v-model="state.password" type="password" />
-      </UFormGroup>
+      <UFormField label="Password" name="password" required>
+        <UInput v-model="state.password" type="password" class="w-full" placeholder="••••••••" />
+      </UFormField>
 
-      <UTooltip text="for 1 month" :popper="{ placement: 'right' }">
-        <UCheckbox v-model="state.remember" label="Remember me" />
+      <UTooltip :delay-duration="0" text="for 1 month" :content="{ side: 'right' }">
+        <UCheckbox v-model="state.remember" label="Remember me" class="inline-flex" />
       </UTooltip>
 
       <div class="flex items-center justify-end space-x-4">

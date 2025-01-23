@@ -7,16 +7,16 @@ const loading = computed(() => status.value === 'pending');
 
 const columns = [
   {
-    key: "name",
-    label: "Device",
+    accessorKey: "name",
+    header: "Device",
   },
   {
-    key: "last_used_at",
-    label: "Last used at",
+    accessorKey: "last_used_at",
+    header: "Last used at",
     class: "max-w-[9rem] w-[9rem] min-w-[9rem]",
   },
   {
-    key: "actions",
+    id: "actions",
   },
 ];
 
@@ -25,7 +25,8 @@ const items = (row: any) => [
     {
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
-      click: async () => {
+      color: 'error' as const,
+      onSelect: async () => {
         await $fetch<any>("devices/disconnect", {
           method: "POST",
           body: {
@@ -48,24 +49,24 @@ useSeoMeta({
 })
 </script>
 <template>
-  <UCard :ui="{ body: { padding: 'p-0' } }">
-    <UTable :rows="data?.devices" :columns="columns" size="lg" :loading="loading">
-      <template #name-data="{ row }">
+  <UCard :ui="{ body: 'sm:p-0 p-0 font-medium' }">
+    <UTable :data="data?.devices" :columns="columns" size="lg" :loading="loading" loading-color="primary" loading-animation="carousel">
+      <template #name-cell="{ row }">
         <div class="font-semibold">
-          {{ row.name }}
-          <UBadge v-if="row.is_current" label="active" color="emerald" variant="soft" size="xs" class="ms-1" />
+          {{ row.original.name }}
+          <UBadge v-if="row.original.is_current as boolean" label="active" color="primary" variant="soft" size="md" class="ms-1" />
         </div>
-        <div class="font-medium text-sm">IP: {{ row.ip }}</div>
+        <div class="font-medium text-sm">IP: {{ row.original.ip }}</div>
       </template>
-      <template #last_used_at-data="{ row }">
-        {{ dayjs(row.last_used_at).fromNow() }}
+      <template #last_used_at-cell="{ row }">
+        {{ dayjs(row.original.last_used_at as string).fromNow() }}
       </template>
-      <template #actions-data="{ row }">
+      <template #actions-cell="{ row }">
         <div class="flex justify-end">
-          <UDropdown :items="items(row)">
-            <UButton :disabled="row.is_current" color="gray" variant="ghost"
+          <UDropdownMenu :items="items(row.original)" :content="{ side: 'bottom', align: 'end' }">
+            <UButton :disabled="row.original.is_current as boolean" color="neutral" variant="ghost"
               icon="i-heroicons-ellipsis-horizontal-20-solid" />
-          </UDropdown>
+          </UDropdownMenu>
         </div>
       </template>
     </UTable>

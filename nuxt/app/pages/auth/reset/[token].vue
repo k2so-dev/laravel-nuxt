@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import { type Form } from "#ui/types";
+
 const router = useRouter();
 const route = useRoute();
 const auth = useAuthStore();
-const form = ref();
+const form = useTemplateRef<Form<any>>('form');
+const toast = useToast();
 
 const state = reactive({
   email: route.query.email as string,
@@ -20,10 +23,10 @@ const { refresh: onSubmit, status: resetStatus } = useFetch<any>("reset-password
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      useToast().add({
+      toast.add({
         title: "Success",
         description: response._data.message,
-        color: "emerald",
+        color: "success",
       });
 
       if (auth.logged) {
@@ -46,34 +49,35 @@ useSeoMeta({
 
     <div class="space-y-4">
       <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
-        <UFormGroup label="Email" name="email" required>
+        <UFormField label="Email" name="email" required>
           <UInput
             v-model="state.email"
+            class="w-full"
             placeholder="you@example.com"
             icon="i-heroicons-envelope"
             trailing
             type="email"
             readonly=""
           />
-        </UFormGroup>
+        </UFormField>
 
-        <UFormGroup
+        <UFormField
           label="New Password"
           name="password"
           hint="min 8 characters"
-          :ui="{ hint: 'text-xs text-gray-500 dark:text-gray-400' }"
           required
         >
-          <UInput v-model="state.password" type="password" autocomplete="off" />
-        </UFormGroup>
+          <UInput v-model="state.password" class="w-full" type="password" autocomplete="off" />
+        </UFormField>
 
-        <UFormGroup label="Repeat Password" name="password_confirmation" required>
+        <UFormField label="Repeat Password" name="password_confirmation" required>
           <UInput
             v-model="state.password_confirmation"
+            class="w-full"
             type="password"
             autocomplete="off"
           />
-        </UFormGroup>
+        </UFormField>
 
         <div class="flex items-center justify-end space-x-4">
           <UButton type="submit" label="Reset password" :loading="resetStatus === 'pending'" />

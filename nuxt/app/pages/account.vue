@@ -3,7 +3,7 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const links = [
+const items = [
   [
     {
       label: "Account",
@@ -20,8 +20,9 @@ const links = [
 </script>
 <template>
   <NuxtLayout>
-    <UHorizontalNavigation
-      :links="links"
+    <UNavigationMenu
+      orientation="horizontal"
+      :items="items"
       class="border-b border-gray-200 dark:border-gray-800 mb-4"
     />
     <NuxtPage class="col-span-10 md:col-span-8" />
