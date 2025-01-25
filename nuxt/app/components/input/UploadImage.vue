@@ -3,7 +3,7 @@ const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width",
 const emit = defineEmits(["update:modelValue"]);
 const toast = useToast();
 
-const { $storage } = useNuxtApp();
+const { $storage, $http } = useNuxtApp();
 
 const value = computed({
   get() {
@@ -34,7 +34,7 @@ const onSelect = async (e: any) => {
   const formData = new FormData();
   formData.append("image", file);
 
-  await $fetch<any>("upload", {
+  await $http("upload", {
     method: "POST",
     body: formData,
     params: {
@@ -43,7 +43,7 @@ const onSelect = async (e: any) => {
       height: props.height ?? null,
     },
     ignoreResponseError: true,
-    onResponse({ response }) {
+    onFetchResponse({ response }) {
       if (response.status !== 200) {
         toast.add({
           icon: 'i-heroicons-exclamation-circle-solid',

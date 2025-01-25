@@ -6,13 +6,15 @@ definePageMeta({
 const route = useRoute();
 const auth = useAuthStore();
 
-const { pending, error } = useLazyFetch<any>(route.query.verify_url as string, {
-  async onResponse({ response }) {
+const { error, status } = useLazyHttp<any>(route.query.verify_url as string, {
+  async onFetchResponse({ response }) {
     if (response._data?.ok) {
       await auth.fetchUser();
     }
   },
 });
+
+const loading = computed(() => status.value === 'pending')
 
 useSeoMeta({
   title: 'Email Verification',
@@ -25,7 +27,7 @@ useSeoMeta({
         class="text-3xl font-black leading-tight tracking-tight flex items-center gap-2"
       >
         Email Verification
-        <UIcon v-if="pending" name="i-heroicons-arrow-path-solid" class="animate-spin" />
+        <UIcon v-if="loading" name="i-heroicons-arrow-path-solid" class="animate-spin" />
         <span v-else-if="error" class="text-red-500">Error</span>
         <span v-else class="text-emerald-500">Done</span>
       </h1>

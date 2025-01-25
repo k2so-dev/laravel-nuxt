@@ -32,7 +32,7 @@ const userItems = [
   ],
 ];
 
-const items = ref([
+const items = [
   {
     label: 'Guide',
     icon: 'i-lucide-book-open',
@@ -165,7 +165,7 @@ const items = ref([
     icon: 'i-lucide-circle-help',
     disabled: true
   }
-])
+]
 
 const isSideOpen = ref(false);
 </script>
@@ -176,7 +176,7 @@ const isSideOpen = ref(false);
     <UContainer class="flex items-center justify-between gap-3 h-16 py-2">
       <AppLogo class="lg:flex-1" />
 
-      <UNavigationMenu orientation="horizontal" :items="items" class="hidden lg:block"/>
+      <UNavigationMenu orientation="horizontal" :items="items" class="hidden lg:block" />
 
       <div class="flex items-center justify-end gap-3 lg:flex-1">
         <AppTheme />
@@ -186,12 +186,14 @@ const isSideOpen = ref(false);
           :items="userItems"
           :content="{ side: 'bottom', align: 'end' }"
         >
-          <UAvatar
-            class="cursor-pointer"
-            size="md"
-            :src="$storage(auth.user.avatar)"
-            :alt="auth.user.name"
-          />
+          <ULink class="cursor-pointer">
+            <UAvatar
+              icon="i-heroicons-user"
+              size="md"
+              :src="$storage(auth.user.avatar)"
+              :alt="auth.user.name"
+            />
+          </ULink>
 
           <template #overview>
             <div class="text-left">
@@ -229,7 +231,7 @@ const isSideOpen = ref(false);
               </div>
 
               <div class="flex-1 py-4 sm:py-6">
-                <UNavigationMenu orientation="vertical" :items="items"/>
+                <UNavigationMenu orientation="vertical" :items="items" />
               </div>
             </div>
           </template>

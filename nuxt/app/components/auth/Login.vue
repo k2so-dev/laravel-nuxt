@@ -1,19 +1,13 @@
 <script lang="ts" setup>
-import type { Form } from "#ui/types";
+import type { Form, ButtonProps } from "#ui/types";
+import type { AuthProviders } from "~";
 
 const config = useRuntimeConfig();
 const router = useRouter();
 const auth = useAuthStore();
 const form = useTemplateRef<Form<any>>('form');
 const toast = useToast();
-
-type Provider = {
-  name: string;
-  icon: string;
-  color: "error" | "success" | "primary" | "secondary" | "info" | "warning" | "neutral";
-  variant: "link" | "solid" | "outline" | "soft" | "subtle" | "ghost";
-  loading?: boolean;
-};
+const nuxtApp = useNuxtApp();
 
 const state = reactive({
   email: "",
@@ -21,16 +15,16 @@ const state = reactive({
   remember: false,
 });
 
-const { refresh: onSubmit, status: loginStatus } = useFetch<any>("login", {
+const { refresh: onSubmit, status: loginStatus } = useHttp<any>("login", {
   method: "POST",
   body: state,
   immediate: false,
   watch: false,
-  async onResponse({ response }) {
+  async onFetchResponse({ response }) {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      auth.token = response._data.token;
+      nuxtApp.$token.value = response._data.token;
 
       await auth.fetchUser();
       await router.push("/");
@@ -38,14 +32,14 @@ const { refresh: onSubmit, status: loginStatus } = useFetch<any>("login", {
   }
 });
 
-const providers = ref<{ [key: string]: Provider }>(config.public.providers);
+const providers = ref<AuthProviders>(config.public.providers);
 
 async function handleMessage(event: { data: any }): Promise<void> {
   const provider = event.data.provider as string;
 
   if (Object.keys(providers.value).includes(provider) && event.data.token) {
     providers.value[provider].loading = false;
-    auth.token = event.data.token;
+    nuxtApp.$token.value = event.data.token;
 
     await auth.fetchUser();
     await router.push("/");
@@ -92,8 +86,8 @@ onBeforeUnmount(() => window.removeEventListener("message", handleMessage));
         :key="key"
         :loading="provider.loading"
         :icon="provider.icon"
-        :color="provider.color"
-        :variant="provider.variant"
+        :color="provider.color as ButtonProps['color']"
+        :variant="provider.variant as ButtonProps['variant']"
         :label="provider.name"
         size="lg"
         class="w-full flex items-center justify-center"
@@ -101,7 +95,7 @@ onBeforeUnmount(() => window.removeEventListener("message", handleMessage));
       />
     </div>
 
-    <UDivider label="OR" />
+    <hr class="col-span-12 border-neutral-100 dark:border-neutral-800" />
 
     <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
       <UFormField label="Email" name="email" required>

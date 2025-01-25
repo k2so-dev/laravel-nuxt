@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 const dayjs = useDayjs();
 const auth = useAuthStore();
+const { $http } = useNuxtApp();
 
-const { data, status, refresh } = useFetch<any>("devices");
+const { data, status, refresh } = useHttp<any>("devices");
 const loading = computed(() => status.value === 'pending');
 
 const columns = [
@@ -27,12 +28,12 @@ const items = (row: any) => [
       icon: "i-heroicons-trash-20-solid",
       color: 'error' as const,
       onSelect: async () => {
-        await $fetch<any>("devices/disconnect", {
+        await $http("devices/disconnect", {
           method: "POST",
           body: {
             hash: row.hash,
           },
-          async onResponse({ response }) {
+          async onFetchResponse({ response }) {
             if (response._data?.ok) {
               await refresh();
               await auth.fetchUser();

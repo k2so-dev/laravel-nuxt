@@ -13,12 +13,12 @@ const state = reactive({
   },
 });
 
-const { refresh: sendEmailVerification, status: resendEmailStatus } = useFetch<any>("verification-notification", {
+const { refresh: sendEmailVerification, status: resendEmailStatus } = useHttp<any>("verification-notification", {
   method: "POST",
   body: { email: state.email },
   immediate: false,
   watch: false,
-  onResponse({ response }) {
+  onFetchResponse({ response }) {
     if (response._data?.ok) {
       toast.add({
         icon: "i-heroicons-check-circle-20-solid",
@@ -29,12 +29,12 @@ const { refresh: sendEmailVerification, status: resendEmailStatus } = useFetch<a
   }
 });
 
-const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("account/update", {
+const { refresh: onSubmit, status: accountUpdateStatus } = useHttp<any>("account/update", {
   method: "POST",
   body: state,
   immediate: false,
   watch: false,
-  async onResponse({ response }) {
+  async onFetchResponse({ response }) {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
@@ -61,7 +61,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
         v-model="state.avatar"
         accept=".png, .jpg, .jpeg, .webp"
         entity="avatars"
-        max-size="2"
+        max-size="5"
         :width="300"
         :height="300"
       />

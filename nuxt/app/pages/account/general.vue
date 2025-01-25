@@ -14,7 +14,7 @@ useSeoMeta({
     <div class="col-span-12 lg:col-span-8">
       <AccountUpdateProfile />
     </div>
-    <UDivider class="col-span-12" />
+    <hr class="col-span-12 border-neutral-100 dark:border-neutral-800" />
     <div class="col-span-12 lg:col-span-4">
       <div class="text-lg font-semibold mb-2">Update Password</div>
       <div class="text-sm opacity-80">

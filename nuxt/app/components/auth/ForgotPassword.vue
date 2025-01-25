@@ -8,12 +8,12 @@ const state = reactive({
   email: "",
 });
 
-const { refresh: onSubmit, status: forgotStatus } = useFetch<any>("forgot-password", {
+const { refresh: onSubmit, status: forgotStatus } = useHttp<any>("forgot-password", {
   method: "POST",
   body: state,
   immediate: false,
   watch: false,
-  async onResponse({ response }) {
+  async onFetchResponse({ response }) {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {

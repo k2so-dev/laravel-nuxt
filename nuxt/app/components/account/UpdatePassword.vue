@@ -11,12 +11,12 @@ const state = reactive({
   password_confirmation: "",
 });
 
-const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("account/password", {
+const { refresh: onSubmit, status: accountPasswordStatus } = useHttp<any>("account/password", {
   method: "POST",
   body: state,
   immediate: false,
   watch: false,
-  async onResponse({ response }) {
+  async onFetchResponse({ response }) {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
@@ -33,12 +33,12 @@ const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("acco
   }
 });
 
-const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useFetch<any>("forgot-password", {
+const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useHttp<any>("forgot-password", {
   method: "POST",
   body: { email: auth.user.email },
   immediate: false,
   watch: false,
-  onResponse({ response }) {
+  onFetchResponse({ response }) {
     if (response._data?.ok) {
       toast.add({
         icon: "i-heroicons-check-circle-20-solid",
