@@ -1,4 +1,10 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const auth = useAuthStore();
+
+if (auth.logged) {
+  await auth.fetchUser();
+}
+</script>
 
 <template>
   <UApp>
