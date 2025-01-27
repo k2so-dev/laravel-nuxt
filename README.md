@@ -10,6 +10,9 @@
 
 The goal of the project is to create a template for development on Laravel and Nuxt with maximum API performance, ready-made authorization methods, image uploading with optimization and ready-made user roles.
 
+> [!WARNING]  
+> You are on the dev branch, Nuxt UI version 3 which is used here is in alpha testing.
+
 <!-- TOC -->
 
 - [Features](#features)
@@ -19,7 +22,7 @@ The goal of the project is to create a template for development on Laravel and N
     - [Docker Deploy (Laravel Sail)](#docker-deploy-laravel-sail)
 - [Upgrade](#upgrade)
 - [Usage](#usage)
-    - [Nuxt $fetch](#nuxt-fetch)
+    - [Fetch wrapper](#fetch-wrapper)
     - [Authentication](#authentication)
     - [Nuxt Middleware](#nuxt-middleware)
     - [Laravel Middleware](#laravel-middleware)
@@ -40,19 +43,18 @@ The goal of the project is to create a template for development on Laravel and N
  - [**Laravel Socialite**](https://laravel.com/docs/11.x/socialite) OAuth providers
  - [**Laravel Sail**](https://laravel.com/docs/11.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
- - UI library [**Nuxt UI**](https://ui.nuxt.com/) based on [**TailwindCSS**](https://tailwindui.com/) and [**HeadlessUI**](https://headlessui.com/).
+ - UI library [**Nuxt UI 3**](https://ui3.nuxt.dev/) based on [**TailwindCSS 4**](https://tailwindcss.com/) and [**Reka UI**](https://reka-ui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
  - Integrated pages: login, registration, password recovery, email confirmation, account information update, password change.
  - Temporary uploads with cropping and optimization of images.
  - Device management
- - [**ofetch**](https://github.com/unjs/ofetch) preset for working with Laravel API, which makes it possible
-use $**fetch** without having to resort to custom $**fetch** wrappers.
+ - Enhanced Fetch Wrappers : Utilizes `$http` and `useHttp`, which extend the capabilities of **Nuxt's** standard `$fetch` and `useFetch`.
 
 ## Requirements
 
  - PHP 8.2+ / Node 20+
  - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/11.x/routing#throttling-with-redis) feature
- - [**Laravel Octane**](https://laravel.com/docs/11.x/octane) supports 2 operating modes: Swoole (php extension) or Roadrunner
+ - [**Laravel Octane**](https://laravel.com/docs/11.x/octane) supports 3 operating modes: Swoole (php extension), Roadrunner and FrankenPHP
 
 ## Installation
 ### Standalone
@@ -106,30 +108,38 @@ sail composer update
 
 ## Usage
 
-### Nuxt $fetch
+### Fetch wrapper
 
-To work with the api, the default path is **"/api/v1"**. All requests from **Nuxt** to the **Laravel API** can be executed without wrappers, as described in the **Nuxt.js** documentation. For example, the code for authorizing a user by email and password:
+To integrate with the API, enhanced `$http` and `useHttp` wrappers are used, expanding the functionality of Nuxt's standard `$fetch` and `useFetch`. The `$http` wrapper includes custom interceptors to replace the originals:
+- `onFetch` instead of `onRequest`
+- `onFetchError` instead of `onRequestError`
+- `onFetchResponse` instead of `onResponse`
+- `onFetchResponseError` instead of `onResponseError`
+
+Additionally, `$http` predefines a base url, authorization headers, and proxy IP for convenient API work in SSR mode.
+For example, the code for authorizing a user by email and password:
 ```vue
 <script lang="ts" setup>
+const nuxtApp = useNuxtApp();
 const router = useRouter();
 const auth = useAuthStore();
-const form = ref();
+const form = templateRef("form");
 const state = reactive({
   email: "",
   password: "",
   remember: false,
 });
 
-const { refresh: onSubmit, status } = useFetch("login", {
+const { refresh: onSubmit, status } = useHttp("login", {
   method: "POST",
   body: state,
   immediate: false,
   watch: false,
-  async onResponse({ response }) {
+  async onFetchResponse({ response }) {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      auth.token = response._data.token;
+      nuxtApp.$token.value = response._data.token;
 
       await auth.fetchUser();
       await router.push("/");
@@ -141,7 +151,7 @@ const loading = computed(() => status.value === "pending");
 </script>
 <template>
   <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
-    <UFormGroup label="Email" name="email" required>
+    <UFormField label="Email" name="email" required>
       <UInput
         v-model="state.email"
         placeholder="you@example.com"
@@ -150,14 +160,14 @@ const loading = computed(() => status.value === "pending");
         type="email"
         autofocus
       />
-    </UFormGroup>
+    </UFormField>
 
-    <UFormGroup label="Password" name="password" required>
-      <UInput v-model="state.password" type="password" />
-    </UFormGroup>
+    <UFormField label="Password" name="password" required>
+      <UInput v-model="state.password" class="w-full" type="password" />
+    </UFormField>
 
-    <UTooltip text="for 1 month" :popper="{ placement: 'right' }">
-      <UCheckbox v-model="state.remember" label="Remember me" />
+    <UTooltip :delay-duration="0" text="for 1 month" :content="{ side: 'right' }">
+      <UCheckbox v-model="state.remember" class="w-full" label="Remember me" />
     </UTooltip>
 
     <div class="flex items-center justify-end space-x-4">
@@ -174,10 +184,10 @@ const loading = computed(() => status.value === "pending");
 
 Data returned by **useAuthStore**:
 * `logged`: Boolean, whether the user is authorized
-* `token`: Cookie, sanctum token
 * `user`: User object, user stored in pinia store
 * `logout`: Function, remove local data and call API to remove token
 * `fetchUser`: Function, fetch user data
+* `hasRole`: Function, checks the role
 
 ### Nuxt Middleware
 
@@ -204,8 +214,8 @@ https://github.com/k2so-dev/laravel-nuxt/assets/15279423/9b134491-1444-4323-a7a3
 
 ## Links
 * [Nuxt 3](https://nuxt.com/)
-* [Nuxt UI](https://ui.nuxt.com/)
-* [Tailwind CSS](https://tailwindcss.com/)
+* [Nuxt UI 3](https://ui3.nuxt.dev/)
+* [Tailwind CSS 4](https://tailwindcss.com/)
 * [Laravel 11x](https://laravel.com/docs/11.x)
 
 ## License
