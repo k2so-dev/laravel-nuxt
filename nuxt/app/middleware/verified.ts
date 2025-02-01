@@ -1,16 +1,15 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const nuxtApp = useNuxtApp()
-  const auth = useAuthStore()
+  const auth = useAuthStore();
 
   if (auth.logged && auth.user.must_verify_email) {
-    return nuxtApp.runWithContext(() => {
-      useToast().add({
-        icon: "i-heroicons-exclamation-circle-solid",
-        title: "Please confirm your email.",
-        color: "red",
-      });
+    const toast = useToast();
 
-      return navigateTo('/account/general')
-    })
+    toast.add({
+      icon: "i-heroicons-exclamation-circle-solid",
+      title: "Please confirm your email.",
+      color: "error",
+    });
+
+    return navigateTo('/account/general');
   }
 })

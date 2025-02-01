@@ -1,16 +1,15 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const nuxtApp = useNuxtApp()
   const auth = useAuthStore()
 
-  if (auth.logged && !auth.user.roles.includes('user')) {
-    return nuxtApp.runWithContext(() => {
-      useToast().add({
-        icon: "i-heroicons-exclamation-circle-solid",
-        title: "Access denied.",
-        color: "red",
-      });
+  if (auth.logged && !auth.hasRole('user')) {
+    const toast = useToast()
 
-      return navigateTo('/')
-    })
+    toast.add({
+      icon: "i-heroicons-exclamation-circle-solid",
+      title: "Access denied.",
+      color: "error",
+    });
+
+    return false;
   }
 })

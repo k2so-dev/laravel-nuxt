@@ -1,6 +1,23 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+:root {
+    --ui-radius: var(--radius-sm);
+}
+
+@theme {
+    --color-primary-50: var(--ui-color-primary-50);
+    --color-primary-100: var(--ui-color-primary-100);
+    --color-primary-200: var(--ui-color-primary-200);
+    --color-primary-300: var(--ui-color-primary-300);
+    --color-primary-400: var(--ui-color-primary-400);
+    --color-primary-500: var(--ui-color-primary-500);
+    --color-primary-600: var(--ui-color-primary-600);
+    --color-primary-700: var(--ui-color-primary-700);
+    --color-primary-800: var(--ui-color-primary-800);
+    --color-primary-900: var(--ui-color-primary-900);
+    --color-primary-950: var(--ui-color-primary-950);
+}
 
 @layer base {
   #__nuxt {
@@ -8,11 +25,11 @@
   }
 
   html {
-    @apply text-gray-800 dark:bg-gray-900;
+    @apply text-neutral-800 dark:bg-gray-900;
   }
 
   html.dark {
-    @apply text-gray-50 bg-gray-900;
+    @apply text-neutral-50 bg-gray-900;
   }
 
   button, a, [role="button"] {

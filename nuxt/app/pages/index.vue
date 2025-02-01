@@ -21,8 +21,8 @@ useSeoMeta({
         <div class="font-bold text-lg leading-tight tracking-tighter mb-4">Demo</div>
 
         <div class="flex gap-3">
-          <UButton label="Modal" @click="openDemoModal" color="gray" />
-          <UButton label="404 page" color="gray" @click="router.push('/404')" />
+          <UButton label="Modal" @click="openDemoModal" color="neutral" variant="soft" />
+          <UButton label="404 page" color="neutral" @click="router.push('/404')" variant="soft" />
         </div>
       </UCard>
     </div>

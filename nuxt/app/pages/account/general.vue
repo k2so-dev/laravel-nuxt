@@ -4,7 +4,7 @@ useSeoMeta({
 })
 </script>
 <template>
-  <UCard :ui="{ body: { base: 'grid grid-cols-12 gap-6 md:gap-8' } }">
+  <UCard :ui="{ body: 'grid grid-cols-12 gap-6 md:gap-8' }">
     <div class="col-span-12 lg:col-span-4">
       <div class="text-lg font-semibold mb-2">Profile information</div>
       <div class="text-sm opacity-80">
@@ -14,7 +14,7 @@ useSeoMeta({
     <div class="col-span-12 lg:col-span-8">
       <AccountUpdateProfile />
     </div>
-    <UDivider class="col-span-12" />
+    <USeparator class="col-span-12" />
     <div class="col-span-12 lg:col-span-4">
       <div class="text-lg font-semibold mb-2">Update Password</div>
       <div class="text-sm opacity-80">

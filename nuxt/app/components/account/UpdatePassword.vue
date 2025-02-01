@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-const form = ref();
+import type { Form } from "#ui/types";
+
+const form = useTemplateRef<Form<any>>('form');
 const auth = useAuthStore();
+const toast = useToast();
 
 const state = reactive({
   current_password: "",
@@ -8,19 +11,19 @@ const state = reactive({
   password_confirmation: "",
 });
 
-const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("account/password", {
+const { refresh: onSubmit, status: accountPasswordStatus } = useHttp<any>("account/password", {
   method: "POST",
   body: state,
   immediate: false,
   watch: false,
-  async onResponse({ response }) {
+  async onFetchResponse({ response }) {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      useToast().add({
+      toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: "The password was successfully updated.",
-        color: "emerald",
+        color: "success",
       });
 
       state.current_password = "";
@@ -30,17 +33,17 @@ const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("acco
   }
 });
 
-const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useFetch<any>("forgot-password", {
+const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useHttp<any>("forgot-password", {
   method: "POST",
   body: { email: auth.user.email },
   immediate: false,
   watch: false,
-  onResponse({ response }) {
+  onFetchResponse({ response }) {
     if (response._data?.ok) {
-      useToast().add({
+      toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: "A link to reset your password has been sent to your email.",
-        color: "emerald",
+        color: "success",
       });
     }
   }
@@ -56,27 +59,27 @@ const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = us
       @submit="onSubmit"
       class="space-y-4"
     >
-      <UFormGroup label="Current Password" name="current_password" required>
-        <UInput v-model="state.current_password" type="password" autocomplete="off" />
-      </UFormGroup>
+      <UFormField label="Current Password" name="current_password" required>
+        <UInput v-model="state.current_password" class="w-full" type="password" autocomplete="off" />
+      </UFormField>
 
-      <UFormGroup
+      <UFormField
         label="New Password"
         name="password"
         hint="min 8 characters"
-        :ui="{ hint: 'text-xs text-gray-500 dark:text-gray-400' }"
         required
       >
-        <UInput v-model="state.password" type="password" autocomplete="off" />
-      </UFormGroup>
+        <UInput v-model="state.password" class="w-full" type="password" autocomplete="off" />
+      </UFormField>
 
-      <UFormGroup label="Repeat Password" name="password_confirmation" required>
+      <UFormField label="Repeat Password" name="password_confirmation" required>
         <UInput
           v-model="state.password_confirmation"
+          class="w-full"
           type="password"
           autocomplete="off"
         />
-      </UFormGroup>
+      </UFormField>
 
       <div class="pt-2">
         <UButton type="submit" label="Save" :loading="accountPasswordStatus === 'pending'" />
@@ -85,16 +88,20 @@ const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = us
 
     <UAlert
       v-else
+      variant="outline"
+      color="neutral"
       icon="i-heroicons-information-circle-20-solid"
       title="Send a link to your email to reset your password."
       description="To create a password for your account, you must go through the password recovery process."
       :actions="[
         {
           label: 'Send link to Email',
-          variant: 'solid',
-          color: 'gray',
+          variant: 'subtle',
+          color: 'neutral' as const,
           loading: resetPasswordEmailStatus === 'pending',
-          click: sendResetPasswordEmail,
+          onClick(event) {
+            sendResetPasswordEmail();
+          },
         },
       ]"
     />
