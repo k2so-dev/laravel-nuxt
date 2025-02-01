@@ -95,7 +95,7 @@ onBeforeUnmount(() => window.removeEventListener("message", handleMessage));
       />
     </div>
 
-    <hr class="col-span-12 border-neutral-100 dark:border-neutral-800" />
+    <USeparator label="OR" />
 
     <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
       <UFormField label="Email" name="email" required>
