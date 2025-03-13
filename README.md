@@ -8,13 +8,6 @@
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/k2so-dev/laravel-nuxt/laravel.yml)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/laravel.yml)
 [![CodeQL](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/github-code-scanning/codeql)
 
-> [!IMPORTANT]  
-> The main branch is scheduled for an update soon, which will include significant changes in the latest [**LaravelNuxt**](https://github.com/k2so-dev/laravel-nuxt/tree/dev) version. Notably, there will be integration with [**Nuxt UI 3**](https://ui3.nuxt.dev/) and [**Tailwind CSS 4**](https://tailwindcss.com/), along with the introduction of a new `fetch` wrapper.
->
-> Please ensure your project is compatible with these updates before proceeding.
-
-This warning helps users prepare for upcoming changes to avoid potential disruptions in their development workflow.
-
 The goal of the project is to create a template for development on Laravel and Nuxt with maximum API performance, ready-made authorization methods, image uploading with optimization and ready-made user roles.
 
 <!-- TOC -->
