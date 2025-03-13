@@ -10,9 +10,6 @@
 
 The goal of the project is to create a template for development on Laravel and Nuxt with maximum API performance, ready-made authorization methods, image uploading with optimization and ready-made user roles.
 
-> [!WARNING]  
-> You are on the dev branch, Nuxt UI version 3 which is used here is in alpha testing.
-
 <!-- TOC -->
 
 - [Features](#features)
@@ -43,7 +40,7 @@ The goal of the project is to create a template for development on Laravel and N
  - [**Laravel Socialite**](https://laravel.com/docs/11.x/socialite) OAuth providers
  - [**Laravel Sail**](https://laravel.com/docs/11.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
- - UI library [**Nuxt UI 3**](https://ui3.nuxt.dev/) based on [**TailwindCSS 4**](https://tailwindcss.com/) and [**Reka UI**](https://reka-ui.com/).
+ - UI library [**Nuxt UI 3**](https://ui.nuxt.com/) based on [**TailwindCSS 4**](https://tailwindcss.com/) and [**Reka UI**](https://reka-ui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
  - Integrated pages: login, registration, password recovery, email confirmation, account information update, password change.
  - Temporary uploads with cropping and optimization of images.
@@ -214,7 +211,7 @@ https://github.com/k2so-dev/laravel-nuxt/assets/15279423/9b134491-1444-4323-a7a3
 
 ## Links
 * [Nuxt 3](https://nuxt.com/)
-* [Nuxt UI 3](https://ui3.nuxt.dev/)
+* [Nuxt UI 3](https://ui.nuxt.com/)
 * [Tailwind CSS 4](https://tailwindcss.com/)
 * [Laravel 11x](https://laravel.com/docs/11.x)
 
