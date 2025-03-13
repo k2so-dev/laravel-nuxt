@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-12-29',
+  compatibilityDate: '2025-03-13',
   rootDir: 'nuxt/',
 
   future: {
@@ -42,9 +42,7 @@ export default defineNuxtConfig({
     'auth/verify': { ssr: false }
   },
 
-  tailwindcss: {
-    cssPath: '@/assets/css/main.css',
-  },
+  css: ['~/assets/css/main.css'],
 
   /**
    * @see https://v3.nuxtjs.org/api/configuration/nuxt.config#modules
@@ -100,7 +98,8 @@ export default defineNuxtConfig({
         google: {
           name: "Google",
           icon: "",
-          color: "gray",
+          color: "neutral",
+          variant: "soft",
         },
       },
     },

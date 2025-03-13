@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width", "height"]);
 const emit = defineEmits(["update:modelValue"]);
+const toast = useToast();
 
-const { $storage } = useNuxtApp();
+const { $storage, $http } = useNuxtApp();
 
 const value = computed({
   get() {
@@ -13,7 +14,7 @@ const value = computed({
   },
 });
 
-const inputRef = ref();
+const inputRef = useTemplateRef('inputRef');
 const loading = ref(false);
 
 const onSelect = async (e: any) => {
@@ -21,9 +22,9 @@ const onSelect = async (e: any) => {
   e.target.value = null;
 
   if (file.size > props.maxSize * 1024 * 1024) {
-    return useToast().add({
+    return toast.add({
       title: "File is too large.",
-      color: "red",
+      color: "error",
       icon: "i-heroicons-exclamation-circle-solid",
     });
   }
@@ -33,7 +34,7 @@ const onSelect = async (e: any) => {
   const formData = new FormData();
   formData.append("image", file);
 
-  await $fetch<any>("upload", {
+  await $http("upload", {
     method: "POST",
     body: formData,
     params: {
@@ -42,11 +43,11 @@ const onSelect = async (e: any) => {
       height: props.height ?? null,
     },
     ignoreResponseError: true,
-    onResponse({ response }) {
+    onFetchResponse({ response }) {
       if (response.status !== 200) {
-        useToast().add({
+        toast.add({
           icon: 'i-heroicons-exclamation-circle-solid',
-          color: 'red',
+          color: "error",
           title: response._data?.message ?? response.statusText ?? 'Something went wrong',
         });
       } else if (response._data?.ok) {
@@ -64,22 +65,25 @@ const onSelect = async (e: any) => {
     <div class="relative flex">
       <UAvatar
         :src="$storage(value)"
-        size="3xl"
+        icon="i-heroicons-user"
         img-class="object-cover"
-        :ui="{ rounded: 'rounded-lg' }"
+        class="w-20 h-20 rounded-xl"
+        size="3xl"
       />
 
       <UTooltip
         text="Upload"
         class="absolute top-0 end-0 -m-2"
-        :popper="{ placement: 'right' }"
+        :delay-duration="0"
+        :content="{ side: 'right', align: 'center' }"
       >
         <UButton
           type="button"
-          color="gray"
+          color="neutral"
           icon="i-heroicons-cloud-arrow-up"
-          size="2xs"
-          :ui="{ rounded: 'rounded-full' }"
+          size="xs"
+          variant="soft"
+          class="rounded-full"
           :loading="loading"
           @click="inputRef.click()"
         />
@@ -87,14 +91,16 @@ const onSelect = async (e: any) => {
       <UTooltip
         text="Delete"
         class="absolute bottom-0 end-0 -m-2"
-        :popper="{ placement: 'right' }"
+        :delay-duration="0"
+        :content="{ side: 'right', align: 'center' }"
       >
         <UButton
           type="button"
-          color="gray"
+          color="neutral"
           icon="i-heroicons-x-mark-20-solid"
-          size="2xs"
-          :ui="{ rounded: 'rounded-full' }"
+          size="xs"
+          variant="soft"
+          class="rounded-full"
           :disabled="loading"
           @click="value = ''"
         />

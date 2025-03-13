@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+import type { Form } from "#ui/types";
+
 const router = useRouter();
-const form = ref();
+const form = useTemplateRef<Form<any>>('form');
+const toast = useToast();
 
 const state = reactive({
   name: "",
@@ -9,24 +12,24 @@ const state = reactive({
   password_confirmation: "",
 });
 
-const { refresh: onSubmit, status: registerStatus } = useFetch<any>("register", {
+const { refresh: onSubmit, status: registerStatus } = useHttp<any>("register", {
   method: "POST",
   body: state,
   immediate: false,
   watch: false,
-  async onResponse({ response }) {
+  async onFetchResponse({ response }) {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      useToast().add({
+      toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: "You have been registered successfully.",
-        color: "emerald",
+        color: "success",
         actions: [
           {
             label: "Log In now",
             to: "/auth/login",
-            color: "emerald",
+            color: "success",
           },
         ],
       });
@@ -40,37 +43,38 @@ const { refresh: onSubmit, status: registerStatus } = useFetch<any>("register", 
 <template>
   <div class="space-y-4">
     <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
-      <UFormGroup label="Name" name="name" required>
-        <UInput v-model="state.name" type="text" autofocus />
-      </UFormGroup>
+      <UFormField label="Name" name="name" required>
+        <UInput v-model="state.name" class="w-full" type="text" autofocus />
+      </UFormField>
 
-      <UFormGroup label="Email" name="email" required>
+      <UFormField label="Email" name="email" required>
         <UInput
           v-model="state.email"
+          class="w-full"
           placeholder="you@example.com"
           icon="i-heroicons-envelope"
           trailing
           type="email"
         />
-      </UFormGroup>
+      </UFormField>
 
-      <UFormGroup
+      <UFormField
         label="Password"
         name="password"
         hint="min 8 characters"
-        :ui="{ hint: 'text-xs text-gray-500 dark:text-gray-400' }"
         required
       >
-        <UInput v-model="state.password" type="password" autocomplete="off" />
-      </UFormGroup>
+        <UInput v-model="state.password" class="w-full" type="password" autocomplete="off" />
+      </UFormField>
 
-      <UFormGroup label="Repeat Password" name="password_confirmation" required>
+      <UFormField label="Repeat Password" name="password_confirmation" required>
         <UInput
           v-model="state.password_confirmation"
+          class="w-full"
           type="password"
           autocomplete="off"
         />
-      </UFormGroup>
+      </UFormField>
 
       <div class="flex items-center justify-end space-x-4">
         <UButton type="submit" label="Sign Up" :loading="registerStatus === 'pending'" />

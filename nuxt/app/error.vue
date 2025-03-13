@@ -21,7 +21,7 @@ useSeoMeta({
     <div>
       <UButton
         @click="handleError"
-        color="gray"
+        color="neutral"
         size="xl"
         variant="ghost"
         label="Go back"

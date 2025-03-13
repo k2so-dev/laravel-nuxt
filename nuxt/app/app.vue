@@ -1,24 +1,21 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const auth = useAuthStore();
+
+if (auth.logged) {
+  await auth.fetchUser();
+}
+</script>
 
 <template>
-  <AppHeader />
+  <UApp>
+    <AppHeader />
 
-  <UContainer as="main" class="flex-grow py-4 sm:py-7 flex flex-col">
-    <NuxtPage />
-  </UContainer>
+    <UContainer as="main" class="flex-grow py-4 sm:py-7 flex flex-col">
+      <NuxtPage />
+    </UContainer>
 
-  <AppFooter />
+    <AppFooter />
 
-  <NuxtLoadingIndicator class="!opacity-100" :throttle="0" />
-
-  <UModals />
-
-  <UNotifications>
-    <template #title="{ title }">
-      <span v-html="title" />
-    </template>
-    <template #description="{ description }">
-      <span v-html="description" />
-    </template>
-  </UNotifications>
+    <NuxtLoadingIndicator class="!opacity-100" :throttle="0" />
+  </UApp>
 </template>

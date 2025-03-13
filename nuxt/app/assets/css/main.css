@@ -1,18 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss" theme(static);
+@import "@nuxt/ui";
+
+:root {
+    --ui-radius: var(--radius-sm);
+}
 
 @layer base {
   #__nuxt {
     @apply min-h-screen flex flex-col;
-  }
-
-  html {
-    @apply text-gray-800 dark:bg-gray-900;
-  }
-
-  html.dark {
-    @apply text-gray-50 bg-gray-900;
   }
 
   button, a, [role="button"] {

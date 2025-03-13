@@ -12,41 +12,38 @@ export type User = {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const config = useRuntimeConfig()
-  const nuxtApp = useNuxtApp()
-
+  const nuxtApp = useNuxtApp();
   const user = ref(<User>{});
-  const token = useCookie('token', {
-    path: '/',
-    sameSite: 'strict',
-    secure: config.public.apiBase.startsWith('https://'),
-    maxAge: 60 * 60 * 24 * 365
-  })
-  const logged = computed(() => !!token.value)
+  const logged = computed(() => !!nuxtApp.$token.value);
 
-  const { refresh: logout } = useFetch<any>('logout', {
+  const { refresh: logout } = useHttp<any>('logout', {
     method: 'POST',
     immediate: false,
-    onResponse({ response }) {
+    onFetchResponse: ({ response }) => {
       if (response.status === 200) {
-        token.value = ''
-        user.value = <User>{}
-
-        nuxtApp.runWithContext(() => {
-          return navigateTo('/');
-        })
+        reset();
+        navigateTo('/');
       }
     }
-  })
+  });
 
-  const { refresh: fetchUser } = useFetch<any>('user', {
+  const { refresh: fetchUser } = useHttp<any>('user', {
     immediate: false,
-    onResponse({ response }) {
+    onFetchResponse({ response }) {
       if (response.status === 200) {
         user.value = response._data.user
       }
     }
-  })
+  });
 
-  return { user, logged, logout, fetchUser, token }
+  function reset(): void {
+    nuxtApp.$token.value = ''
+    user.value = <User>{}
+  }
+
+  function hasRole(name: string): boolean {
+    return user.value.roles?.includes(name);
+  }
+
+  return { user, logged, logout, fetchUser, reset, hasRole }
 })

@@ -1,14 +1,23 @@
 export default defineAppConfig({
   ui: {
-    primary: 'emerald',
-    strategy: 'override',
-    gray: 'neutral',
     container: {
-      constrained: 'max-w-7xl w-full'
+      base: 'max-w-7xl w-full'
     },
-    avatar: {
-      default: {
-        icon: 'i-heroicons-user',
+    colors: {
+      primary: 'emerald',
+      neutral: 'zinc'
+    },
+    theme: {
+      colors: ['primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error']
+    },
+    button: {
+      slots: {
+        base: 'cursor-pointer',
+      }
+    },
+    dropdownMenu: {
+      slots: {
+        item: 'cursor-pointer',
       }
     }
   }

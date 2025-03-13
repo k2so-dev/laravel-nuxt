@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { ModalDemo } from '#components'
-
-const modal = useModal();
 const router = useRouter();
 const auth = useAuthStore();
 
-function openDemoModal() {
-  modal.open(ModalDemo)
-}
+const open = ref(false);
 
 useSeoMeta({
   title: 'Home',
@@ -21,8 +16,16 @@ useSeoMeta({
         <div class="font-bold text-lg leading-tight tracking-tighter mb-4">Demo</div>
 
         <div class="flex gap-3">
-          <UButton label="Modal" @click="openDemoModal" color="gray" />
-          <UButton label="404 page" color="gray" @click="router.push('/404')" />
+          <UModal v-model:open="open"  title="Welcome to LaravelNuxt" >
+            <UButton label="Modal" color="neutral" variant="soft" />
+            <template #body>
+              <USkeleton class="w-full h-60" />
+            </template>
+            <template #footer>
+              <UButton @click="open = false" label="Close" color="neutral" variant="soft" />
+            </template>
+          </UModal>
+          <UButton label="404 page" color="neutral" @click="router.push('/404')" variant="soft" />
         </div>
       </UCard>
     </div>

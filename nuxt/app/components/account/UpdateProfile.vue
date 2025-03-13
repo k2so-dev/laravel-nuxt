@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-const form = ref();
+import type { Form } from "#ui/types";
+
+const form = useTemplateRef<Form<any>>('form');
 const auth = useAuthStore();
+const toast = useToast();
 
 const state = reactive({
   ...{
@@ -10,35 +13,35 @@ const state = reactive({
   },
 });
 
-const { refresh: sendEmailVerification, status: resendEmailStatus } = useFetch<any>("verification-notification", {
+const { refresh: sendEmailVerification, status: resendEmailStatus } = useHttp<any>("verification-notification", {
   method: "POST",
   body: { email: state.email },
   immediate: false,
   watch: false,
-  onResponse({ response }) {
+  onFetchResponse({ response }) {
     if (response._data?.ok) {
-      useToast().add({
+      toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: response._data.message,
-        color: "emerald",
+        color: "success",
       });
     }
   }
 });
 
-const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("account/update", {
+const { refresh: onSubmit, status: accountUpdateStatus } = useHttp<any>("account/update", {
   method: "POST",
   body: state,
   immediate: false,
   watch: false,
-  async onResponse({ response }) {
+  async onFetchResponse({ response }) {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      useToast().add({
+      toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: "Account details have been successfully updated.",
-        color: "emerald",
+        color: "success",
       });
 
       await auth.fetchUser();
@@ -53,43 +56,48 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
 
 <template>
   <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
-    <UFormGroup label="" name="avatar" class="flex">
+    <UFormField label="" name="avatar" class="flex">
       <InputUploadImage
         v-model="state.avatar"
         accept=".png, .jpg, .jpeg, .webp"
         entity="avatars"
-        max-size="2"
+        max-size="5"
         :width="300"
         :height="300"
       />
-    </UFormGroup>
+    </UFormField>
 
-    <UFormGroup label="Name" name="name" required>
-      <UInput v-model="state.name" type="text" />
-    </UFormGroup>
+    <UFormField label="Name" name="name" required>
+      <UInput v-model="state.name" type="text" class="w-full" />
+    </UFormField>
 
-    <UFormGroup label="Email" name="email" required>
+    <UFormField label="Email" name="email" required>
       <UInput
         v-model="state.email"
         placeholder="you@example.com"
         icon="i-heroicons-envelope"
         trailing
         type="email"
+        class="w-full"
       />
-    </UFormGroup>
+    </UFormField>
 
     <UAlert
       v-if="auth.user.must_verify_email"
+      variant="outline"
+      color="neutral"
       icon="i-heroicons-information-circle-20-solid"
       title="Please confirm your email address."
       description="A confirmation email has been sent to your email address. Please click on the confirmation link in the email to verify your email address."
       :actions="[
         {
           label: 'Resend verification email',
-          variant: 'solid',
-          color: 'gray',
+          variant: 'subtle',
+          color: 'neutral' as const,
           loading: resendEmailStatus === 'pending',
-          click: sendEmailVerification,
+          onClick(event) {
+              sendEmailVerification();
+          },
         },
       ]"
     />
