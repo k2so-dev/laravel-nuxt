@@ -189,6 +189,7 @@ const isSideOpen = ref(false);
           <ULink class="cursor-pointer">
             <UAvatar
               icon="i-heroicons-user"
+              class="rounded-lg"
               size="md"
               :src="$storage(auth.user.avatar)"
               :alt="auth.user.name"

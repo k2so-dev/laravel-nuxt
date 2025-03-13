@@ -114,8 +114,10 @@ onBeforeUnmount(() => window.removeEventListener("message", handleMessage));
         <UInput v-model="state.password" type="password" class="w-full" placeholder="••••••••" />
       </UFormField>
 
-      <UTooltip :delay-duration="0" text="for 1 month" :content="{ side: 'right' }">
-        <UCheckbox v-model="state.remember" label="Remember me" class="inline-flex" />
+      <UTooltip :delay-duration="0" text="for 1 month" :content="{ side: 'right', align: 'center' }">
+        <div class="inline-flex">
+          <UCheckbox v-model="state.remember" label="Remember me" class="inline-flex" />
+        </div>
       </UTooltip>
 
       <div class="flex items-center justify-end space-x-4">

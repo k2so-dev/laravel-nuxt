@@ -65,16 +65,17 @@ const onSelect = async (e: any) => {
     <div class="relative flex">
       <UAvatar
         :src="$storage(value)"
-        width="80"
-        height="80"
+        icon="i-heroicons-user"
         img-class="object-cover"
-        class="w-20 h-20"
+        class="w-20 h-20 rounded-xl"
+        size="3xl"
       />
 
       <UTooltip
         text="Upload"
         class="absolute top-0 end-0 -m-2"
-        :content="{ side: 'right' }"
+        :delay-duration="0"
+        :content="{ side: 'right', align: 'center' }"
       >
         <UButton
           type="button"
@@ -90,7 +91,8 @@ const onSelect = async (e: any) => {
       <UTooltip
         text="Delete"
         class="absolute bottom-0 end-0 -m-2"
-        :content="{ side: 'right' }"
+        :delay-duration="0"
+        :content="{ side: 'right', align: 'center' }"
       >
         <UButton
           type="button"
