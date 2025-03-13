@@ -1,4 +1,4 @@
-![preview](https://github.com/k2so-dev/laravel-nuxt/assets/15279423/0c427167-a683-4c9d-89c2-ada46f7c8da2)
+![preview](https://github.com/user-attachments/assets/233f3003-9aa1-4ce4-9006-505caf6a7f63)
 
 # Laravel Nuxt Boilerplate
 
