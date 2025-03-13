@@ -53,10 +53,10 @@ const items = [
         target: "_blank",
       },
       {
-        label: 'Laravel 11.x',
+        label: 'Laravel 12.x',
         description: 'Laravel is a web application framework with expressive, elegant syntax.',
         icon: 'i-simple-icons:laravel',
-        to: "https://laravel.com/docs/11.x",
+        to: "https://laravel.com/docs/12.x",
         target: "_blank",
       },
       {
