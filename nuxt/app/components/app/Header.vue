@@ -49,7 +49,7 @@ const items = [
         label: 'Nuxt UI v3 Docs',
         description: 'Nuxt UI library: Styled, accessible, customizable components for web apps.',
         icon: 'i-simple-icons:nuxt',
-        to: "https://ui3.nuxt.dev/getting-started",
+        to: "https://ui.nuxt.com/getting-started",
         target: "_blank",
       },
       {
@@ -63,7 +63,7 @@ const items = [
         label: 'Tailwind CSS 4',
         icon: 'i-simple-icons:tailwindcss',
         description: 'Rapidly build modern websites without ever leaving your HTML.',
-        to: "https://tailwindcss.com/docs/v4-beta",
+        to: "https://tailwindcss.com/docs",
         target: "_blank",
       }
     ]
@@ -71,49 +71,49 @@ const items = [
   {
     label: 'UI Components',
     icon: 'i-lucide-box',
-    to: 'https://ui3.nuxt.dev/components',
+    to: 'https://ui.nuxt.com/components',
     target: "_blank",
     children: [
       {
         label: 'Link',
         icon: 'i-lucide-file-text',
         description: 'Use NuxtLink with superpowers.',
-        to: 'https://ui3.nuxt.dev/components/link',
+        to: 'https://ui.nuxt.com/components/link',
         target: "_blank",
       },
       {
         label: 'Modal',
         icon: 'i-lucide-file-text',
         description: 'Display a modal within your application.',
-        to: 'https://ui3.nuxt.dev/components/modal',
+        to: 'https://ui.nuxt.com/components/modal',
         target: "_blank",
       },
       {
         label: 'NavigationMenu',
         icon: 'i-lucide-file-text',
         description: 'Display a list of links.',
-        to: 'https://ui3.nuxt.dev/components/navigation-menu',
+        to: 'https://ui.nuxt.com/components/navigation-menu',
         target: "_blank",
       },
       {
         label: 'Pagination',
         icon: 'i-lucide-file-text',
         description: 'Display a list of pages.',
-        to: 'https://ui3.nuxt.dev/components/pagination',
+        to: 'https://ui.nuxt.com/components/pagination',
         target: "_blank",
       },
       {
         label: 'Popover',
         icon: 'i-lucide-file-text',
         description: 'Display a non-modal dialog that floats around a trigger element.',
-        to: 'https://ui3.nuxt.dev/components/popover',
+        to: 'https://ui.nuxt.com/components/popover',
         target: "_blank",
       },
       {
         label: 'Progress',
         icon: 'i-lucide-file-text',
         description: 'Show a horizontal bar to indicate task progression.',
-        to: 'https://ui3.nuxt.dev/components/progress',
+        to: 'https://ui.nuxt.com/components/progress',
         target: "_blank",
       }
     ]
@@ -121,35 +121,35 @@ const items = [
   {
     label: 'UI Composables',
     icon: 'i-lucide-database',
-    to: 'https://ui3.nuxt.dev/composables',
+    to: 'https://ui.nuxt.com/composables',
     target: "_blank",
     children: [
       {
         label: 'defineShortcuts',
         icon: 'i-lucide-file-text',
         description: 'Define shortcuts for your application.',
-        to: 'https://ui3.nuxt.dev/composables/define-shortcuts',
+        to: 'https://ui.nuxt.com/composables/define-shortcuts',
         target: "_blank",
       },
       {
         label: 'useModal',
         icon: 'i-lucide-file-text',
         description: 'Display a modal within your application.',
-        to: 'https://ui3.nuxt.dev/composables/use-modal',
+        to: 'https://ui.nuxt.com/composables/use-modal',
         target: "_blank",
       },
       {
         label: 'useSlideover',
         icon: 'i-lucide-file-text',
         description: 'Display a slideover within your application.',
-        to: 'https://ui3.nuxt.dev/composables/use-slideover',
+        to: 'https://ui.nuxt.com/composables/use-slideover',
         target: "_blank",
       },
       {
         label: 'useToast',
         icon: 'i-lucide-file-text',
         description: 'Display a toast within your application.',
-        to: 'https://ui3.nuxt.dev/composables/use-toast',
+        to: 'https://ui.nuxt.com/composables/use-toast',
         target: "_blank",
       }
     ]
