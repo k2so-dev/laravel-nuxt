@@ -2,7 +2,7 @@
 
 # Laravel Nuxt Boilerplate
 
-[![](https://img.shields.io/badge/Laravel-v11-ff2e21.svg)](https://laravel.com)
+[![](https://img.shields.io/badge/Laravel-v12-ff2e21.svg)](https://laravel.com)
 [![](https://img.shields.io/badge/nuxt.js-v3-04C690.svg)](https://nuxt.com)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_shield)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/k2so-dev/laravel-nuxt/laravel.yml)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/laravel.yml)
@@ -33,12 +33,12 @@ The goal of the project is to create a template for development on Laravel and N
 
 ## Features
 
- - [**Laravel 11**](https://laravel.com/docs/11.x) and [**Nuxt 3**](https://nuxt.com/)
- - [**Laravel Octane**](https://laravel.com/docs/11.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
- - [**Laravel Telescope**](https://laravel.com/docs/11.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
- - [**Laravel Sanctum**](https://laravel.com/docs/11.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
- - [**Laravel Socialite**](https://laravel.com/docs/11.x/socialite) OAuth providers
- - [**Laravel Sail**](https://laravel.com/docs/11.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
+ - [**Laravel 12**](https://laravel.com/docs/12.x) and [**Nuxt 3**](https://nuxt.com/)
+ - [**Laravel Octane**](https://laravel.com/docs/12.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
+ - [**Laravel Telescope**](https://laravel.com/docs/12.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
+ - [**Laravel Sanctum**](https://laravel.com/docs/12.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
+ - [**Laravel Socialite**](https://laravel.com/docs/12.x/socialite) OAuth providers
+ - [**Laravel Sail**](https://laravel.com/docs/12.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
  - UI library [**Nuxt UI 3**](https://ui.nuxt.com/) based on [**TailwindCSS 4**](https://tailwindcss.com/) and [**Reka UI**](https://reka-ui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
@@ -49,9 +49,9 @@ The goal of the project is to create a template for development on Laravel and N
 
 ## Requirements
 
- - PHP 8.2+ / Node 20+
- - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/11.x/routing#throttling-with-redis) feature
- - [**Laravel Octane**](https://laravel.com/docs/11.x/octane) supports 3 operating modes: Swoole (php extension), Roadrunner and FrankenPHP
+ - PHP 8.3+ / Node 20+
+ - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/12.x/routing#throttling-with-redis) feature
+ - [**Laravel Octane**](https://laravel.com/docs/12.x/octane) supports 3 operating modes: Swoole (php extension), Roadrunner and FrankenPHP
 
 ## Installation
 ### Standalone
@@ -63,7 +63,7 @@ The goal of the project is to create a template for development on Laravel and N
 6. `bun dev`
 
 ### Docker Deploy (Laravel Sail)
-[Laravel Sail](https://laravel.com/docs/11.x/sail) is a light-weight command-line interface for interacting with Laravel's default Docker development environment. Sail provides a great starting point for building a Laravel application using PHP, MySQL, and Redis without requiring prior Docker experience.
+[Laravel Sail](https://laravel.com/docs/12.x/sail) is a light-weight command-line interface for interacting with Laravel's default Docker development environment. Sail provides a great starting point for building a Laravel application using PHP, MySQL, and Redis without requiring prior Docker experience.
 
 At its heart, Sail is the `docker-compose.yml` file and the `sail` script that is stored at the root of your project. The sail script provides a CLI with convenient methods for interacting with the Docker containers defined by the docker-compose.yml file.
 
@@ -74,7 +74,7 @@ docker run --rm \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd):/var/www/html" \
     -w /var/www/html \
-    laravelsail/php83-composer:latest \
+    laravelsail/php84-composer:latest \
     composer install --ignore-platform-reqs
 ```
 2. Configuring A Shell Alias (Optional)
@@ -87,7 +87,7 @@ To make sure this is always available, you may add this to your shell configurat
 4. `sail bun install`
 5. `sail bun dev`
 
-> Read the full [Laravel Sail](https://laravel.com/docs/11.x/sail) documentation to get the best user experience
+> Read the full [Laravel Sail](https://laravel.com/docs/12.x/sail) documentation to get the best user experience
 
 ## Upgrade
 
@@ -213,7 +213,7 @@ https://github.com/k2so-dev/laravel-nuxt/assets/15279423/9b134491-1444-4323-a7a3
 * [Nuxt 3](https://nuxt.com/)
 * [Nuxt UI 3](https://ui.nuxt.com/)
 * [Tailwind CSS 4](https://tailwindcss.com/)
-* [Laravel 11x](https://laravel.com/docs/11.x)
+* [Laravel 12x](https://laravel.com/docs/12.x)
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_large)
