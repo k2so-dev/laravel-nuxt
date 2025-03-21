@@ -1,7 +1,11 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+import authMiddleware from "./auth";
+
+export default defineNuxtRouteMiddleware(async (to, from) => {
+  await authMiddleware(to, from);
+
   const auth = useAuthStore();
 
-  if (auth.logged && auth.user.must_verify_email) {
+  if (auth.user.must_verify_email) {
     const toast = useToast();
 
     toast.add({
