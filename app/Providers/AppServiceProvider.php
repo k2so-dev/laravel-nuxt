@@ -102,13 +102,12 @@ class AppServiceProvider extends ServiceProvider
             return Str::replaceMatches('/[^\p{L}\d ]/u', '', $text);
         });
 
-        Request::macro('deviceName', function (): string {
-            $device = $this->device();
+        Request::macro('device', function () {
+            return Utils::getDeviceDetectorByUserAgent($this->userAgent());
+        });
 
-            return implode(' / ', array_filter([
-                trim(implode(' ', [$device->getOs('name'), $device->getOs('version')])),
-                trim(implode(' ', [$device->getClient('name'), $device->getClient('version')])),
-            ])) ?? 'Unknown';
+        Request::macro('deviceName', function (): string {
+            return Utils::getDeviceNameFromDetector($this->device());
         });
 
         Sanctum::usePersonalAccessTokenModel(
