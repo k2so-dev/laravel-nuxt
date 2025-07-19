@@ -1,9 +1,9 @@
-![preview](https://github.com/user-attachments/assets/233f3003-9aa1-4ce4-9006-505caf6a7f63)
+![preview](https://github.com/user-attachments/assets/08c7f1f5-9828-4a33-986a-7c70444b0ac6)
 
 # Laravel Nuxt Boilerplate
 
 [![](https://img.shields.io/badge/Laravel-v12-ff2e21.svg)](https://laravel.com)
-[![](https://img.shields.io/badge/nuxt.js-v3-04C690.svg)](https://nuxt.com)
+[![](https://img.shields.io/badge/nuxt.js-v4-04C690.svg)](https://nuxt.com)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_shield)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/k2so-dev/laravel-nuxt/laravel.yml)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/laravel.yml)
 [![CodeQL](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/github-code-scanning/codeql)
