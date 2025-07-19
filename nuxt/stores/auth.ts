@@ -12,9 +12,8 @@ export type User = {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const nuxtApp = useNuxtApp();
   const user = ref(<User>{});
-  const logged = computed(() => !!nuxtApp.$token.value);
+  const logged = computed(() => !!user.value?.ulid);
 
   const { refresh: logout } = useHttp<any>('logout', {
     method: 'POST',
@@ -37,7 +36,6 @@ export const useAuthStore = defineStore('auth', () => {
   });
 
   function reset(): void {
-    nuxtApp.$token.value = ''
     user.value = <User>{}
   }
 

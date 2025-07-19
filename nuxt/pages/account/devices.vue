@@ -31,7 +31,7 @@ const items = (row: any) => [
         await $http("devices/disconnect", {
           method: "POST",
           body: {
-            hash: row.hash,
+            key: row.key,
           },
           async onFetchResponse({ response }) {
             if (response._data?.ok) {

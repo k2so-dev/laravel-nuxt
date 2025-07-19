@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, HasRoles, Notifiable;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -56,24 +55,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(UserProvider::class);
     }
 
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
+    }
+
     public function mustVerifyEmail(): bool
     {
         return $this instanceof MustVerifyEmail && !$this->hasVerifiedEmail();
-    }
-
-    public function createDeviceToken(string $device, string $ip, bool $remember = false): string
-    {
-        $sanctumToken = $this->createToken(
-            $device,
-            ['*'],
-            $remember ?
-                now()->addMonth() :
-                now()->addDay()
-        );
-
-        $sanctumToken->accessToken->ip = $ip;
-        $sanctumToken->accessToken->save();
-
-        return $sanctumToken->plainTextToken;
     }
 }

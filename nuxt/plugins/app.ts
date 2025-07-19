@@ -14,14 +14,9 @@ async function callHooks(context, hooks) {
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
   const requestUrl = useRequestURL();
-  const requestHeaders = useRequestHeaders(['x-forwarded-for', 'user-agent']);
+  const requestHeaders = useRequestHeaders(['cookie', 'x-forwarded-for', 'user-agent']);
   const toast = useToast();
-  const token = useCookie('token', {
-    path: '/',
-    sameSite: 'strict',
-    secure: config.public.apiBase.startsWith('https://'),
-    maxAge: 60 * 60 * 24 * 365
-  });
+  const xsrfToken = useCookie('XSRF-TOKEN');
 
   function storage(path: string): string {
     if (!path) return '';
@@ -33,7 +28,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   function buildHeaders(headers: any): Headers {
     return {
       Accept: 'application/json',
-      Authorization: token.value ? `Bearer ${token.value}` : undefined,
+      'X-XSRF-TOKEN': xsrfToken.value,
       ...headers,
       ...(
         import.meta.server
@@ -103,14 +98,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (context.response.status === 401) {
         const auth = useAuthStore();
         auth.reset();
-
-        if (import.meta.client) {
-          toast.add({
-            title: 'Please log in to continue',
-            icon: 'i-heroicons-exclamation-circle-solid',
-            color: 'warning'
-          });
-        }
       } else if (context.response.status !== 422 && import.meta.client) {
         toast.add({
           icon: 'i-heroicons-exclamation-circle-solid',
@@ -124,7 +111,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   return {
     provide: {
       storage,
-      token,
       http
     }
   }

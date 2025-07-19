@@ -7,7 +7,6 @@ const router = useRouter();
 const auth = useAuthStore();
 const form = useTemplateRef<Form<any>>('form');
 const toast = useToast();
-const nuxtApp = useNuxtApp();
 
 const state = reactive({
   email: "",
@@ -24,8 +23,6 @@ const { refresh: onSubmit, status: loginStatus } = useHttp<any>("login", {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      nuxtApp.$token.value = response._data.token;
-
       await auth.fetchUser();
       await router.push("/");
     }
@@ -39,7 +36,6 @@ async function handleMessage(event: { data: any }): Promise<void> {
 
   if (Object.keys(providers.value).includes(provider) && event.data.token) {
     providers.value[provider].loading = false;
-    nuxtApp.$token.value = event.data.token;
 
     await auth.fetchUser();
     await router.push("/");

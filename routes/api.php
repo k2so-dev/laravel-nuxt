@@ -19,7 +19,7 @@ Route::prefix('api/v1')->group(function () {
     Route::post('verification-notification', [AuthController::class, 'verificationNotification'])->middleware('throttle:verification-notification')->name('verification.send');
     Route::get('verify-email/{ulid}/{hash}', [AuthController::class, 'verifyEmail'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
-    Route::middleware(['auth:sanctum'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
         Route::post('devices/disconnect', [AuthController::class, 'deviceDisconnect'])->name('devices.disconnect');
         Route::get('devices', [AuthController::class, 'devices'])->name('devices');
