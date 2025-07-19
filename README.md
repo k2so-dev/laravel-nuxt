@@ -33,7 +33,7 @@ The goal of the project is to create a template for development on Laravel and N
 
 ## Features
 
- - [**Laravel 12**](https://laravel.com/docs/12.x) and [**Nuxt 3**](https://nuxt.com/)
+ - [**Laravel 12**](https://laravel.com/docs/12.x) and [**Nuxt 4**](https://nuxt.com/)
  - [**Laravel Octane**](https://laravel.com/docs/12.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
  - [**Laravel Telescope**](https://laravel.com/docs/12.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
  - [**Laravel Sanctum**](https://laravel.com/docs/12.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
@@ -210,7 +210,7 @@ All built-in middleware from Laravel + middleware based on roles [**Spatie Larav
 https://github.com/k2so-dev/laravel-nuxt/assets/15279423/9b134491-1444-4323-a7a3-d87833dcdc67
 
 ## Links
-* [Nuxt 3](https://nuxt.com/)
+* [Nuxt 4](https://nuxt.com/)
 * [Nuxt UI 3](https://ui.nuxt.com/)
 * [Tailwind CSS 4](https://tailwindcss.com/)
 * [Laravel 12x](https://laravel.com/docs/12.x)
