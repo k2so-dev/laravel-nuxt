@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "serve": "node nuxt/.output/server/index.mjs",
+    "serve": "node .output/server/index.mjs",
     "build": "nuxi cleanup && nuxi build",
     "cleanup": "nuxi cleanup",
     "dev": "nuxt dev",

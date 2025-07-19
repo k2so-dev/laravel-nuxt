@@ -1,10 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-03-13',
-  rootDir: 'nuxt/',
+  compatibilityDate: '2025-07-19',
+  srcDir: 'nuxt/',
 
-  future: {
-    compatibilityVersion: 4,
+  dir: {
+    public: 'public/nuxt',
+  },
+
+  vite: {
+    server: {
+      allowedHosts: ["localhost", "127.0.0.1"],
+    },
   },
 
   /**
