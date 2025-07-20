@@ -13,11 +13,11 @@ class Session extends Model
     public $incrementing = false;
 
     protected $casts = [
-        'payload' => 'string',
         'last_activity' => 'integer',
     ];
 
     protected $hidden = [
+        'user_id',
         'payload',
     ];
 
