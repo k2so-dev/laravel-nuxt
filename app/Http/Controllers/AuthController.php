@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Utils;
 use App\Models\User;
 use App\Models\UserProvider;
 use Illuminate\Auth\Events\PasswordReset;
@@ -19,9 +18,14 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Laravel\Socialite\Facades\Socialite;
+use App\Contracts\AuthServiceContract;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        private AuthServiceContract $authService
+    ) {}
+
     /**
      * Register new user
      */
@@ -113,14 +117,28 @@ class AuthController extends Controller
             $user = $userProvider->user;
         }
 
-        Auth::login($user, true);
-        $request->session()->regenerate();
+        $message = [
+            'ok' => true,
+            'provider' => $provider,
+        ];
+
+        // If the guard is web, we will use the default login process
+        if (config('auth.defaults.guard') === 'web') {
+            Auth::login($user, true);
+            $request->session()->regenerate();
+        } else {
+            // If the guard is api, we will use the token based authentication
+            $token = $user->createDeviceToken(
+                device: $request->deviceName(),
+                ip: $request->ip(),
+                remember: $request->input('remember', false)
+            );
+
+            $message['token'] = $token;
+        }
 
         return view('oauth', [
-            'message' => [
-                'ok' => true,
-                'provider' => $provider,
-            ],
+            'message' => $message,
         ]);
     }
 
@@ -135,17 +153,17 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'), $request->remember)) {
+        $user = User::select(['id', 'password'])->where('email', $request->email)->first();
+
+        if (!$user) {
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
         }
 
-        $request->session()->regenerate();
+        $result = $this->authService->login($request, $user);
 
-        return response()->json([
-            'ok' => true,
-        ]);
+        return response()->json($result);
     }
 
     /**
@@ -153,7 +171,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        Auth::logout();
+        $this->authService->logout($request);
 
         return response()->json([
             'ok' => true,
@@ -294,21 +312,7 @@ class AuthController extends Controller
      */
     public function devices(Request $request): JsonResponse
     {
-        $user = $request->user();
-
-        $currentSessionId = $request->session()->getId();
-
-        $devices = $user->sessions()
-            ->select(['id as key', 'ip_address as ip', 'user_agent as name', 'last_activity'])
-            ->orderBy('last_activity', 'DESC')
-            ->get()
-            ->map(function ($device) use ($currentSessionId) {
-                $device->is_current = $currentSessionId === $device->key;
-                $device->name = Utils::getDeviceNameFromDetector(Utils::getDeviceDetectorByUserAgent($device->name));
-                $device->last_used_at = now()->parse($device->last_activity);
-
-                return $device;
-            });
+        $devices = $this->authService->getDevices($request);
 
         return response()->json([
             'ok' => true,
@@ -322,11 +326,10 @@ class AuthController extends Controller
     public function deviceDisconnect(Request $request): JsonResponse
     {
         $request->validate([
-            'key' => 'required|size:40',
+            'key' => 'required|string',
         ]);
 
-        $user = $request->user();
-        $user->sessions()->where('id', $request->key)->delete();
+        $this->authService->disconnectDevice($request);
 
         return response()->json([
             'ok' => true,
