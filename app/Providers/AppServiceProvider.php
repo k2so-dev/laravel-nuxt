@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Helpers\Image;
+use App\Helpers\Utils;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\PersonalAccessToken;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -107,5 +110,9 @@ class AppServiceProvider extends ServiceProvider
         Request::macro('deviceName', function (): string {
             return Utils::getDeviceNameFromDetector($this->device());
         });
+
+        if (config('auth.defaults.guard') === 'api') {
+            Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+        }
     }
 }
