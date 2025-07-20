@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 const dayjs = useDayjs();
 const auth = useAuthStore();
-const { $http } = useNuxtApp();
 
 const { data, status, refresh } = useHttp<any>("devices");
 const loading = computed(() => status.value === 'pending');

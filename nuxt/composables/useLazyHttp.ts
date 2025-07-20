@@ -7,6 +7,6 @@ export function useLazyHttp<T>(
 ) {
   return useLazyFetch(url, {
     ...options,
-    $fetch: useNuxtApp().$http as $Fetch
+    $fetch: $http as $Fetch
   });
 }
