@@ -2,12 +2,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const auth = useAuthStore();
   const config = useRuntimeConfig();
 
-  if (import.meta.client) {
-    $fetch('/sanctum/csrf-cookie', {
-      baseURL: config.public.apiBase,
-      credentials: 'include',
-    });
+  if (config.public.authGuard === 'web' && import.meta.client) {
+    auth.fetchCsrf();
   }
 
-  await auth.fetchUser();
+  if (auth.logged) {
+    await auth.fetchUser();
+  }
 })

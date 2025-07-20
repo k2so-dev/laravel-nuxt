@@ -1,35 +1,27 @@
 import type { NitroFetchRequest } from 'nitropack/types';
 import type { HttpFetchOptions, HttpFetchContext } from '~';
 
-async function callHooks(context, hooks) {
-  if (Array.isArray(hooks)) {
-    for (const hook of hooks) {
-      await hook(context);
-    }
-  } else if (hooks) {
-    await hooks(context);
-  }
-}
-
 export default defineNuxtPlugin((nuxtApp) => {
+  const toast = useToast();
   const config = useRuntimeConfig();
   const requestUrl = useRequestURL();
   const requestHeaders = useRequestHeaders(['cookie', 'x-forwarded-for', 'user-agent']);
-  const toast = useToast();
-  const xsrfToken = useCookie('XSRF-TOKEN');
-
-  function storage(path: string): string {
-    if (!path) return '';
-    return path.startsWith('http://') || path.startsWith('https://')
-      ? path
-      : config.public.storageBase + path;
-  }
+  const xsrf = useCookie('XSRF-TOKEN');
+  const auth = useAuthStore();
 
   function buildHeaders(headers: any): Headers {
+    let authHeaders = {};
+
+    if (config.public.authGuard === 'web') {
+      authHeaders['X-XSRF-TOKEN'] = xsrf.value;
+    } else if (config.public.authGuard === 'api' && auth.token) {
+      authHeaders['Authorization'] = `Bearer ${auth.token}`;
+    }
+
     return {
       Accept: 'application/json',
-      'X-XSRF-TOKEN': xsrfToken.value,
       ...headers,
+      ...authHeaders,
       ...(
         import.meta.server
           ? {
@@ -62,6 +54,16 @@ export default defineNuxtPlugin((nuxtApp) => {
       && !path.startsWith('/_nuxt')
       && !path.startsWith('http://')
       && !path.startsWith('https://');
+  }
+
+  async function callHooks(context, hooks) {
+    if (Array.isArray(hooks)) {
+      for (const hook of hooks) {
+        await hook(context);
+      }
+    } else if (hooks) {
+      await hooks(context);
+    }
   }
 
   const http = $fetch.create<unknown, NitroFetchRequest>(<HttpFetchOptions>{
@@ -110,7 +112,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   return {
     provide: {
-      storage,
       http
     }
   }
