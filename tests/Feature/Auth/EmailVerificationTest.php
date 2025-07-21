@@ -7,7 +7,6 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
-use Str;
 use Tests\TestCase;
 
 class EmailVerificationTest extends TestCase
@@ -18,10 +17,7 @@ class EmailVerificationTest extends TestCase
     {
         $this->withoutMiddleware();
 
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-            'ulid' => Str::ulid()->toBase32(),
-        ]);
+        $user = User::factory()->unverified()->create();
 
         Event::fake();
 
@@ -42,10 +38,7 @@ class EmailVerificationTest extends TestCase
     {
         $this->withoutMiddleware();
 
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-            'ulid' => Str::ulid()->toBase32(),
-        ]);
+        $user = User::factory()->unverified()->create();
 
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
