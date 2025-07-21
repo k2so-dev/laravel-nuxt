@@ -97,6 +97,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiLocal: import.meta.env.API_LOCAL_URL,
     public: {
+      authGuard: import.meta.env.AUTH_GUARD,
       apiBase: import.meta.env.APP_URL,
       apiPrefix: '/api/v1',
       storageBase: import.meta.env.APP_URL + '/storage/',

@@ -7,6 +7,6 @@ export function useHttp<T>(
 ) {
   return useFetch(url, {
     ...options,
-    $fetch: useNuxtApp().$http as $Fetch
+    $fetch: $http as $Fetch
   });
 }

@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Helpers\Image;
-use App\Models\PersonalAccessToken;
+use App\Helpers\Utils;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -102,17 +103,16 @@ class AppServiceProvider extends ServiceProvider
             return Str::replaceMatches('/[^\p{L}\d ]/u', '', $text);
         });
 
-        Request::macro('deviceName', function (): string {
-            $device = $this->device();
-
-            return implode(' / ', array_filter([
-                trim(implode(' ', [$device->getOs('name'), $device->getOs('version')])),
-                trim(implode(' ', [$device->getClient('name'), $device->getClient('version')])),
-            ])) ?? 'Unknown';
+        Request::macro('device', function () {
+            return Utils::getDeviceDetectorByUserAgent($this->userAgent());
         });
 
-        Sanctum::usePersonalAccessTokenModel(
-            PersonalAccessToken::class
-        );
+        Request::macro('deviceName', function (): string {
+            return Utils::getDeviceNameFromDetector($this->device());
+        });
+
+        if (config('auth.defaults.guard') === 'api') {
+            Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+        }
     }
 }

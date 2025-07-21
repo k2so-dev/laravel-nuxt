@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -54,6 +54,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function userProviders(): HasMany
     {
         return $this->hasMany(UserProvider::class);
+    }
+
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
     }
 
     public function mustVerifyEmail(): bool

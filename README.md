@@ -17,6 +17,7 @@ The goal of the project is to create a template for development on Laravel and N
 - [Installation](#installation)
     - [Standalone](#standalone)
     - [Docker Deploy (Laravel Sail)](#docker-deploy-laravel-sail)
+    - [Auth Guard Switch](#auth-guard-switch)
 - [Upgrade](#upgrade)
 - [Usage](#usage)
     - [Fetch wrapper](#fetch-wrapper)
@@ -36,7 +37,7 @@ The goal of the project is to create a template for development on Laravel and N
  - [**Laravel 12**](https://laravel.com/docs/12.x) and [**Nuxt 4**](https://nuxt.com/)
  - [**Laravel Octane**](https://laravel.com/docs/12.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
  - [**Laravel Telescope**](https://laravel.com/docs/12.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
- - [**Laravel Sanctum**](https://laravel.com/docs/12.x/sanctum) Token-based authorization is compatible with **SSR** and **CSR**
+ - [**Laravel Sanctum**](https://laravel.com/docs/12.x/sanctum) Token/Session-based authorization is compatible with **SSR** and **CSR**
  - [**Laravel Socialite**](https://laravel.com/docs/12.x/socialite) OAuth providers
  - [**Laravel Sail**](https://laravel.com/docs/12.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
@@ -89,6 +90,14 @@ To make sure this is always available, you may add this to your shell configurat
 
 > Read the full [Laravel Sail](https://laravel.com/docs/12.x/sail) documentation to get the best user experience
 
+### Auth Guard Switch
+
+You can switch the authentication guard between **Token** and **Session** using the following command:
+
+```shell
+php artisan auth:switch
+```
+
 ## Upgrade
 
 Standalone:
@@ -117,7 +126,6 @@ Additionally, `$http` predefines a base url, authorization headers, and proxy IP
 For example, the code for authorizing a user by email and password:
 ```vue
 <script lang="ts" setup>
-const nuxtApp = useNuxtApp();
 const router = useRouter();
 const auth = useAuthStore();
 const form = templateRef("form");
@@ -136,9 +144,7 @@ const { refresh: onSubmit, status } = useHttp("login", {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      nuxtApp.$token.value = response._data.token;
-
-      await auth.fetchUser();
+      await auth.login(response._data.token ?? null);
       await router.push("/");
     }
   }
@@ -182,8 +188,10 @@ const loading = computed(() => status.value === "pending");
 Data returned by **useAuthStore**:
 * `logged`: Boolean, whether the user is authorized
 * `user`: User object, user stored in pinia store
-* `logout`: Function, remove local data and call API to remove token
+* `fetchCsrf`: Function, fetch csrf token
 * `fetchUser`: Function, fetch user data
+* `login`: Function, login user by token/session
+* `logout`: Function, remove local data and call API to remove token/session
 * `hasRole`: Function, checks the role
 
 ### Nuxt Middleware

@@ -3,8 +3,6 @@ const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width",
 const emit = defineEmits(["update:modelValue"]);
 const toast = useToast();
 
-const { $storage, $http } = useNuxtApp();
-
 const value = computed({
   get() {
     return props.modelValue;

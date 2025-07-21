@@ -1,40 +1,27 @@
 import type { NitroFetchRequest } from 'nitropack/types';
 import type { HttpFetchOptions, HttpFetchContext } from '~';
 
-async function callHooks(context, hooks) {
-  if (Array.isArray(hooks)) {
-    for (const hook of hooks) {
-      await hook(context);
-    }
-  } else if (hooks) {
-    await hooks(context);
-  }
-}
-
 export default defineNuxtPlugin((nuxtApp) => {
+  const toast = useToast();
   const config = useRuntimeConfig();
   const requestUrl = useRequestURL();
-  const requestHeaders = useRequestHeaders(['x-forwarded-for', 'user-agent']);
-  const toast = useToast();
-  const token = useCookie('token', {
-    path: '/',
-    sameSite: 'strict',
-    secure: config.public.apiBase.startsWith('https://'),
-    maxAge: 60 * 60 * 24 * 365
-  });
-
-  function storage(path: string): string {
-    if (!path) return '';
-    return path.startsWith('http://') || path.startsWith('https://')
-      ? path
-      : config.public.storageBase + path;
-  }
+  const requestHeaders = useRequestHeaders(['cookie', 'x-forwarded-for', 'user-agent']);
+  const xsrf = useCookie('XSRF-TOKEN');
+  const auth = useAuthStore();
 
   function buildHeaders(headers: any): Headers {
+    let authHeaders = {};
+
+    if (config.public.authGuard === 'web') {
+      authHeaders['X-XSRF-TOKEN'] = xsrf.value;
+    } else if (config.public.authGuard === 'api' && auth.token) {
+      authHeaders['Authorization'] = `Bearer ${auth.token}`;
+    }
+
     return {
       Accept: 'application/json',
-      Authorization: token.value ? `Bearer ${token.value}` : undefined,
       ...headers,
+      ...authHeaders,
       ...(
         import.meta.server
           ? {
@@ -67,6 +54,16 @@ export default defineNuxtPlugin((nuxtApp) => {
       && !path.startsWith('/_nuxt')
       && !path.startsWith('http://')
       && !path.startsWith('https://');
+  }
+
+  async function callHooks(context, hooks) {
+    if (Array.isArray(hooks)) {
+      for (const hook of hooks) {
+        await hook(context);
+      }
+    } else if (hooks) {
+      await hooks(context);
+    }
   }
 
   const http = $fetch.create<unknown, NitroFetchRequest>(<HttpFetchOptions>{
@@ -103,14 +100,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (context.response.status === 401) {
         const auth = useAuthStore();
         auth.reset();
-
-        if (import.meta.client) {
-          toast.add({
-            title: 'Please log in to continue',
-            icon: 'i-heroicons-exclamation-circle-solid',
-            color: 'warning'
-          });
-        }
       } else if (context.response.status !== 422 && import.meta.client) {
         toast.add({
           icon: 'i-heroicons-exclamation-circle-solid',
@@ -123,8 +112,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   return {
     provide: {
-      storage,
-      token,
       http
     }
   }

@@ -5,7 +5,6 @@ import type { $Fetch } from 'nitropack/types';
 
 declare module '#app' {
   interface NuxtApp {
-    $storage(msg: string): string;
     $http<T = unknown>(
       request: NitroFetchRequest,
       opts?: HttpFetchOptions

@@ -15,14 +15,14 @@
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.2",
     "@iconify-json/lucide": "^1.2.57",
-    "@iconify-json/simple-icons": "^1.2.43",
+    "@iconify-json/simple-icons": "^1.2.44",
     "@nuxt/devtools": "^2.6.2",
     "@nuxt/image": "^1.10.0",
     "@nuxt/ui": "^3.2.0",
     "@pinia/nuxt": "^0.11.2",
     "chokidar": "^4.0.3",
     "dayjs-nuxt": "^2.1.11",
-    "nuxt": "^4.0.0",
+    "nuxt": "^4.0.1",
     "nuxt-security": "^2.2.0",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"

@@ -14,7 +14,7 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
     protected function lastUsedAt(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => $this->getOriginal('last_used_at') < now()->parse($value)->subMinute()
+            set: fn(string $value) => $this->getOriginal('last_used_at') < now()->parse($value)->subMinute()
                 ? $value
                 : $this->getOriginal('last_used_at'),
         );
