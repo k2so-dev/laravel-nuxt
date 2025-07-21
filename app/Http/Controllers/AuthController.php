@@ -117,25 +117,7 @@ class AuthController extends Controller
             $user = $userProvider->user;
         }
 
-        $message = [
-            'ok' => true,
-            'provider' => $provider,
-        ];
-
-        // If the guard is web, we will use the default login process
-        if (config('auth.defaults.guard') === 'web') {
-            Auth::login($user, true);
-            $request->session()->regenerate();
-        } else {
-            // If the guard is api, we will use the token based authentication
-            $token = $user->createDeviceToken(
-                device: $request->deviceName(),
-                ip: $request->ip(),
-                remember: $request->input('remember', false)
-            );
-
-            $message['token'] = $token;
-        }
+        $message = $this->authService->handleCallback($request, $user);
 
         return view('oauth', [
             'message' => $message,
