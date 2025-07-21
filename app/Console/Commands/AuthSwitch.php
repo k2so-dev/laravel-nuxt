@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Artisan;
+use Spatie\Permission\Models\Role;
+
 use function Laravel\Prompts\select;
 
 class AuthSwitch extends Command
@@ -45,6 +47,8 @@ class AuthSwitch extends Command
         $this->info('Switching authentication guard to ' . $guard . '...');
 
         Env::writeVariable('AUTH_GUARD', $guard, base_path('.env'), true);
+
+        Role::query()->update(['guard_name' => $guard]);
 
         if ($guard === 'web') {
             $this->replaceByPattern(base_path('bootstrap/app.php'), '->statefulApi()', true);
