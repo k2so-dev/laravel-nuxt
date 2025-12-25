@@ -13,6 +13,18 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Configure view engine to prevent file operations during testing
+        config(['view.engine_resolver' => function () {
+            return function ($path, $data = []) {
+                return '';
+            };
+        }]);
+    }
+
     public function test_email_can_be_verified(): void
     {
         $this->withoutMiddleware();
