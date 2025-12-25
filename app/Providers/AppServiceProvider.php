@@ -78,7 +78,7 @@ class AppServiceProvider extends ServiceProvider
                 now()->addMinutes(config('auth.verification.expire', 60)),
                 [
                     'ulid' => $notifiable->ulid,
-                    'hash' => sha1($notifiable->getEmailForVerification()),
+                    'hash' => hash('sha256', $notifiable->getEmailForVerification()),
                 ]
             );
 
