@@ -13,6 +13,18 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Configure view engine to prevent file operations during testing
+        config(['view.engine_resolver' => function () {
+            return function ($path, $data = []) {
+                return '';
+            };
+        }]);
+    }
+
     public function test_email_can_be_verified(): void
     {
         $this->withoutMiddleware();
@@ -24,7 +36,7 @@ class EmailVerificationTest extends TestCase
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
-            ['ulid' => $user->ulid, 'hash' => sha1($user->email)]
+            ['ulid' => $user->ulid, 'hash' => hash('sha256', $user->email)]
         );
 
         $response = $this->get($verificationUrl);
@@ -43,7 +55,7 @@ class EmailVerificationTest extends TestCase
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
-            ['ulid' => $user->ulid, 'hash' => sha1('wrong-email')]
+            ['ulid' => $user->ulid, 'hash' => hash('sha256', 'wrong-email')]
         );
 
         $this->get($verificationUrl);

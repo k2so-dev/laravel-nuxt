@@ -255,7 +255,7 @@ class AuthController extends Controller
         $user = User::where('ulid', $ulid)->first();
 
         abort_if(!$user, 404);
-        abort_if(!hash_equals(sha1($user->getEmailForVerification()), $hash), 403, __('Invalid verification link'));
+        abort_if(!hash_equals(hash('sha256', $user->getEmailForVerification()), $hash), 403, __('Invalid verification link'));
 
         if (!$user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
