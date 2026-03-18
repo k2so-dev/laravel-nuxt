@@ -5,7 +5,7 @@ services:
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: sail-8.4/app
+        image: sail-8.5/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -13,7 +13,7 @@ services:
             - '${PORT:-3000}:${PORT:-3000}'
         environment:
             WWWUSER: '${WWWUSER}'
-            PORT: '${PORT}'
+            PORT: '${PORT:-3000}'
             HOST: '0.0.0.0'
             OCTANE_HOST: '0.0.0.0'
             LARAVEL_SAIL: 1
