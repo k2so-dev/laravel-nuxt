@@ -45,17 +45,17 @@ const items = [
         target: "_blank",
       },
       {
-        label: 'Nuxt UI v3 Docs',
+        label: 'Nuxt UI v4 Docs',
         description: 'Nuxt UI library: Styled, accessible, customizable components for web apps.',
         icon: 'i-simple-icons:nuxt',
-        to: "https://ui.nuxt.com/getting-started",
+        to: "https://ui.nuxt.com/docs/getting-started",
         target: "_blank",
       },
       {
-        label: 'Laravel 12.x',
+        label: 'Laravel 13.x',
         description: 'Laravel is a web application framework with expressive, elegant syntax.',
         icon: 'i-simple-icons:laravel',
-        to: "https://laravel.com/docs/12.x",
+        to: "https://laravel.com/docs/13.x",
         target: "_blank",
       },
       {
@@ -70,49 +70,49 @@ const items = [
   {
     label: 'UI Components',
     icon: 'i-lucide-box',
-    to: 'https://ui.nuxt.com/components',
+    to: 'https://ui.nuxt.com/docs/components',
     target: "_blank",
     children: [
       {
         label: 'Link',
         icon: 'i-lucide-file-text',
         description: 'Use NuxtLink with superpowers.',
-        to: 'https://ui.nuxt.com/components/link',
+        to: 'https://ui.nuxt.com/docs/components/link',
         target: "_blank",
       },
       {
         label: 'Modal',
         icon: 'i-lucide-file-text',
         description: 'Display a modal within your application.',
-        to: 'https://ui.nuxt.com/components/modal',
+        to: 'https://ui.nuxt.com/docs/components/modal',
         target: "_blank",
       },
       {
         label: 'NavigationMenu',
         icon: 'i-lucide-file-text',
         description: 'Display a list of links.',
-        to: 'https://ui.nuxt.com/components/navigation-menu',
+        to: 'https://ui.nuxt.com/docs/components/navigation-menu',
         target: "_blank",
       },
       {
         label: 'Pagination',
         icon: 'i-lucide-file-text',
         description: 'Display a list of pages.',
-        to: 'https://ui.nuxt.com/components/pagination',
+        to: 'https://ui.nuxt.com/docs/components/pagination',
         target: "_blank",
       },
       {
         label: 'Popover',
         icon: 'i-lucide-file-text',
         description: 'Display a non-modal dialog that floats around a trigger element.',
-        to: 'https://ui.nuxt.com/components/popover',
+        to: 'https://ui.nuxt.com/docs/components/popover',
         target: "_blank",
       },
       {
         label: 'Progress',
         icon: 'i-lucide-file-text',
         description: 'Show a horizontal bar to indicate task progression.',
-        to: 'https://ui.nuxt.com/components/progress',
+        to: 'https://ui.nuxt.com/docs/components/progress',
         target: "_blank",
       }
     ]
@@ -120,35 +120,35 @@ const items = [
   {
     label: 'UI Composables',
     icon: 'i-lucide-database',
-    to: 'https://ui.nuxt.com/composables',
+    to: 'https://ui.nuxt.com/docs/composables',
     target: "_blank",
     children: [
       {
         label: 'defineShortcuts',
         icon: 'i-lucide-file-text',
         description: 'Define shortcuts for your application.',
-        to: 'https://ui.nuxt.com/composables/define-shortcuts',
+        to: 'https://ui.nuxt.com/docs/composables/define-shortcuts',
         target: "_blank",
       },
       {
         label: 'useModal',
         icon: 'i-lucide-file-text',
         description: 'Display a modal within your application.',
-        to: 'https://ui.nuxt.com/composables/use-modal',
+        to: 'https://ui.nuxt.com/docs/composables/use-modal',
         target: "_blank",
       },
       {
         label: 'useSlideover',
         icon: 'i-lucide-file-text',
         description: 'Display a slideover within your application.',
-        to: 'https://ui.nuxt.com/composables/use-slideover',
+        to: 'https://ui.nuxt.com/docs/composables/use-slideover',
         target: "_blank",
       },
       {
         label: 'useToast',
         icon: 'i-lucide-file-text',
         description: 'Display a toast within your application.',
-        to: 'https://ui.nuxt.com/composables/use-toast',
+        to: 'https://ui.nuxt.com/docs/composables/use-toast',
         target: "_blank",
       }
     ]
