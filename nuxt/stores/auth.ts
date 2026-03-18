@@ -14,13 +14,6 @@ export type User = {
 export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig();
 
-  const tokenCookie = useCookie('token', {
-    path: '/',
-    sameSite: 'strict',
-    secure: config.public.apiBase.startsWith('https://'),
-    maxAge: 60 * 60 * 24 * 365
-  });
-
   const loggedCookie = useCookie('logged', {
     path: '/',
     sameSite: 'strict',
@@ -59,19 +52,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function login(token?: string | null): Promise<void> {
-    if (config.public.authGuard === 'api') {
-      tokenCookie.value = token || null;
-    }
-
     loggedCookie.value = '1';
     await fetchUser();
   }
 
   function reset(): void {
-    if (config.public.authGuard === 'api') {
-      tokenCookie.value = null;
-    }
-
     loggedCookie.value = null;
     user.value = <User>{}
   }
@@ -82,7 +67,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     user,
-    token: tokenCookie,
     logged: loggedCookie,
     login,
     logout,

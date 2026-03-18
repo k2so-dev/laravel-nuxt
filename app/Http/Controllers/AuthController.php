@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Utils;
 use App\Models\User;
 use App\Models\UserProvider;
 use Illuminate\Auth\Events\PasswordReset;
@@ -18,14 +19,9 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Laravel\Socialite\Facades\Socialite;
-use App\Contracts\AuthServiceContract;
 
 class AuthController extends Controller
 {
-    public function __construct(
-        private AuthServiceContract $authService
-    ) {}
-
     /**
      * Register new user
      */
@@ -117,10 +113,15 @@ class AuthController extends Controller
             $user = $userProvider->user;
         }
 
-        $message = $this->authService->handleCallback($request, $user);
+        Auth::login($user, true);
+
+        $request->session()->regenerate();
 
         return view('oauth', [
-            'message' => $message,
+            'message' => [
+                'ok' => true,
+                'provider' => $request->route('provider'),
+            ],
         ]);
     }
 
@@ -143,9 +144,15 @@ class AuthController extends Controller
             ]);
         }
 
-        $result = $this->authService->login($request, $user);
+        if (!Auth::attempt($request->only('email', 'password'), $request->remember)) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
 
-        return response()->json($result);
+        $request->session()->regenerate();
+
+        return response()->json(['ok' => true]);
     }
 
     /**
@@ -153,7 +160,10 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $this->authService->logout($request);
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'ok' => true,
@@ -294,7 +304,20 @@ class AuthController extends Controller
      */
     public function devices(Request $request): JsonResponse
     {
-        $devices = $this->authService->getDevices($request);
+        $user = $request->user();
+        $currentSessionId = $request->session()->getId();
+
+        $devices = $user->sessions()
+            ->select(['id as key', 'ip_address as ip', 'user_agent as name', 'last_activity'])
+            ->orderBy('last_activity', 'DESC')
+            ->get()
+            ->map(function ($device) use ($currentSessionId) {
+                $device->is_current = $currentSessionId === $device->key;
+                $device->name = Utils::getDeviceNameFromDetector(Utils::getDeviceDetectorByUserAgent($device->name));
+                $device->last_used_at = now()->parse($device->last_activity);
+
+                return $device;
+            });
 
         return response()->json([
             'ok' => true,
@@ -311,7 +334,7 @@ class AuthController extends Controller
             'key' => 'required|string',
         ]);
 
-        $this->authService->disconnectDevice($request);
+        $request->user()->sessions()->where('id', $request->key)->delete();
 
         return response()->json([
             'ok' => true,

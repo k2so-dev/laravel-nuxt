@@ -1,4 +1,4 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+// https://nuxt.com/docs/4.x/api/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-19',
   srcDir: 'nuxt/',
@@ -51,7 +51,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   /**
-   * @see https://v3.nuxtjs.org/api/configuration/nuxt.config#modules
+   * @see https://https://nuxt.com/docs/4.x/api/nuxt-config#modules-1
    */
   modules: [
     '@nuxt/ui',
@@ -84,7 +84,7 @@ export default defineNuxtConfig({
     locales: ['en'],
     plugins: ['relativeTime', 'utc', 'timezone'],
     defaultLocale: 'en',
-    defaultTimezone: import.meta.env.APP_TIMEZONE,
+    defaultTimezone: 'UTC',
   },
 
   typescript: {
@@ -92,12 +92,11 @@ export default defineNuxtConfig({
   },
 
   /**
-   * @see https://v3.nuxtjs.org/guide/features/runtime-config#exposing-runtime-config
+   * @see https://nuxt.com/docs/4.x/api/nuxt-config#runtimeconfig-1
    */
   runtimeConfig: {
     apiLocal: import.meta.env.API_LOCAL_URL,
     public: {
-      authGuard: import.meta.env.AUTH_GUARD,
       apiBase: import.meta.env.APP_URL,
       apiPrefix: '/api/v1',
       storageBase: import.meta.env.APP_URL + '/storage/',
