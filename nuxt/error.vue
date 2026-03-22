@@ -3,10 +3,8 @@ const props = defineProps({
   error: Object,
 });
 
-const handleError = () => clearError({ redirect: "/" });
-
 useSeoMeta({
-  title: 'Error',
+  title: props.error?.message,
 })
 </script>
 
@@ -15,17 +13,20 @@ useSeoMeta({
     <AppLogo />
   </UContainer>
   <UContainer class="flex-grow flex flex-col items-center justify-center space-y-5">
-    <h1 class="text-9xl font-bold">{{ error?.statusCode }}</h1>
-    <div>{{ error?.message }}</div>
-    <div v-if="error?.statusCode >= 500" v-html="error?.stack"></div>
-    <div>
-      <UButton
-        @click="handleError"
-        color="neutral"
-        size="xl"
-        variant="ghost"
-        label="Go back"
-      />
-    </div>
+    <UError
+      :clear="{
+        color: 'neutral',
+        size: 'xl',
+        icon: 'i-lucide-arrow-left',
+        class: 'rounded-full'
+      }"
+      :error="{
+        statusCode: error?.statusCode,
+        statusMessage: error?.message,
+        message: error?.statusCode === 404? 'The page you are looking for does not exist.'
+        : error?.statusCode >= 500? 'Something went wrong on our side. Please try again later.'
+        : 'Something went wrong. Please try again later.'
+      }"
+    />
   </UContainer>
 </template>
