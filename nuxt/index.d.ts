@@ -45,7 +45,7 @@ interface HttpFetchContext extends FetchContext<any, any> {
   options: ResolvedFetchOptions<any, any> & HttpFetchOptions;
 }
 
-type HttpUseFetchOptions<T> = UseFetchOptions<T> & HttpFetchOptions & {
+type HttpUseFetchOptions<T> = Omit<UseFetchOptions<T>, 'pick'> & HttpFetchOptions & {
   $fetch?: $Fetch
 };
 

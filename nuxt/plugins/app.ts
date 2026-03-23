@@ -12,11 +12,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   function buildHeaders(headers: any): Headers {
     let authHeaders = {};
 
-    if (config.public.authGuard === 'web') {
-      authHeaders['X-XSRF-TOKEN'] = xsrf.value;
-    } else if (config.public.authGuard === 'api' && auth.token) {
-      authHeaders['Authorization'] = `Bearer ${auth.token}`;
-    }
+    authHeaders['X-XSRF-TOKEN'] = xsrf.value;
 
     return {
       Accept: 'application/json',

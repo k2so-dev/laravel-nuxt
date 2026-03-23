@@ -1,8 +1,8 @@
-![preview](https://github.com/user-attachments/assets/08c7f1f5-9828-4a33-986a-7c70444b0ac6)
+![preview](https://github.com/user-attachments/assets/2704bbc3-5d4f-4a65-b861-ab24f648d517)
 
-# Laravel Nuxt Boilerplate
+# ⚡ Laravel Nuxt Boilerplate
 
-[![](https://img.shields.io/badge/Laravel-v12-ff2e21.svg)](https://laravel.com)
+[![](https://img.shields.io/badge/Laravel-v13-ff2e21.svg)](https://laravel.com)
 [![](https://img.shields.io/badge/nuxt.js-v4-04C690.svg)](https://nuxt.com)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_shield)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/k2so-dev/laravel-nuxt/laravel.yml)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/laravel.yml)
@@ -17,8 +17,6 @@ The goal of the project is to create a template for development on Laravel and N
 - [Installation](#installation)
     - [Standalone](#standalone)
     - [Docker Deploy (Laravel Sail)](#docker-deploy-laravel-sail)
-    - [Auth Guard Switch](#auth-guard-switch)
-- [Upgrade](#upgrade)
 - [Usage](#usage)
     - [Fetch wrapper](#fetch-wrapper)
     - [Authentication](#authentication)
@@ -34,14 +32,12 @@ The goal of the project is to create a template for development on Laravel and N
 
 ## Features
 
- - [**Laravel 12**](https://laravel.com/docs/12.x) and [**Nuxt 4**](https://nuxt.com/)
- - [**Laravel Octane**](https://laravel.com/docs/12.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
- - [**Laravel Telescope**](https://laravel.com/docs/12.x/telescope) provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
- - [**Laravel Sanctum**](https://laravel.com/docs/12.x/sanctum) Token/Session-based authorization is compatible with **SSR** and **CSR**
- - [**Laravel Socialite**](https://laravel.com/docs/12.x/socialite) OAuth providers
- - [**Laravel Sail**](https://laravel.com/docs/12.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
+ - [**Laravel 13**](https://laravel.com/docs/13.x) and [**Nuxt 4**](https://nuxt.com/)
+ - [**Laravel Octane**](https://laravel.com/docs/13.x/octane) supercharges your application's performance by serving your application using high-powered application servers.
+ - [**Laravel Socialite**](https://laravel.com/docs/13.x/socialite) OAuth providers
+ - [**Laravel Sail**](https://laravel.com/docs/13.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
- - UI library [**Nuxt UI 3**](https://ui.nuxt.com/) based on [**TailwindCSS 4**](https://tailwindcss.com/) and [**Reka UI**](https://reka-ui.com/).
+ - UI library [**Nuxt UI 4**](https://ui.nuxt.com/) based on [**TailwindCSS 4**](https://tailwindcss.com/) and [**Reka UI**](https://reka-ui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
  - Integrated pages: login, registration, password recovery, email confirmation, account information update, password change.
  - Temporary uploads with cropping and optimization of images.
@@ -51,8 +47,8 @@ The goal of the project is to create a template for development on Laravel and N
 ## Requirements
 
  - PHP 8.3+ / Node 20+
- - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/12.x/routing#throttling-with-redis) feature
- - [**Laravel Octane**](https://laravel.com/docs/12.x/octane) supports 3 operating modes: Swoole (php extension), Roadrunner and FrankenPHP
+ - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/13.x/routing#throttling-with-redis) feature
+ - [**Laravel Octane**](https://laravel.com/docs/13.x/octane) supports 3 operating modes: Swoole (php extension), Roadrunner and FrankenPHP
 
 ## Installation
 ### Standalone
@@ -64,7 +60,7 @@ The goal of the project is to create a template for development on Laravel and N
 6. `bun dev`
 
 ### Docker Deploy (Laravel Sail)
-[Laravel Sail](https://laravel.com/docs/12.x/sail) is a light-weight command-line interface for interacting with Laravel's default Docker development environment. Sail provides a great starting point for building a Laravel application using PHP, MySQL, and Redis without requiring prior Docker experience.
+[Laravel Sail](https://laravel.com/docs/13.x/sail) is a light-weight command-line interface for interacting with Laravel's default Docker development environment. Sail provides a great starting point for building a Laravel application using PHP, MySQL, and Redis without requiring prior Docker experience.
 
 At its heart, Sail is the `docker-compose.yml` file and the `sail` script that is stored at the root of your project. The sail script provides a CLI with convenient methods for interacting with the Docker containers defined by the docker-compose.yml file.
 
@@ -73,9 +69,9 @@ Laravel Sail is supported on macOS, Linux, and Windows (via [WSL2](https://docs.
 ```shell
 docker run --rm \
     -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php84-composer:latest \
+    -v "$(pwd):/app" \
+    -w /app \
+    composer:latest \
     composer install --ignore-platform-reqs
 ```
 2. Configuring A Shell Alias (Optional)
@@ -88,29 +84,7 @@ To make sure this is always available, you may add this to your shell configurat
 4. `sail bun install`
 5. `sail bun dev`
 
-> Read the full [Laravel Sail](https://laravel.com/docs/12.x/sail) documentation to get the best user experience
-
-### Auth Guard Switch
-
-You can switch the authentication guard between **Token** and **Session** using the following command:
-
-```shell
-php artisan auth:switch
-```
-
-## Upgrade
-
-Standalone:
-```shell
-npx nuxi upgrade
-composer update
-```
-
-Sail:
-```shell
-sail npx nuxi upgrade
-sail composer update
-```
+> Read the full [Laravel Sail](https://laravel.com/docs/13.x/sail) documentation to get the best user experience
 
 ## Usage
 
@@ -144,7 +118,7 @@ const { refresh: onSubmit, status } = useHttp("login", {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      await auth.login(response._data.token ?? null);
+      await auth.login();
       await router.push("/");
     }
   }
@@ -190,8 +164,8 @@ Data returned by **useAuthStore**:
 * `user`: User object, user stored in pinia store
 * `fetchCsrf`: Function, fetch csrf token
 * `fetchUser`: Function, fetch user data
-* `login`: Function, login user by token/session
-* `logout`: Function, remove local data and call API to remove token/session
+* `login`: Function, login user
+* `logout`: Function, remove local data and call API to remove session
 * `hasRole`: Function, checks the role
 
 ### Nuxt Middleware
@@ -219,9 +193,9 @@ https://github.com/k2so-dev/laravel-nuxt/assets/15279423/9b134491-1444-4323-a7a3
 
 ## Links
 * [Nuxt 4](https://nuxt.com/)
-* [Nuxt UI 3](https://ui.nuxt.com/)
+* [Nuxt UI 4](https://ui.nuxt.com/)
 * [Tailwind CSS 4](https://tailwindcss.com/)
-* [Laravel 12x](https://laravel.com/docs/12.x)
+* [Laravel 13x](https://laravel.com/docs/13.x)
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_large)

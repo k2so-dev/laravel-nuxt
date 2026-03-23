@@ -1,8 +1,7 @@
 export default defineNuxtPlugin(async (nuxtApp) => {
   const auth = useAuthStore();
-  const config = useRuntimeConfig();
 
-  if (config.public.authGuard === 'web' && import.meta.client) {
+  if (import.meta.client) {
     auth.fetchCsrf();
   }
 

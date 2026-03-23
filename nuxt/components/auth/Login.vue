@@ -23,7 +23,7 @@ const { refresh: onSubmit, status: loginStatus } = useHttp<any>("login", {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      await auth.login(response._data.token ?? null);
+      await auth.login();
       await router.push("/");
     }
   }
@@ -37,7 +37,7 @@ async function handleMessage(event: { data: any }): Promise<void> {
   if (Object.keys(providers.value).includes(provider)) {
     providers.value[provider].loading = false;
 
-    await auth.login(event.data.token ?? null);
+    await auth.login();
     await router.push("/");
   } else if (event.data.message) {
     toast.add({

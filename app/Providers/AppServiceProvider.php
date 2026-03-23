@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use App\Models\PersonalAccessToken;
-use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,11 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Register Telescope only in local environment
-        if (class_exists(\Laravel\Telescope\TelescopeServiceProvider::class) && $this->app->environment('local')) {
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-            $this->app->register(TelescopeServiceProvider::class);
-        }
+        // ...
     }
 
     /**
@@ -110,9 +104,5 @@ class AppServiceProvider extends ServiceProvider
         Request::macro('deviceName', function (): string {
             return Utils::getDeviceNameFromDetector($this->device());
         });
-
-        if (config('auth.defaults.guard') === 'api') {
-            Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
-        }
     }
 }
