@@ -2,7 +2,7 @@
 
 # Laravel Nuxt Boilerplate
 
-[![](https://img.shields.io/badge/Laravel-v12-ff2e21.svg)](https://laravel.com)
+[![](https://img.shields.io/badge/Laravel-v13-ff2e21.svg)](https://laravel.com)
 [![](https://img.shields.io/badge/nuxt.js-v4-04C690.svg)](https://nuxt.com)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_shield)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/k2so-dev/laravel-nuxt/laravel.yml)](https://github.com/k2so-dev/laravel-nuxt/actions/workflows/laravel.yml)
@@ -193,9 +193,9 @@ https://github.com/k2so-dev/laravel-nuxt/assets/15279423/9b134491-1444-4323-a7a3
 
 ## Links
 * [Nuxt 4](https://nuxt.com/)
-* [Nuxt UI 3](https://ui.nuxt.com/)
+* [Nuxt UI 4](https://ui.nuxt.com/)
 * [Tailwind CSS 4](https://tailwindcss.com/)
-* [Laravel 12x](https://laravel.com/docs/13.x)
+* [Laravel 13x](https://laravel.com/docs/13.x)
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fk2so-dev%2Flaravel-nuxt?ref=badge_large)
