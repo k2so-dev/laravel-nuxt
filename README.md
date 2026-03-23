@@ -1,6 +1,6 @@
 ![preview](https://github.com/user-attachments/assets/2704bbc3-5d4f-4a65-b861-ab24f648d517)
 
-# Laravel Nuxt Boilerplate
+# ⚡ Laravel Nuxt Boilerplate
 
 [![](https://img.shields.io/badge/Laravel-v13-ff2e21.svg)](https://laravel.com)
 [![](https://img.shields.io/badge/nuxt.js-v4-04C690.svg)](https://nuxt.com)
