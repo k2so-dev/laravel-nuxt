@@ -16,7 +16,7 @@
     "devDependencies": {
         "@iconify-json/heroicons": "^1.2.3",
         "@iconify-json/lucide": "^1.2.98",
-        "@iconify-json/simple-icons": "^1.2.74",
+        "@iconify-json/simple-icons": "^1.2.75",
         "@nuxt/devtools": "^3.2.4",
         "@nuxt/image": "^2.0.0",
         "@nuxt/ui": "^4.5.1",
