@@ -118,7 +118,7 @@ const { refresh: onSubmit, status } = useHttp("login", {
     if (response?.status === 422) {
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
-      await auth.login(response._data.token ?? null);
+      await auth.login();
       await router.push("/");
     }
   }
@@ -164,8 +164,8 @@ Data returned by **useAuthStore**:
 * `user`: User object, user stored in pinia store
 * `fetchCsrf`: Function, fetch csrf token
 * `fetchUser`: Function, fetch user data
-* `login`: Function, login user by token/session
-* `logout`: Function, remove local data and call API to remove token/session
+* `login`: Function, login user
+* `logout`: Function, remove local data and call API to remove session
 * `hasRole`: Function, checks the role
 
 ### Nuxt Middleware
