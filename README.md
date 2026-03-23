@@ -1,4 +1,4 @@
-![preview](https://github.com/user-attachments/assets/08c7f1f5-9828-4a33-986a-7c70444b0ac6)
+![preview](https://github.com/user-attachments/assets/2704bbc3-5d4f-4a65-b861-ab24f648d517)
 
 # Laravel Nuxt Boilerplate
 
