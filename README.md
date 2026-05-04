@@ -82,13 +82,14 @@ Other systems: see the [full list of packages](https://github.com/casey/just/tre
 
 #### Lifecycle
 
-| Command | What it does | Entry |
-|---|---|---|
-| `just up -d` | Start full app (api + web) | `:8000` / `:3000` |
-| `just prod -d` | Start full app in production mode (Octane no-watch, web `.output/`) | `:8000` / `:3000` |
-| `just api -d` | Start api only | `:8000` |
-| `just web` | Run web foreground, ephemeral | `:3000` |
-| `just stop` / `just down` | Pause / remove containers | — |
+```bash
+just up -d                 # start full app (api + web) — :8000 / :3000
+just prod -d               # production mode (Octane no-watch, web .output/)
+just api -d                # api only — :8000
+just web                   # web foreground, ephemeral — :3000
+just stop                  # pause containers
+just down                  # remove containers
+```
 
 Quick start:
 
