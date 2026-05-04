@@ -1,0 +1,8 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "devDependencies": {
+      "chokidar": "^5.0.0"
+    }
+}

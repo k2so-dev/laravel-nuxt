@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/4.x/api/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-19',
+  compatibilityDate: '2026-05-04',
 
   vite: {
     server: {
@@ -51,7 +51,6 @@ export default defineNuxtConfig({
    * @see https://https://nuxt.com/docs/4.x/api/nuxt-config#modules-1
    */
   modules: [
-    '@nuxt/content',
     '@nuxt/ui',
     '@nuxt/image',
     '@pinia/nuxt',
@@ -90,7 +89,8 @@ export default defineNuxtConfig({
   },
 
   ui: {
-    content: false
+    prose: true,
+    content: true
   },
 
   /**
