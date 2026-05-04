@@ -26,6 +26,22 @@ services:
       - sail
     ports:
       - '${OCTANE_PORT:-8000}:${OCTANE_PORT:-8000}'
+    depends_on: [laravelnuxt.redis]
+
+  laravelnuxt.redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    networks:
+      - sail
+    volumes:
+      - redisdata:/data
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   laravelnuxt.web:
     image: oven/bun:1
@@ -51,3 +67,6 @@ services:
 networks:
   sail:
     driver: bridge
+
+volumes:
+  redisdata:

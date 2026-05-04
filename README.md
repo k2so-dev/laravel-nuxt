@@ -68,7 +68,7 @@ The goal of the project is to create a template for development on Laravel and N
 
 ### Docker
 
-Single `docker-compose.yml`: API runs on [Laravel Sail](https://laravel.com/docs/13.x/sail) with [**Octane**](https://laravel.com/docs/13.x/octane) in watch mode, web runs on `oven/bun:1`. Orchestrated via `just`. `just sail ...` wraps the upstream `vendor/bin/sail` for those who want it.
+Single `docker-compose.yml`: API runs on [**Laravel Sail**](https://laravel.com/docs/13.x/sail) with [**Octane**](https://laravel.com/docs/13.x/octane) in watch mode, web runs on `oven/bun:1`, plus a `redis:8-alpine` service for cache / queue / session / throttling. Orchestrated via `just`. `just sail ...` wraps the upstream `vendor/bin/sail` for those who want it.
 
 #### Installing `just`
 

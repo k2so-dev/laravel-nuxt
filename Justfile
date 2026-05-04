@@ -22,6 +22,8 @@ init:
 	{{compose}} run --rm --no-deps laravelnuxt.api bun install
 	just bun install
 	just a key:generate
+	just a migrate
+	just a db:seed
 	just a storage:link --relative
 
 # Show container status (running / stopped / missing)
