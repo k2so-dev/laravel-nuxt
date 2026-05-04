@@ -21,6 +21,7 @@ init:
 	just build
 	{{compose}} run --rm --no-deps laravelnuxt.api bun install
 	just bun install
+	just redis
 	just a key:generate
 	just a migrate
 	just a db:seed
@@ -91,6 +92,16 @@ api *args:
 [group('profile')]
 web *args:
 	{{compose}} run --rm --service-ports laravelnuxt.web {{args}}
+
+# Start redis only -d
+[group('profile')]
+redis *args:
+	{{compose}} up -d laravelnuxt.redis {{args}}
+
+# Stop redis
+[group('profile')]
+redis-stop *args:
+	{{compose}} stop laravelnuxt.redis {{args}}
 
 # Build api Docker image
 [group('build')]
