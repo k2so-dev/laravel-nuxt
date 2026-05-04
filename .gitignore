@@ -1,14 +1,3 @@
-/.phpunit.cache
-/auth.json
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/public/vendor
-/public/.well-known
-/storage/*.key
-/storage/pail
-/vendor
 .env
 .env.backup
 .env.production

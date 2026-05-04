@@ -1,11 +1,6 @@
 // https://nuxt.com/docs/4.x/api/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-19',
-  srcDir: 'nuxt/',
-
-  dir: {
-    public: 'public/nuxt',
-  },
+  compatibilityDate: '2026-05-04',
 
   vite: {
     server: {
@@ -17,7 +12,9 @@ export default defineNuxtConfig({
    * Manually disable nuxt telemetry.
    * @see [Nuxt Telemetry](https://github.com/nuxt/telemetry) for more information.
    */
-  telemetry: true,
+  telemetry: {
+    enabled: true,
+  },
 
   $development: {
     ssr: true,
@@ -89,6 +86,11 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: false,
+  },
+
+  ui: {
+    prose: true,
+    content: true
   },
 
   /**

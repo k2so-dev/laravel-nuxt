@@ -1,0 +1,31 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "laravel-nuxt",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "node .output/server/index.mjs",
+    "build": "nuxi cleanup && nuxi build",
+    "cleanup": "nuxi cleanup",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@iconify-json/heroicons": "^1.2.3",
+    "@iconify-json/lucide": "^1.2.105",
+    "@iconify-json/simple-icons": "^1.2.80",
+    "@nuxt/devtools": "^3.2.4",
+    "@nuxt/image": "^2.0.0",
+    "@nuxt/ui": "^4.7.1",
+    "@nuxtjs/mdc": "^0.21.1",
+    "@pinia/nuxt": "^0.11.3",
+    "concurrently": "^9.2.1",
+    "dayjs-nuxt": "^2.1.11",
+    "nuxt": "^4.4.4",
+    "nuxt-security": "^2.5.1",
+    "vue": "^3.5.33",
+    "vue-router": "^5.0.6"
+  }
+}

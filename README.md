@@ -16,7 +16,7 @@ The goal of the project is to create a template for development on Laravel and N
 - [Requirements](#requirements)
 - [Installation](#installation)
     - [Standalone](#standalone)
-    - [Docker Deploy (Laravel Sail)](#docker-deploy-laravel-sail)
+    - [Docker](#docker)
 - [Usage](#usage)
     - [Fetch wrapper](#fetch-wrapper)
     - [Authentication](#authentication)
@@ -43,48 +43,74 @@ The goal of the project is to create a template for development on Laravel and N
  - Temporary uploads with cropping and optimization of images.
  - Device management
  - Enhanced Fetch Wrappers : Utilizes `$http` and `useHttp`, which extend the capabilities of **Nuxt's** standard `$fetch` and `useFetch`.
+ - Monorepo layout (`apps/api` + `apps/web`) with `just` task runner.
 
 ## Requirements
 
- - PHP 8.3+ / Node 20+
+ - PHP 8.4+ / Node 20+ (or [**Bun**](https://bun.com))
  - **Redis** is required for the [**Throttling with Redis**](https://laravel.com/docs/13.x/routing#throttling-with-redis) feature
- - [**Laravel Octane**](https://laravel.com/docs/13.x/octane) supports 3 operating modes: Swoole (php extension), Roadrunner and FrankenPHP
+ - For Docker setup: [**Docker**](https://github.com/docker/docker-install) and [**just**](https://github.com/casey/just) task runner
 
 ## Installation
 ### Standalone
-1. `composer install && bun install`
-2. `cp .env.example .env && php artisan key:generate && php artisan storage:link`
-3. `php artisan migrate && php artisan db:seed`
-4. `php artisan octane:install`
-5. `php artisan octane:start --watch --port=8000 --host=127.0.0.1`
-6. `bun dev`
 
-### Docker Deploy (Laravel Sail)
-[Laravel Sail](https://laravel.com/docs/13.x/sail) is a light-weight command-line interface for interacting with Laravel's default Docker development environment. Sail provides a great starting point for building a Laravel application using PHP, MySQL, and Redis without requiring prior Docker experience.
+<details>
+<summary>Show standalone instructions</summary>
 
-At its heart, Sail is the `docker-compose.yml` file and the `sail` script that is stored at the root of your project. The sail script provides a CLI with convenient methods for interacting with the Docker containers defined by the docker-compose.yml file.
+1. `cd apps/api && composer install && cd ../web && bun install && cd ../..`
+2. `cp apps/api/.env.example apps/api/.env`
+3. `cd apps/api && php artisan key:generate && php artisan storage:link`
+4. `php artisan migrate && php artisan db:seed`
+5. `php artisan octane:install --server=swoole && php artisan octane:start --host=127.0.0.1 --port=8000`
+6. In another terminal: `cd apps/web && bun run dev`
 
-Laravel Sail is supported on macOS, Linux, and Windows (via [WSL2](https://docs.microsoft.com/en-us/windows/wsl/about)).
-1. Installing Composer Dependencies
-```shell
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/app" \
-    -w /app \
-    composer:latest \
-    composer install --ignore-platform-reqs
+</details>
+
+### Docker
+
+Single `docker-compose.yml`: API runs on [**Laravel Sail**](https://laravel.com/docs/13.x/sail) with [**Octane**](https://laravel.com/docs/13.x/octane) in watch mode, web runs on `oven/bun:1`, plus a `redis:8-alpine` service for cache / queue / session / throttling. Orchestrated via `just`. `just sail ...` wraps the upstream `vendor/bin/sail` for those who want it.
+
+#### Installing `just`
+
+```bash
+brew install just                          # macOS
+apt install just                           # Debian / Ubuntu
+winget install --id Casey.Just --exact     # Windows
 ```
-2. Configuring A Shell Alias (Optional)
-```shell
-alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
+
+Other systems: see the [full list of packages](https://github.com/casey/just/tree/master#packages).
+
+#### Lifecycle
+
+| Command | What it does | Entry |
+|---|---|---|
+| `just up -d` | Start full app (api + web) | `:8000` / `:3000` |
+| `just prod -d` | Start full app in production mode (Octane no-watch, web `.output/`) | `:8000` / `:3000` |
+| `just api -d` | Start api only | `:8000` |
+| `just web` | Run web foreground, ephemeral | `:3000` |
+| `just stop` / `just down` | Pause / remove containers | — |
+
+Quick start:
+
+```bash
+just init                  # copies .env files, composer install, builds api image, bun install, key:generate, storage:link
+just a migrate --seed
+just up -d
 ```
-To make sure this is always available, you may add this to your shell configuration file in your home directory, such as ~/.zshrc or ~/.bashrc, and then restart your shell.
 
-3. `sail up`
-4. `sail bun install`
-5. `sail bun dev`
+Common commands:
 
-> Read the full [Laravel Sail](https://laravel.com/docs/13.x/sail) documentation to get the best user experience
+```bash
+just                       # show all recipes
+just build                 # rebuild the api image
+just a migrate             # `php artisan migrate` in ephemeral container
+just sail ...              # invoke Laravel Sail directly (e.g. `just sail tinker`)
+just composer require ...
+just bun add @vueuse/core
+just pint                  # PHP linter
+just test                  # PHPUnit
+just down -v               # stop and remove volumes
+```
 
 ## Usage
 

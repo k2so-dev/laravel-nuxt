@@ -1,31 +1,72 @@
 services:
-    laravelnuxt.api:
-        build:
-            context: ./vendor/laravel/sail/runtimes/8.4
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: sail-8.5/app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
-        ports:
-            - '${OCTANE_PORT:-8000}:${OCTANE_PORT:-8000}'
-            - '${PORT:-3000}:${PORT:-3000}'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            PORT: '${PORT:-3000}'
-            HOST: '0.0.0.0'
-            OCTANE_HOST: '0.0.0.0'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            IGNITION_LOCAL_SITES_PATH: '${PWD}'
-            SUPERVISOR_PHP_COMMAND: 'php artisan octane:start --watch'
-        volumes:
-            - '.:/var/www/html'
-        networks:
-            - sail
-        depends_on: {  }
+  laravelnuxt.api:
+    build:
+      context: ./apps/api/vendor/laravel/sail/runtimes/8.5
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP:-1000}'
+    image: sail-8.5/app
+    restart: unless-stopped
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    env_file: ./apps/api/.env
+    environment:
+      WWWUSER: '${WWWUSER:-1000}'
+      LARAVEL_SAIL: 1
+      OCTANE_HOST: '0.0.0.0'
+      XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+      APP_ENV: '${APP_ENV:-local}'
+      APP_DEBUG: '${APP_DEBUG:-true}'
+      SUPERVISOR_PHP_COMMAND: '${SUPERVISOR_PHP_COMMAND:-php artisan octane:start --watch}'
+    volumes:
+      - ./apps/api:/var/www/html
+    networks:
+      - sail
+    ports:
+      - '${OCTANE_PORT:-8000}:${OCTANE_PORT:-8000}'
+    depends_on: [laravelnuxt.redis]
+
+  laravelnuxt.redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    networks:
+      - sail
+    volumes:
+      - redisdata:/data
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  laravelnuxt.web:
+    image: oven/bun:1
+    restart: unless-stopped
+    working_dir: /app
+    command: ${WEB_COMMAND:-bun run dev}
+    env_file: ./apps/web/.env
+    volumes:
+      - ./apps/web:/app
+    networks:
+      - sail
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+
+  composer:
+    image: composer:latest
+    profiles: [cli]
+    user: '${UID:-1000}:${GID:-1000}'
+    working_dir: /app
+    volumes:
+      - ./apps/api:/app
+
 networks:
-    sail:
-        driver: bridge
+  sail:
+    driver: bridge
+
+volumes:
+  redisdata:
