@@ -95,8 +95,8 @@ Quick start:
 
 ```bash
 just init                  # copies .env files, composer install, builds api image, bun install, key:generate, storage:link
-just a migrate --seed
 just up -d
+just a migrate --seed
 ```
 
 Common commands:
