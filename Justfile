@@ -19,7 +19,7 @@ init:
 	cp -n apps/web/.env.example apps/web/.env || true
 	just composer install --ignore-platform-reqs
 	just build
-	just sail bun install
+	{{compose}} run --rm --no-deps laravelnuxt.api bun install
 	just bun install
 	just a key:generate
 	just a storage:link --relative
