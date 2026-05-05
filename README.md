@@ -37,6 +37,7 @@ The goal of the project is to create a template for development on Laravel and N
  - [**Laravel Socialite**](https://laravel.com/docs/13.x/socialite) OAuth providers
  - [**Laravel Sail**](https://laravel.com/docs/13.x/sail) Light-weight command-line interface for interacting with Laravel's default Docker development environment.
  - [**Spatie Laravel Permissions**](https://spatie.be/docs/laravel-permission/v6/introduction) This package allows you to manage user permissions and roles in a database.
+ - [**Pest**](https://pestphp.com/) Elegant testing framework with expressive syntax and zero-config Laravel integration.
  - UI library [**Nuxt UI 4**](https://ui.nuxt.com/) based on [**TailwindCSS 4**](https://tailwindcss.com/) and [**Reka UI**](https://reka-ui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
  - Integrated pages: login, registration, password recovery, email confirmation, account information update, password change.
@@ -109,7 +110,7 @@ just sail ...              # invoke Laravel Sail directly (e.g. `just sail tinke
 just composer require ...
 just bun add @vueuse/core
 just pint                  # PHP linter
-just test                  # PHPUnit
+just test                  # Pest
 just down -v               # stop and remove volumes
 ```
 
