@@ -1,4 +1,5 @@
 set dotenv-load := true
+set positional-arguments := true
 
 compose := "docker compose --env-file ./apps/api/.env"
 
@@ -44,7 +45,7 @@ status:
 # Start full app: api + web — no implicit build
 [group('stack')]
 up *args:
-	{{compose}} up {{args}}
+	{{compose}} up "$@"
 
 # Start full app in production mode (Octane no-watch, APP_ENV=production, web .output)
 [group('stack')]
@@ -53,52 +54,52 @@ prod *args:
 	APP_DEBUG=false \
 	SUPERVISOR_PHP_COMMAND="php artisan octane:start" \
 	WEB_COMMAND="bun run .output/server/index.mjs" \
-	{{compose}} up {{args}}
+	{{compose}} up "$@"
 
 # Stop containers without removing
 [group('stack')]
 stop *args:
-	{{compose}} stop {{args}}
+	{{compose}} stop "$@"
 
 # Stop and remove containers (-v also removes volumes)
 [group('stack')]
 down *args:
-	{{compose}} down {{args}}
+	{{compose}} down "$@"
 
 # Restart running services
 [group('stack')]
 restart *args:
-	{{compose}} restart {{args}}
+	{{compose}} restart "$@"
 
 # Tail and follow service logs
 [group('stack')]
 logs *args:
-	{{compose}} logs -f {{args}}
+	{{compose}} logs -f "$@"
 
 # Show raw `docker compose ps`
 [group('stack')]
 ps *args:
-	{{compose}} ps {{args}}
+	{{compose}} ps "$@"
 
 # Start api only -d
 [group('profile')]
 api *args:
-	{{compose}} up -d laravelnuxt.api {{args}}
+	{{compose}} up -d laravelnuxt.api "$@"
 
 # Run web foreground, ephemeral, with port forwarding
 [group('profile')]
 web *args:
-	{{compose}} run --rm --service-ports laravelnuxt.web {{args}}
+	{{compose}} run --rm --service-ports laravelnuxt.web "$@"
 
 # Start redis only -d
 [group('profile')]
 redis *args:
-	{{compose}} up -d laravelnuxt.redis {{args}}
+	{{compose}} up -d laravelnuxt.redis "$@"
 
 # Stop redis
 [group('profile')]
 redis-stop *args:
-	{{compose}} stop laravelnuxt.redis {{args}}
+	{{compose}} stop laravelnuxt.redis "$@"
 
 # Build api Docker image
 [group('build')]
@@ -112,48 +113,48 @@ a *args: (artisan args)
 # Run any `php artisan` command
 [group('laravel')]
 artisan *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api php artisan {{args}}
+	{{compose}} run --rm --no-deps laravelnuxt.api php artisan "$@"
 
 # Run raw `php` in api container
 [group('laravel')]
 php *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api php {{args}}
+	{{compose}} run --rm --no-deps laravelnuxt.api php "$@"
 
 # Run composer (uses composer:latest sidecar — works without api image build)
 [group('laravel')]
 composer *args:
-	{{compose}} --profile cli run --rm composer {{args}}
+	{{compose}} --profile cli run --rm composer "$@"
 
 # Run vendored Sail (apps/api/vendor/bin/sail) with monorepo-aware service name
 [group('laravel')]
 [no-exit-message]
 sail *args:
-	APP_SERVICE=laravelnuxt.api ./apps/api/vendor/bin/sail {{args}}
+	APP_SERVICE=laravelnuxt.api ./apps/api/vendor/bin/sail "$@"
 
 # Run Laravel Pint (code style)
 [group('laravel')]
 pint *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/pint {{args}}
+	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/pint "$@"
 
 # Run PHPUnit
 [group('laravel')]
 test *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/phpunit {{args}}
+	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/phpunit "$@"
 
 # Run any bun command
 [group('nuxt')]
 bun *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bun {{args}}
+	{{compose}} run --rm --no-deps laravelnuxt.web bun "$@"
 
 # Run any bunx command
 [group('nuxt')]
 bunx *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bunx {{args}}
+	{{compose}} run --rm --no-deps laravelnuxt.web bunx "$@"
 
 # Run nuxt CLI (alias for `bunx nuxt`)
 [group('nuxt')]
 nuxt *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bunx nuxt {{args}}
+	{{compose}} run --rm --no-deps laravelnuxt.web bunx nuxt "$@"
 
 # Build Nuxt for production (writes apps/web/.output/)
 [group('nuxt')]
