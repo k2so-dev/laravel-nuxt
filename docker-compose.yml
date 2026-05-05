@@ -20,12 +20,13 @@ services:
       APP_ENV: '${APP_ENV:-local}'
       APP_DEBUG: '${APP_DEBUG:-true}'
       SUPERVISOR_PHP_COMMAND: '${SUPERVISOR_PHP_COMMAND:-php artisan octane:start --watch}'
+      OCTANE_PORT: '8000'
     volumes:
       - ./apps/api:/var/www/html
     networks:
       - sail
     ports:
-      - '${OCTANE_PORT:-8000}:${OCTANE_PORT:-8000}'
+      - '${API_PORT:-8000}:8000'
     depends_on: [laravelnuxt.redis]
 
   laravelnuxt.redis:

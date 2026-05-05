@@ -1,65 +1,53 @@
 <?php
 
-namespace Tests\Feature\Auth;
-
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
-use Tests\TestCase;
 
-class EmailVerificationTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {
+    config(['view.engine_resolver' => function () {
+        return function ($path, $data = []) {
+            return '';
+        };
+    }]);
+});
 
-        // Configure view engine to prevent file operations during testing
-        config(['view.engine_resolver' => function () {
-            return function ($path, $data = []) {
-                return '';
-            };
-        }]);
-    }
+test('email can be verified', function () {
+    $this->withoutMiddleware();
 
-    public function test_email_can_be_verified(): void
-    {
-        $this->withoutMiddleware();
+    $user = User::factory()->unverified()->create();
 
-        $user = User::factory()->unverified()->create();
+    Event::fake();
 
-        Event::fake();
+    $verificationUrl = URL::temporarySignedRoute(
+        'verification.verify',
+        now()->addMinutes(60),
+        ['ulid' => $user->ulid, 'hash' => hash('sha256', $user->email)]
+    );
 
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['ulid' => $user->ulid, 'hash' => hash('sha256', $user->email)]
-        );
+    $response = $this->get($verificationUrl);
 
-        $response = $this->get($verificationUrl);
+    Event::assertDispatched(Verified::class);
+    expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
+    $response->assertJson(['ok' => true], true);
+});
 
-        Event::assertDispatched(Verified::class);
-        $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertJson(['ok' => true], true);
-    }
+test('email is not verified with invalid hash', function () {
+    $this->withoutMiddleware();
 
-    public function test_email_is_not_verified_with_invalid_hash(): void
-    {
-        $this->withoutMiddleware();
+    $user = User::factory()->unverified()->create();
 
-        $user = User::factory()->unverified()->create();
+    $verificationUrl = URL::temporarySignedRoute(
+        'verification.verify',
+        now()->addMinutes(60),
+        ['ulid' => $user->ulid, 'hash' => hash('sha256', 'wrong-email')]
+    );
 
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['ulid' => $user->ulid, 'hash' => hash('sha256', 'wrong-email')]
-        );
+    $this->get($verificationUrl);
 
-        $this->get($verificationUrl);
-
-        $this->assertFalse($user->fresh()->hasVerifiedEmail());
-    }
-}
+    expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
+});
