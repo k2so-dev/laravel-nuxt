@@ -136,10 +136,10 @@ sail *args:
 pint *args:
 	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/pint "$@"
 
-# Run PHPUnit
+# Run Pest
 [group('laravel')]
 test *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/phpunit "$@"
+	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/pest "$@"
 
 # Run any bun command
 [group('nuxt')]
