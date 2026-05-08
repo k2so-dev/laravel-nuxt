@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 export type User = {
-  ulid: string;
+  uuid: string;
   name: string;
   email: string;
   avatar: string;

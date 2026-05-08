@@ -24,7 +24,7 @@ class UploadController extends Controller
             ->convert($request->width, $request->height, $extension)
             ->storeAs(
                 $request->entity,
-                implode('.', [Str::ulid()->toBase32(), $extension]),
+                implode('.', [Str::uuid7(), $extension]),
                 ['disk' => 'public']
             );
 

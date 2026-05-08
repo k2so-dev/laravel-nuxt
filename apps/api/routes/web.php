@@ -17,7 +17,7 @@ Route::prefix('api/v1')->group(function () {
     Route::post('forgot-password', [AuthController::class, 'sendResetPasswordLink'])->middleware('throttle:5,1')->name('password.email');
     Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('password.store');
     Route::post('verification-notification', [AuthController::class, 'verificationNotification'])->middleware('throttle:verification-notification')->name('verification.send');
-    Route::get('verify-email/{ulid}/{hash}', [AuthController::class, 'verifyEmail'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+    Route::get('verify-email/{uuid}/{hash}', [AuthController::class, 'verifyEmail'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
     Route::middleware(["auth"])->group(function () {
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
