@@ -3,18 +3,18 @@
 namespace App\Helpers;
 
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Encoders\JpegEncoder;
+use Intervention\Image\Encoders\PngEncoder;
+use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\ImageManager;
 
 class Image
 {
-    /**
-     * Convert image to webp, jpeg or png format and resize it
-     */
     public static function convert(string $source, string $target, ?int $width = null, ?int $height = null, string $extension = 'webp', int $quality = 90): void
     {
         $manager = new ImageManager(new GdDriver);
 
-        $image = $manager->read($source);
+        $image = $manager->decode($source);
 
         $maxSize = 1920;
 
@@ -27,11 +27,11 @@ class Image
         }
 
         if ($extension === 'webp') {
-            $image->toWebp($quality)->save($target);
-        } else if ($extension === 'jpeg') {
-            $image->toJpeg($quality)->save($target);
-        } else if ($extension === 'png') {
-            $image->toPng()->save($target);
+            $image->encode(new WebpEncoder(quality: $quality))->save($target);
+        } elseif ($extension === 'jpeg') {
+            $image->encode(new JpegEncoder(quality: $quality))->save($target);
+        } else {
+            $image->encode(new PngEncoder())->save($target);
         }
     }
 }

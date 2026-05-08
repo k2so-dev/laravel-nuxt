@@ -39,9 +39,6 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $user->ulid = Str::ulid()->toBase32();
-        $user->save();
-
         $user->assignRole('user');
 
         event(new Registered($user));
@@ -95,7 +92,6 @@ class AuthController extends Controller
             }
 
             $user = new User();
-            $user->ulid = Str::ulid()->toBase32();
             $user->avatar = $oAuthUser->picture ?? $oAuthUser->avatar_original ?? $oAuthUser->avatar;
             $user->name = $oAuthUser->name;
             $user->email = $oAuthUser->email;
@@ -135,14 +131,6 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
-
-        $user = User::select(['id', 'password'])->where('email', $request->email)->first();
-
-        if (!$user) {
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
 
         if (!Auth::attempt($request->only('email', 'password'), $request->remember)) {
             throw ValidationException::withMessages([
@@ -260,9 +248,9 @@ class AuthController extends Controller
     /**
      * Mark the authenticated user's email address as verified.
      */
-    public function verifyEmail(Request $request, string $ulid, string $hash): JsonResponse
+    public function verifyEmail(Request $request, string $uuid, string $hash): JsonResponse
     {
-        $user = User::where('ulid', $ulid)->first();
+        $user = User::where('uuid', $uuid)->first();
 
         abort_if(!$user, 404);
         abort_if(!hash_equals(hash('sha256', $user->getEmailForVerification()), $hash), 403, __('Invalid verification link'));
