@@ -1,15 +1,22 @@
+x-app: &app
+  build:
+    context: ./apps/api/vendor/laravel/sail/runtimes/8.5
+    dockerfile: Dockerfile
+    args:
+      WWWGROUP: '${WWWGROUP:-1000}'
+  image: sail-8.5/app
+  restart: unless-stopped
+  env_file: ./apps/api/.env
+  volumes:
+    - ./apps/api:/var/www/html
+  networks:
+    - sail
+
 services:
   laravelnuxt.api:
-    build:
-      context: ./apps/api/vendor/laravel/sail/runtimes/8.5
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP:-1000}'
-    image: sail-8.5/app
-    restart: unless-stopped
+    <<: *app
     extra_hosts:
       - 'host.docker.internal:host-gateway'
-    env_file: ./apps/api/.env
     environment:
       WWWUSER: '${WWWUSER:-1000}'
       LARAVEL_SAIL: 1
@@ -21,13 +28,25 @@ services:
       APP_DEBUG: '${APP_DEBUG:-true}'
       SUPERVISOR_PHP_COMMAND: '${SUPERVISOR_PHP_COMMAND:-php artisan octane:start --watch}'
       OCTANE_PORT: '8000'
-    volumes:
-      - ./apps/api:/var/www/html
-    networks:
-      - sail
     ports:
       - '${API_PORT:-8000}:8000'
     depends_on: [laravelnuxt.redis]
+
+  laravelnuxt.schedule:
+    <<: *app
+    environment:
+      WWWUSER: '${WWWUSER:-1000}'
+      APP_ENV: '${APP_ENV:-local}'
+      SUPERVISOR_PHP_COMMAND: 'php artisan schedule:work'
+    depends_on: [laravelnuxt.api, laravelnuxt.redis]
+
+  laravelnuxt.queue:
+    <<: *app
+    environment:
+      WWWUSER: '${WWWUSER:-1000}'
+      APP_ENV: '${APP_ENV:-local}'
+      SUPERVISOR_PHP_COMMAND: 'php artisan queue:work'
+    depends_on: [laravelnuxt.api, laravelnuxt.redis]
 
   laravelnuxt.redis:
     image: redis:8-alpine
@@ -36,8 +55,6 @@ services:
       - sail
     volumes:
       - redisdata:/data
-    ports:
-      - '${REDIS_PORT:-6379}:6379'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

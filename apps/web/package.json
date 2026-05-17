@@ -14,8 +14,8 @@
   },
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.105",
-    "@iconify-json/simple-icons": "^1.2.80",
+    "@iconify-json/lucide": "^1.2.108",
+    "@iconify-json/simple-icons": "^1.2.82",
     "@nuxt/devtools": "^3.2.4",
     "@nuxt/image": "^2.0.0",
     "@nuxt/ui": "^4.7.1",
@@ -23,9 +23,9 @@
     "@pinia/nuxt": "^0.11.3",
     "concurrently": "^9.2.1",
     "dayjs-nuxt": "^2.1.11",
-    "nuxt": "^4.4.4",
-    "nuxt-security": "^2.5.1",
-    "vue": "^3.5.33",
-    "vue-router": "^5.0.6"
+    "nuxt": "^4.4.5",
+    "nuxt-security": "^2.6.0",
+    "vue": "^3.5.34",
+    "vue-router": "^5.0.7"
   }
 }
