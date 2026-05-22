@@ -65,7 +65,7 @@ services:
     image: oven/bun:1
     restart: unless-stopped
     working_dir: /app
-    command: ${WEB_COMMAND:-bun run dev}
+    command: ${WEB_COMMAND:-bun --bun run dev}
     env_file: ./apps/web/.env
     volumes:
       - ./apps/web:/app

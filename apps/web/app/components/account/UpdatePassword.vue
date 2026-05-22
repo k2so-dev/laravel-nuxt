@@ -11,15 +11,16 @@ const state = reactive({
   password_confirmation: "",
 });
 
-const { refresh: onSubmit, status: accountPasswordStatus } = useHttp<any>("account/password", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onFetchResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
+const submitting = ref(false);
+
+async function onSubmit(): Promise<void> {
+  submitting.value = true;
+  try {
+    const res = await $http<{ ok?: boolean }>("account/password", {
+      method: "POST",
+      body: { ...state },
+    });
+    if (res?.ok) {
       toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: "The password was successfully updated.",
@@ -30,24 +31,37 @@ const { refresh: onSubmit, status: accountPasswordStatus } = useHttp<any>("accou
       state.password = "";
       state.password_confirmation = "";
     }
+  } catch (err: any) {
+    if (err?.response?.status === 422) {
+      form.value?.setErrors(err.response?._data?.errors ?? []);
+    }
+  } finally {
+    submitting.value = false;
   }
-});
+}
 
-const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useHttp<any>("forgot-password", {
-  method: "POST",
-  body: { email: auth.user.email },
-  immediate: false,
-  watch: false,
-  onFetchResponse({ response }) {
-    if (response._data?.ok) {
+const sendingReset = ref(false);
+
+async function sendResetPasswordEmail(): Promise<void> {
+  sendingReset.value = true;
+  try {
+    const res = await $http<{ ok?: boolean }>("forgot-password", {
+      method: "POST",
+      body: { email: auth.user.email },
+    });
+    if (res?.ok) {
       toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: "A link to reset your password has been sent to your email.",
         color: "success",
       });
     }
+  } catch {
+    // ошибки -> toast в plugin app.ts onResponseError
+  } finally {
+    sendingReset.value = false;
   }
-});
+}
 </script>
 
 <template>
@@ -82,7 +96,7 @@ const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = us
       </UFormField>
 
       <div class="pt-2">
-        <UButton type="submit" label="Save" :loading="accountPasswordStatus === 'pending'" />
+        <UButton type="submit" label="Save" :loading="submitting" />
       </div>
     </UForm>
 
@@ -98,7 +112,7 @@ const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = us
           label: 'Send link to Email',
           variant: 'subtle',
           color: 'neutral' as const,
-          loading: resetPasswordEmailStatus === 'pending',
+          loading: sendingReset,
           onClick(event) {
             sendResetPasswordEmail();
           },

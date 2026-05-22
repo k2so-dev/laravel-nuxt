@@ -50,10 +50,8 @@ up *args:
 # Start full app in production mode (Octane no-watch, APP_ENV=production, web .output)
 [group('stack')]
 prod *args:
-	APP_ENV=production \
-	APP_DEBUG=false \
 	SUPERVISOR_PHP_COMMAND="php artisan octane:start" \
-	WEB_COMMAND="bun run .output/server/index.mjs" \
+	WEB_COMMAND="bun --bun run .output/server/index.mjs" \
 	{{compose}} up "$@"
 
 # Stop containers without removing
@@ -144,17 +142,17 @@ test *args:
 # Run any bun command
 [group('nuxt')]
 bun *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bun "$@"
+	{{compose}} run --rm --no-deps laravelnuxt.web bun --bun "$@"
 
 # Run any bunx command
 [group('nuxt')]
 bunx *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bunx "$@"
+	{{compose}} run --rm --no-deps laravelnuxt.web bunx --bun "$@"
 
 # Run nuxt CLI (alias for `bunx nuxt`)
 [group('nuxt')]
 nuxt *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bunx nuxt "$@"
+	{{compose}} run --rm --no-deps laravelnuxt.web bunx --bun nuxt "$@"
 
 # Build Nuxt for production (writes apps/web/.output/)
 [group('nuxt')]

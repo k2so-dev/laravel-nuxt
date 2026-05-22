@@ -137,22 +137,29 @@ const state = reactive({
   remember: false,
 });
 
-const { refresh: onSubmit, status } = useHttp("login", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onFetchResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
+const submitting = ref(false);
+
+async function onSubmit(): Promise<void> {
+  submitting.value = true;
+
+  try {
+    const res = await $http<{ ok?: boolean }>("login", {
+      method: "POST",
+      body: { ...state },
+    });
+
+    if (res?.ok) {
       await auth.login();
       await router.push("/");
     }
+  } catch (err: any) {
+    if (err?.response?.status === 422) {
+      form.value?.setErrors(err.response?._data?.errors ?? []);
+    }
+  } finally {
+    submitting.value = false;
   }
-});
-
-const loading = computed(() => status.value === "pending");
+}
 </script>
 <template>
   <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
@@ -177,7 +184,7 @@ const loading = computed(() => status.value === "pending");
 
     <div class="flex items-center justify-end space-x-4">
       <NuxtLink class="text-sm" to="/auth/forgot">Forgot your password?</NuxtLink>
-      <UButton type="submit" label="Login" :loading="loading" />
+      <UButton type="submit" label="Login" :loading="submitting" />
     </div>
   </UForm>
 </template>
