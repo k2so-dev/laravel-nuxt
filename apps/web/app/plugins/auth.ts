@@ -2,10 +2,10 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const auth = useAuthStore();
 
   if (import.meta.client) {
-    auth.fetchCsrf();
+    await auth.fetchCsrf();
   }
 
-  if (auth.logged) {
+  if (auth.logged && !auth.user?.uuid) {
     await auth.fetchUser();
   }
 })

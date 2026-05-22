@@ -12,15 +12,16 @@ const state = reactive({
   password_confirmation: "",
 });
 
-const { refresh: onSubmit, status: registerStatus } = useHttp<any>("register", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onFetchResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
+const submitting = ref(false);
+
+async function onSubmit(): Promise<void> {
+  submitting.value = true;
+  try {
+    const res = await $http<{ ok?: boolean }>("register", {
+      method: "POST",
+      body: { ...state },
+    });
+    if (res?.ok) {
       toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: "You have been registered successfully.",
@@ -36,8 +37,14 @@ const { refresh: onSubmit, status: registerStatus } = useHttp<any>("register", {
 
       router.push("/auth/login");
     }
+  } catch (err: any) {
+    if (err?.response?.status === 422) {
+      form.value?.setErrors(err.response?._data?.errors ?? []);
+    }
+  } finally {
+    submitting.value = false;
   }
-});
+}
 </script>
 
 <template>
@@ -77,7 +84,7 @@ const { refresh: onSubmit, status: registerStatus } = useHttp<any>("register", {
       </UFormField>
 
       <div class="flex items-center justify-end space-x-4">
-        <UButton type="submit" label="Sign Up" :loading="registerStatus === 'pending'" />
+        <UButton type="submit" label="Sign Up" :loading="submitting" />
       </div>
     </UForm>
 

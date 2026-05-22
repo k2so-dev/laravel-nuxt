@@ -23,35 +23,30 @@ export const useAuthStore = defineStore('auth', () => {
 
   const user = ref(<User>{});
 
-  const { refresh: logout } = useHttp<any>('logout', {
-    method: 'POST',
-    immediate: false,
-    onFetchResponse: ({ response }) => {
-      if (response.status === 200) {
-        reset();
-        navigateTo('/');
-      }
-    }
-  });
+  async function logout(): Promise<void> {
+    await $http('logout', { method: 'POST' });
+    reset();
+    await navigateTo('/');
+  }
 
-  const { refresh: fetchUser } = useHttp<any>('user', {
-    immediate: false,
-    onFetchResponse({ response }) {
-      if (response.status === 200) {
-        user.value = response._data.user
-      }
+  async function fetchUser(): Promise<void> {
+    try {
+      const res = await $http<{ user: User }>('user');
+      user.value = res.user;
+    } catch {
+      // ...
     }
-  });
+  }
 
-  function fetchCsrf(): void {
-    $http('/sanctum/csrf-cookie', {
+  function fetchCsrf(): Promise<unknown> {
+    return $http('/sanctum/csrf-cookie', {
       baseURL: config.public.apiBase,
       credentials: 'include',
       headers: { Accept: 'application/json' }
     });
   }
 
-  async function login(token?: string | null): Promise<void> {
+  async function login(): Promise<void> {
     loggedCookie.value = '1';
     await fetchUser();
   }

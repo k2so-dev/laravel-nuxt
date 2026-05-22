@@ -13,31 +13,39 @@ const state = reactive({
   },
 });
 
-const { refresh: sendEmailVerification, status: resendEmailStatus } = useHttp<any>("verification-notification", {
-  method: "POST",
-  body: { email: state.email },
-  immediate: false,
-  watch: false,
-  onFetchResponse({ response }) {
-    if (response._data?.ok) {
+const resending = ref(false);
+
+async function sendEmailVerification(): Promise<void> {
+  resending.value = true;
+  try {
+    const res = await $http<{ ok?: boolean; message?: string }>("verification-notification", {
+      method: "POST",
+      body: { email: state.email },
+    });
+    if (res?.ok) {
       toast.add({
         icon: "i-heroicons-check-circle-20-solid",
-        title: response._data.message,
+        title: res.message,
         color: "success",
       });
     }
+  } catch {
+    // ошибки -> toast в plugin app.ts onResponseError
+  } finally {
+    resending.value = false;
   }
-});
+}
 
-const { refresh: onSubmit, status: accountUpdateStatus } = useHttp<any>("account/update", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onFetchResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
+const submitting = ref(false);
+
+async function onSubmit(): Promise<void> {
+  submitting.value = true;
+  try {
+    const res = await $http<{ ok?: boolean }>("account/update", {
+      method: "POST",
+      body: { ...state },
+    });
+    if (res?.ok) {
       toast.add({
         icon: "i-heroicons-check-circle-20-solid",
         title: "Account details have been successfully updated.",
@@ -50,8 +58,14 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useHttp<any>("account
       state.email = auth.user.email;
       state.avatar = auth.user.avatar;
     }
+  } catch (err: any) {
+    if (err?.response?.status === 422) {
+      form.value?.setErrors(err.response?._data?.errors ?? []);
+    }
+  } finally {
+    submitting.value = false;
   }
-});
+}
 </script>
 
 <template>
@@ -94,7 +108,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useHttp<any>("account
           label: 'Resend verification email',
           variant: 'subtle',
           color: 'neutral' as const,
-          loading: resendEmailStatus === 'pending',
+          loading: resending,
           onClick(event) {
               sendEmailVerification();
           },
@@ -103,7 +117,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useHttp<any>("account
     />
 
     <div class="pt-2">
-      <UButton type="submit" label="Save" :loading="accountUpdateStatus === 'pending'" />
+      <UButton type="submit" label="Save" :loading="submitting" />
     </div>
   </UForm>
 </template>

@@ -8,23 +8,30 @@ const state = reactive({
   email: "",
 });
 
-const { refresh: onSubmit, status: forgotStatus } = useHttp<any>("forgot-password", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onFetchResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
+const submitting = ref(false);
+
+async function onSubmit(): Promise<void> {
+  submitting.value = true;
+  try {
+    const res = await $http<{ ok?: boolean; message?: string }>("forgot-password", {
+      method: "POST",
+      body: { ...state },
+    });
+    if (res?.ok) {
       toast.add({
         title: "Success",
-        description: response._data.message,
+        description: res.message,
         color: "success",
       });
     }
+  } catch (err: any) {
+    if (err?.response?.status === 422) {
+      form.value?.setErrors(err.response?._data?.errors ?? []);
+    }
+  } finally {
+    submitting.value = false;
   }
-});
+}
 </script>
 
 <template>
@@ -43,7 +50,7 @@ const { refresh: onSubmit, status: forgotStatus } = useHttp<any>("forgot-passwor
       </UFormField>
 
       <div class="flex items-center justify-end space-x-4">
-        <UButton type="submit" label="Send reset link" :loading="forgotStatus === 'pending'" />
+        <UButton type="submit" label="Send reset link" :loading="submitting" />
       </div>
     </UForm>
 
