@@ -52,20 +52,10 @@ export default defineNuxtConfig({
    */
   modules: [
     '@nuxt/ui',
-    '@nuxt/image',
     '@pinia/nuxt',
     'dayjs-nuxt',
     'nuxt-security',
   ],
-
-  image: {
-    domains: [
-      import.meta.env.APP_URL || 'http://127.0.0.1:8000'
-    ],
-    alias: {
-      api: import.meta.env.APP_URL || 'http://127.0.0.1:8000'
-    }
-  },
 
   security: {
     headers: {
