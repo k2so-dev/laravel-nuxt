@@ -169,7 +169,6 @@ const items = [
 const isSideOpen = ref(false);
 </script>
 <template>
-
   <UHeader toggle-side="left">
     <template #title>
       <AppLogo />
