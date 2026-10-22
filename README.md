@@ -23,6 +23,7 @@ The goal of the project is to create a template for development on Laravel and N
     - [Nuxt Middleware](#nuxt-middleware)
     - [Laravel Middleware](#laravel-middleware)
     - [Image uploads](#image-uploads)
+- [Deployment](#deployment)
 - [Examples](#examples)
     - [Route list](#route-list)
     - [Demo](#demo)
@@ -225,7 +226,13 @@ Uploads are processed by [**imgproxy**](https://imgproxy.net/) (`imgproxy` servi
 - Set `UPLOAD_OPTIMIZE=false` to store the original file as is. Limits are in `config/uploads.php`.
 - The API returns signed imgproxy URLs (e.g. `avatar_url` with the `avatar` preset), keys never reach the frontend. Presets live in `config/laravel-imgproxy.php`.
 - `IMGPROXY_URL` is the public address used in URLs, `IMGPROXY_INTERNAL_URL` is used by the API to fetch processed uploads.
-- imgproxy does not cache results: in production put a CDN or a caching reverse proxy in front of it.
+- imgproxy does not cache results: in production put a CDN or a caching reverse proxy in front of it (see [Deployment](#deployment)).
+
+## Deployment
+
+[`deploy/nginx.conf`](deploy/nginx.conf) is an example reverse proxy that serves everything from a single domain: `/` → Nuxt, `/api/` and `/storage/` → Laravel, `/image/` → imgproxy with response caching.
+
+Set `APP_URL` and `FRONTEND_URL` to the same domain and `IMGPROXY_URL=https://example.com/image` in both `.env` files. Expose only nginx to the internet.
 
 ## Examples
 
