@@ -20,7 +20,7 @@ init:
 	cp -n apps/web/.env.example apps/web/.env || true
 	just composer install --ignore-platform-reqs
 	just build
-	{{compose}} run --rm --no-deps laravelnuxt.api bun install
+	{{compose}} run --rm --no-deps api bun install
 	just bun install
 	just a key:generate
 	just a storage:link --relative
@@ -32,7 +32,7 @@ status:
 	echo "STATUS:"
 	running=$({{compose}} ps --status running --services 2>/dev/null || true)
 	existing=$({{compose}} ps -a --services 2>/dev/null || true)
-	for s in laravelnuxt.api laravelnuxt.web; do
+	for s in api web; do
 		if echo "$running" | grep -qx "$s" 2>/dev/null; then
 			printf "  \033[32m●\033[0m %-6s running\n" "$s"
 		elif echo "$existing" | grep -qx "$s" 2>/dev/null; then
@@ -82,27 +82,27 @@ ps *args:
 # Start api only -d
 [group('profile')]
 api *args:
-	{{compose}} up -d laravelnuxt.api "$@"
+	{{compose}} up -d api "$@"
 
 # Run web foreground, ephemeral, with port forwarding
 [group('profile')]
 web *args:
-	{{compose}} run --rm --service-ports laravelnuxt.web "$@"
+	{{compose}} run --rm --service-ports web "$@"
 
 # Start redis only -d
 [group('profile')]
 redis *args:
-	{{compose}} up -d laravelnuxt.redis "$@"
+	{{compose}} up -d redis "$@"
 
 # Stop redis
 [group('profile')]
 redis-stop *args:
-	{{compose}} stop laravelnuxt.redis "$@"
+	{{compose}} stop redis "$@"
 
 # Build api Docker image
 [group('build')]
 build:
-	{{compose}} build laravelnuxt.api
+	{{compose}} build api
 
 # Alias for `just artisan`
 [group('laravel')]
@@ -111,12 +111,12 @@ a *args: (artisan args)
 # Run any `php artisan` command
 [group('laravel')]
 artisan *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api php artisan "$@"
+	{{compose}} run --rm --no-deps api php artisan "$@"
 
 # Run raw `php` in api container
 [group('laravel')]
 php *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api php "$@"
+	{{compose}} run --rm --no-deps api php "$@"
 
 # Run composer (uses composer:latest sidecar — works without api image build)
 [group('laravel')]
@@ -127,32 +127,32 @@ composer *args:
 [group('laravel')]
 [no-exit-message]
 sail *args:
-	APP_SERVICE=laravelnuxt.api ./apps/api/vendor/bin/sail "$@"
+	APP_SERVICE=api ./apps/api/vendor/bin/sail "$@"
 
 # Run Laravel Pint (code style)
 [group('laravel')]
 pint *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/pint "$@"
+	{{compose}} run --rm --no-deps api ./vendor/bin/pint "$@"
 
 # Run Pest
 [group('laravel')]
 test *args:
-	{{compose}} run --rm --no-deps laravelnuxt.api ./vendor/bin/pest "$@"
+	{{compose}} run --rm --no-deps api ./vendor/bin/pest "$@"
 
 # Run any bun command
 [group('nuxt')]
 bun *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bun --bun "$@"
+	{{compose}} run --rm --no-deps web bun --bun "$@"
 
 # Run any bunx command
 [group('nuxt')]
 bunx *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bunx --bun "$@"
+	{{compose}} run --rm --no-deps web bunx --bun "$@"
 
 # Run nuxt CLI (alias for `bunx nuxt`)
 [group('nuxt')]
 nuxt *args:
-	{{compose}} run --rm --no-deps laravelnuxt.web bunx --bun nuxt "$@"
+	{{compose}} run --rm --no-deps web bunx --bun nuxt "$@"
 
 # Build Nuxt for production (writes apps/web/.output/)
 [group('nuxt')]
