@@ -74,9 +74,12 @@ class AccountController extends Controller
             ]);
         }
 
-        $user->update([
+        $user->forceFill([
             'password' => Hash::make($request->password),
-        ]);
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        $user->sessions()->where('id', '!=', $request->session()->getId())->delete();
 
         return response()->json([
             'ok' => true,

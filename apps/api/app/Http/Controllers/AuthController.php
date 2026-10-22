@@ -9,7 +9,6 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -51,9 +50,9 @@ class AuthController extends Controller
     /**
      * Redirect to provider for authentication
      */
-    public function redirect(Request $request, string $provider): RedirectResponse
+    public function redirect(Request $request, string $provider): \Symfony\Component\HttpFoundation\RedirectResponse|\Illuminate\Http\RedirectResponse
     {
-        return Socialite::driver($provider)->stateless()->redirect();
+        return Socialite::driver($provider)->redirect();
     }
 
     /**
@@ -62,7 +61,7 @@ class AuthController extends Controller
      */
     public function callback(Request $request, string $provider): View
     {
-        $oAuthUser = Socialite::driver($provider)->stateless()->user();
+        $oAuthUser = Socialite::driver($provider)->user();
 
         if (!$oAuthUser?->token) {
             return view('oauth', [
@@ -228,6 +227,8 @@ class AuthController extends Controller
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
                 ])->save();
+
+                $user->sessions()->delete();
 
                 event(new PasswordReset($user));
             }
