@@ -32,7 +32,7 @@ services:
       OCTANE_PORT: '8000'
     ports:
       - '${API_PORT:-8000}:8000'
-    depends_on: [redis]
+    depends_on: [redis, imgproxy]
 
   schedule:
     <<: *app
@@ -62,6 +62,22 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
+
+  imgproxy:
+    image: ghcr.io/imgproxy/imgproxy:v4
+    restart: unless-stopped
+    environment:
+      IMGPROXY_KEY: '${IMGPROXY_KEY:?run just init or set IMGPROXY_KEY}'
+      IMGPROXY_SALT: '${IMGPROXY_SALT:?run just init or set IMGPROXY_SALT}'
+      IMGPROXY_PATH_PREFIX: /image
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /storage
+      IMGPROXY_ALLOWED_SOURCES: 'local://'
+    volumes:
+      - ./apps/api/storage/app:/storage:ro
+    networks:
+      - sail
+    ports:
+      - '${IMGPROXY_PORT:-8080}:8080'
 
   web:
     image: oven/bun:1

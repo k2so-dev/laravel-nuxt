@@ -1,10 +1,23 @@
 <script lang="ts" setup>
-const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width", "height"]);
+const props = defineProps(["modelValue", "entity", "accept", "maxSize", "src"]);
 const emit = defineEmits(["update:modelValue"]);
 const toast = useToast();
 
 const file = ref<File | null>(null);
 const loading = ref(false);
+const preview = ref('');
+
+// Selected file is previewed locally, otherwise the current image url
+watchEffect((onCleanup) => {
+  if (!file.value) {
+    preview.value = props.modelValue ? props.src : '';
+    return;
+  }
+
+  const url = URL.createObjectURL(file.value);
+  preview.value = url;
+  onCleanup(() => URL.revokeObjectURL(url));
+});
 
 watch(() => props.modelValue, (newPath) => {
   if (!newPath) {
@@ -38,8 +51,6 @@ const onFileChange = async (selectedFile: File | null) => {
     body: formData,
     params: {
       entity: props.entity,
-      width: props.width ?? null,
-      height: props.height ?? null,
     },
     ignoreResponseError: true,
     onFetchResponse({ response }) {
@@ -75,7 +86,7 @@ const onRemoveFile = () => {
     >
       <div class="flex flex-wrap items-center gap-3 relative flex">
         <UAvatar
-          :src="$storage(modelValue)"
+          :src="preview"
           icon="i-lucide-user"
           img-class="object-cover"
           class="w-20 h-20 rounded-xl"

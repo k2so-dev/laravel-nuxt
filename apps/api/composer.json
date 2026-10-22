@@ -10,7 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
-        "intervention/image": "^4.0",
+        "imsus/laravel-imgproxy": "^2.1",
         "laravel/framework": "^13.38",
         "laravel/octane": "^2.22",
         "laravel/sanctum": "^4.3",

@@ -2,14 +2,12 @@
 
 namespace App\Providers;
 
-use App\Helpers\Image;
 use App\Helpers\Utils;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -77,15 +75,6 @@ class AppServiceProvider extends ServiceProvider
             );
 
             return config('app.frontend_url') . '/auth/verify?verify_url=' . urlencode($url);
-        });
-
-        /**
-         * Convert uploaded image to webp, jpeg or png format and resize it
-         */
-        UploadedFile::macro('convert', function (?int $width = null, ?int $height = null, string $extension = 'webp', int $quality = 90) {
-            return tap($this, static function (UploadedFile $file) use ($width, $height, $extension, $quality) {
-                Image::convert($file->path(), $file->path(), $width, $height, $extension, $quality);
-            });
         });
 
         /**

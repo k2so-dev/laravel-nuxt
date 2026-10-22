@@ -142,6 +142,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Swoole Server Options
+    |--------------------------------------------------------------------------
+    |
+    | package_max_length limits the whole request body, so it must exceed
+    | the upload limit in config/uploads.php (Swoole default is 10MB).
+    |
+    */
+
+    'swoole' => [
+        'options' => [
+            'package_max_length' => 32 * 1024 * 1024,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Octane Swoole Tables
     |--------------------------------------------------------------------------
     |

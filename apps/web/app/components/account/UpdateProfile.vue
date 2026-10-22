@@ -73,11 +73,10 @@ async function onSubmit(): Promise<void> {
     <UFormField label="" name="avatar" class="flex">
       <InputUploadImage
         v-model="state.avatar"
+        :src="auth.user.avatar_url"
         accept=".png, .jpg, .jpeg, .webp"
         entity="avatars"
-        max-size="5"
-        :width="300"
-        :height="300"
+        max-size="20"
       />
     </UFormField>
 

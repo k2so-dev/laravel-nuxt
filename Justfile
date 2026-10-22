@@ -7,7 +7,7 @@ compose := "docker compose --env-file ./apps/api/.env"
 default:
 	@just --list --unsorted --list-heading $'\nRECIPES:\n' --list-prefix '  '
 
-# Copy .env files, build api image, install deps, generate APP_KEY, link storage
+# Copy .env files, build api image, install deps, generate APP_KEY and imgproxy keys, link storage
 [group('setup')]
 init:
 	#!/usr/bin/env bash
@@ -18,6 +18,8 @@ init:
 	cp -n .env.example .env || true
 	cp -n apps/api/.env.example apps/api/.env || true
 	cp -n apps/web/.env.example apps/web/.env || true
+	# before any compose call: docker-compose.yml requires imgproxy keys
+	sed -i.bak -e "s/^IMGPROXY_KEY=.*/IMGPROXY_KEY=$(openssl rand -hex 32)/" -e "s/^IMGPROXY_SALT=.*/IMGPROXY_SALT=$(openssl rand -hex 32)/" apps/api/.env && rm apps/api/.env.bak
 	just composer install --ignore-platform-reqs
 	just build
 	{{compose}} run --rm --no-deps api bun install

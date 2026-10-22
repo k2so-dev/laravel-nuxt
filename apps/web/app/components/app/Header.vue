@@ -189,7 +189,7 @@ const isSideOpen = ref(false);
             icon="i-lucide-user"
             class="rounded-lg"
             size="md"
-            :src="$storage(auth.user.avatar)"
+            :src="auth.user.avatar_url"
             :alt="auth.user.name"
           />
         </ULink>

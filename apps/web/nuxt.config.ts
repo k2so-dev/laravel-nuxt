@@ -72,7 +72,7 @@ export default defineNuxtConfig({
       crossOriginEmbedderPolicy: 'unsafe-none',
       crossOriginOpenerPolicy: 'same-origin-allow-popups',
       contentSecurityPolicy: {
-        "img-src": ["'self'", "data:", "https://*", import.meta.env.APP_URL || 'http://127.0.0.1:8000'],
+        "img-src": ["'self'", "data:", "blob:", "https://*", import.meta.env.APP_URL || 'http://127.0.0.1:8000', new URL(import.meta.env.IMGPROXY_URL || 'http://127.0.0.1:8080').origin],
       },
     },
   },
@@ -101,7 +101,6 @@ export default defineNuxtConfig({
     public: {
       apiBase: import.meta.env.APP_URL,
       apiPrefix: '/api/v1',
-      storageBase: import.meta.env.APP_URL + '/storage/',
       providers: {
         google: {
           name: "Google",
