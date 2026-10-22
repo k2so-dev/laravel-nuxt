@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     const toast = useToast()
 
     toast.add({
-      icon: "i-heroicons-exclamation-circle-solid",
+      icon: "i-lucide-circle-alert",
       title: "Access denied.",
       color: "error",
     });

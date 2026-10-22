@@ -167,7 +167,7 @@ async function onSubmit(): Promise<void> {
       <UInput
         v-model="state.email"
         placeholder="you@example.com"
-        icon="i-heroicons-envelope"
+        icon="i-lucide-mail"
         trailing
         type="email"
         autofocus

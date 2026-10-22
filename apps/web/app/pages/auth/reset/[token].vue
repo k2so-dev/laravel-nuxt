@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type Form } from "#ui/types";
+import type { Form } from "#ui/types";
 
 const router = useRouter();
 const route = useRoute();
@@ -54,7 +54,7 @@ useSeoMeta({
             v-model="state.email"
             class="w-full"
             placeholder="you@example.com"
-            icon="i-heroicons-envelope"
+            icon="i-lucide-mail"
             trailing
             type="email"
             readonly=""

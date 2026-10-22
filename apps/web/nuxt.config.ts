@@ -45,6 +45,16 @@ export default defineNuxtConfig({
     'auth/verify': { ssr: false }
   },
 
+  /**
+   * Fontshare API is unreachable from some networks and hangs SSR rendering.
+   * @see https://fonts.nuxt.com/get-started/configuration#providers
+   */
+  fonts: {
+    providers: {
+      fontshare: false,
+    },
+  },
+
   css: ['~/assets/css/main.css'],
 
   /**

@@ -27,7 +27,7 @@ useSeoMeta({
         class="text-3xl font-black leading-tight tracking-tight flex items-center gap-2"
       >
         Email Verification
-        <UIcon v-if="loading" name="i-heroicons-arrow-path-solid" class="animate-spin" />
+        <UIcon v-if="loading" name="i-lucide-loader-circle" class="animate-spin" />
         <span v-else-if="error" class="text-red-500">Error</span>
         <span v-else class="text-emerald-500">Done</span>
       </h1>

@@ -7,12 +7,12 @@ const items = [
   [
     {
       label: "Account",
-      icon: "i-heroicons-user",
+      icon: "i-lucide-user",
       to: "/account/general",
     },
     {
       label: "Devices",
-      icon: "i-heroicons-device-phone-mobile",
+      icon: "i-lucide-smartphone",
       to: "/account/devices",
     },
   ],

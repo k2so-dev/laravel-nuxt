@@ -11,12 +11,12 @@ const userItems = [
     {
       label: "Account",
       to: "/account/general",
-      icon: "i-heroicons-user",
+      icon: "i-lucide-user",
     },
     {
       label: "Devices",
       to: "/account/devices",
-      icon: "i-heroicons-device-phone-mobile",
+      icon: "i-lucide-smartphone",
     },
   ],
   [
@@ -26,7 +26,7 @@ const userItems = [
         auth.logout();
       },
       class: 'cursor-pointer',
-      icon: "i-heroicons-arrow-left-on-rectangle",
+      icon: "i-lucide-log-out",
     },
   ],
 ];
@@ -186,7 +186,7 @@ const isSideOpen = ref(false);
       >
         <ULink class="cursor-pointer">
           <UAvatar
-            icon="i-heroicons-user"
+            icon="i-lucide-user"
             class="rounded-lg"
             size="md"
             :src="$storage(auth.user.avatar)"

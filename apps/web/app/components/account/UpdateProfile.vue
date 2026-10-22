@@ -24,7 +24,7 @@ async function sendEmailVerification(): Promise<void> {
     });
     if (res?.ok) {
       toast.add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: "i-lucide-circle-check",
         title: res.message,
         color: "success",
       });
@@ -47,7 +47,7 @@ async function onSubmit(): Promise<void> {
     });
     if (res?.ok) {
       toast.add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: "i-lucide-circle-check",
         title: "Account details have been successfully updated.",
         color: "success",
       });
@@ -89,7 +89,7 @@ async function onSubmit(): Promise<void> {
       <UInput
         v-model="state.email"
         placeholder="you@example.com"
-        icon="i-heroicons-envelope"
+        icon="i-lucide-mail"
         trailing
         type="email"
         class="w-full"
@@ -100,7 +100,7 @@ async function onSubmit(): Promise<void> {
       v-if="auth.user.must_verify_email"
       variant="outline"
       color="neutral"
-      icon="i-heroicons-information-circle-20-solid"
+      icon="i-lucide-info"
       title="Please confirm your email address."
       description="A confirmation email has been sent to your email address. Please click on the confirmation link in the email to verify your email address."
       :actions="[

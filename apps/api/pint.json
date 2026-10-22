@@ -4,7 +4,7 @@
     "simplified_null_return": true,
     "not_operator_with_successor_space": false,
     "braces": false,
-    "concat_space": 1,
+    "concat_space": true,
     "new_with_braces": {
       "anonymous_class": false,
       "named_class": false

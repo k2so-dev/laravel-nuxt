@@ -82,7 +82,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (import.meta.server || context.error.name === 'AbortError') return;
 
       toast.add({
-        icon: 'i-heroicons-exclamation-circle-solid',
+        icon: 'i-lucide-circle-alert',
         color: "error",
         title: context.error.message ?? 'Something went wrong'
       });
@@ -98,7 +98,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         auth.reset();
       } else if (context.response.status !== 422 && import.meta.client) {
         toast.add({
-          icon: 'i-heroicons-exclamation-circle-solid',
+          icon: 'i-lucide-circle-alert',
           color: "error",
           title: context.response._data?.message ?? context.response.statusText ?? 'Something went wrong'
         });

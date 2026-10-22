@@ -22,7 +22,7 @@ const onFileChange = async (selectedFile: File | null) => {
     toast.add({
       title: "File is too large.",
       color: "error",
-      icon: "i-heroicons-exclamation-circle-solid",
+      icon: "i-lucide-circle-alert",
     });
     file.value = null;
     return;
@@ -45,7 +45,7 @@ const onFileChange = async (selectedFile: File | null) => {
     onFetchResponse({ response }) {
       if (response.status !== 200) {
         toast.add({
-          icon: 'i-heroicons-exclamation-circle-solid',
+          icon: 'i-lucide-circle-alert',
           color: "error",
           title: response._data?.message ?? response.statusText ?? 'Something went wrong',
         });
@@ -76,7 +76,7 @@ const onRemoveFile = () => {
       <div class="flex flex-wrap items-center gap-3 relative flex">
         <UAvatar
           :src="$storage(modelValue)"
-          icon="i-heroicons-user"
+          icon="i-lucide-user"
           img-class="object-cover"
           class="w-20 h-20 rounded-xl"
           size="3xl"
@@ -91,7 +91,7 @@ const onRemoveFile = () => {
           <UButton
             type="button"
             color="neutral"
-            icon="i-heroicons-cloud-arrow-up"
+            icon="i-lucide-cloud-upload"
             size="xs"
             variant="soft"
             class="rounded-full"
@@ -108,7 +108,7 @@ const onRemoveFile = () => {
           <UButton
             type="button"
             color="neutral"
-            icon="i-heroicons-x-mark-20-solid"
+            icon="i-lucide-x"
             size="xs"
             variant="soft"
             class="rounded-full"

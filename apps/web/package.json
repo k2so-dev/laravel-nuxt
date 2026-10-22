@@ -13,18 +13,19 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.108",
-    "@iconify-json/simple-icons": "^1.2.82",
-    "@nuxt/devtools": "^3.2.4",
-    "@nuxt/ui": "^4.7.1",
-    "@nuxtjs/mdc": "^0.21.1",
-    "@pinia/nuxt": "^0.11.3",
-    "concurrently": "^9.2.1",
+    "@iconify-json/lucide": "^1.2.147",
+    "@iconify-json/simple-icons": "^1.2.100",
+    "@nuxt/devtools": "^3.4.4",
+    "@nuxt/ui": "^4.12.0",
+    "@pinia/nuxt": "^1.0.3",
+    "concurrently": "^10.0.6",
     "dayjs-nuxt": "^2.1.11",
-    "nuxt": "^4.4.5",
+    "nuxt": "^4.6.2",
     "nuxt-security": "^2.6.0",
-    "vue": "^3.5.34",
-    "vue-router": "^5.0.7"
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0"
+  },
+  "overrides": {
+    "xss": "1.0.15"
   }
 }
