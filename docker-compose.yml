@@ -1,3 +1,5 @@
+name: laravel-nuxt
+
 x-app: &app
   build:
     context: ./apps/api/vendor/laravel/sail/runtimes/8.5
@@ -13,7 +15,7 @@ x-app: &app
     - sail
 
 services:
-  laravelnuxt.api:
+  api:
     <<: *app
     extra_hosts:
       - 'host.docker.internal:host-gateway'
@@ -30,25 +32,25 @@ services:
       OCTANE_PORT: '8000'
     ports:
       - '${API_PORT:-8000}:8000'
-    depends_on: [laravelnuxt.redis]
+    depends_on: [redis, imgproxy]
 
-  laravelnuxt.schedule:
+  schedule:
     <<: *app
     environment:
       WWWUSER: '${WWWUSER:-1000}'
       APP_ENV: '${APP_ENV:-local}'
       SUPERVISOR_PHP_COMMAND: 'php artisan schedule:work'
-    depends_on: [laravelnuxt.api, laravelnuxt.redis]
+    depends_on: [api, redis]
 
-  laravelnuxt.queue:
+  queue:
     <<: *app
     environment:
       WWWUSER: '${WWWUSER:-1000}'
       APP_ENV: '${APP_ENV:-local}'
       SUPERVISOR_PHP_COMMAND: 'php artisan queue:work'
-    depends_on: [laravelnuxt.api, laravelnuxt.redis]
+    depends_on: [api, redis]
 
-  laravelnuxt.redis:
+  redis:
     image: redis:8-alpine
     restart: unless-stopped
     networks:
@@ -61,7 +63,23 @@ services:
       timeout: 3s
       retries: 5
 
-  laravelnuxt.web:
+  imgproxy:
+    image: ghcr.io/imgproxy/imgproxy:v4
+    restart: unless-stopped
+    environment:
+      IMGPROXY_KEY: '${IMGPROXY_KEY:?run just init or set IMGPROXY_KEY}'
+      IMGPROXY_SALT: '${IMGPROXY_SALT:?run just init or set IMGPROXY_SALT}'
+      IMGPROXY_PATH_PREFIX: /image
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /storage
+      IMGPROXY_ALLOWED_SOURCES: 'local://'
+    volumes:
+      - ./apps/api/storage/app:/storage:ro
+    networks:
+      - sail
+    ports:
+      - '${IMGPROXY_PORT:-8080}:8080'
+
+  web:
     image: oven/bun:1
     restart: unless-stopped
     working_dir: /app

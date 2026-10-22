@@ -1,10 +1,23 @@
 <script lang="ts" setup>
-const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width", "height"]);
+const props = defineProps(["modelValue", "entity", "accept", "maxSize", "src"]);
 const emit = defineEmits(["update:modelValue"]);
 const toast = useToast();
 
 const file = ref<File | null>(null);
 const loading = ref(false);
+const preview = ref('');
+
+// Selected file is previewed locally, otherwise the current image url
+watchEffect((onCleanup) => {
+  if (!file.value) {
+    preview.value = props.modelValue ? props.src : '';
+    return;
+  }
+
+  const url = URL.createObjectURL(file.value);
+  preview.value = url;
+  onCleanup(() => URL.revokeObjectURL(url));
+});
 
 watch(() => props.modelValue, (newPath) => {
   if (!newPath) {
@@ -22,7 +35,7 @@ const onFileChange = async (selectedFile: File | null) => {
     toast.add({
       title: "File is too large.",
       color: "error",
-      icon: "i-heroicons-exclamation-circle-solid",
+      icon: "i-lucide-circle-alert",
     });
     file.value = null;
     return;
@@ -38,14 +51,12 @@ const onFileChange = async (selectedFile: File | null) => {
     body: formData,
     params: {
       entity: props.entity,
-      width: props.width ?? null,
-      height: props.height ?? null,
     },
     ignoreResponseError: true,
     onFetchResponse({ response }) {
       if (response.status !== 200) {
         toast.add({
-          icon: 'i-heroicons-exclamation-circle-solid',
+          icon: 'i-lucide-circle-alert',
           color: "error",
           title: response._data?.message ?? response.statusText ?? 'Something went wrong',
         });
@@ -75,8 +86,8 @@ const onRemoveFile = () => {
     >
       <div class="flex flex-wrap items-center gap-3 relative flex">
         <UAvatar
-          :src="$storage(modelValue)"
-          icon="i-heroicons-user"
+          :src="preview"
+          icon="i-lucide-user"
           img-class="object-cover"
           class="w-20 h-20 rounded-xl"
           size="3xl"
@@ -91,7 +102,7 @@ const onRemoveFile = () => {
           <UButton
             type="button"
             color="neutral"
-            icon="i-heroicons-cloud-arrow-up"
+            icon="i-lucide-cloud-upload"
             size="xs"
             variant="soft"
             class="rounded-full"
@@ -108,7 +119,7 @@ const onRemoveFile = () => {
           <UButton
             type="button"
             color="neutral"
-            icon="i-heroicons-x-mark-20-solid"
+            icon="i-lucide-x"
             size="xs"
             variant="soft"
             class="rounded-full"

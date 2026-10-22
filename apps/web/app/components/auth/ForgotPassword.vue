@@ -42,7 +42,7 @@ async function onSubmit(): Promise<void> {
           v-model="state.email"
           class="w-full"
           placeholder="you@example.com"
-          icon="i-heroicons-envelope"
+          icon="i-lucide-mail"
           trailing
           type="email"
           autofocus

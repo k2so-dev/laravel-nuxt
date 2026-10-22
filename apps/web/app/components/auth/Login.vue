@@ -50,7 +50,7 @@ async function handleMessage(event: { data: any }): Promise<void> {
     await router.push("/");
   } else if (event.data.message) {
     toast.add({
-      icon: "i-heroicons-exclamation-circle-solid",
+      icon: "i-lucide-circle-alert",
       color: "error",
       title: event.data.message,
     });
@@ -108,7 +108,7 @@ onBeforeUnmount(() => window.removeEventListener("message", handleMessage));
           v-model="state.email"
           class="w-full"
           placeholder="you@example.com"
-          icon="i-heroicons-envelope"
+          icon="i-lucide-mail"
           trailing
           type="email"
           autofocus

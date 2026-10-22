@@ -3,7 +3,7 @@
 <head>
     <title>{{ config('app.name') }}</title>
     <script>
-        window.opener.postMessage(JSON.parse('{!! json_encode($message) !!}'), '{{ config("app.frontend_url") }}');
+        window.opener.postMessage(@json($message), @json(config('app.frontend_url')));
         window.close();
     </script>
 </head>

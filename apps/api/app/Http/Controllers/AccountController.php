@@ -29,16 +29,17 @@ class AccountController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
             'email' => ['required', 'email', 'unique:users,email,'.$user->id],
-            'avatar' => ['nullable', 'string', Rule::excludeIf($request->avatar === $user->avatar), 'regex:/^avatars\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.([a-z]++)$/i', new TemporaryFileExists],
+            'avatar' => ['nullable', 'string', Rule::excludeIf($request->avatar === $user->avatar), 'regex:/^avatars\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(webp|jpe?g|png)$/i', new TemporaryFileExists],
         ]);
 
-        if ($user->avatar && Str::startsWith($user->avatar, 'avatars/') && $user->avatar !== $request->avatar) {
-            Storage::disk('public')->delete($user->avatar);
-        }
-
         $email = $user->email;
+        $avatar = $user->avatar;
 
         $user->update($request->only(['name', 'email', 'avatar']));
+
+        if ($avatar && Str::startsWith($avatar, 'avatars/') && $avatar !== $user->avatar) {
+            Storage::disk('public')->delete($avatar);
+        }
 
         if ($email !== $request->email) {
             $user->email_verified_at = null;
@@ -74,9 +75,12 @@ class AccountController extends Controller
             ]);
         }
 
-        $user->update([
+        $user->forceFill([
             'password' => Hash::make($request->password),
-        ]);
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        $user->sessions()->where('id', '!=', $request->session()->getId())->delete();
 
         return response()->json([
             'ok' => true,

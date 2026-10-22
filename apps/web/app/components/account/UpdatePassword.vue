@@ -22,7 +22,7 @@ async function onSubmit(): Promise<void> {
     });
     if (res?.ok) {
       toast.add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: "i-lucide-circle-check",
         title: "The password was successfully updated.",
         color: "success",
       });
@@ -51,7 +51,7 @@ async function sendResetPasswordEmail(): Promise<void> {
     });
     if (res?.ok) {
       toast.add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: "i-lucide-circle-check",
         title: "A link to reset your password has been sent to your email.",
         color: "success",
       });
@@ -104,7 +104,7 @@ async function sendResetPasswordEmail(): Promise<void> {
       v-else
       variant="outline"
       color="neutral"
-      icon="i-heroicons-information-circle-20-solid"
+      icon="i-lucide-info"
       title="Send a link to your email to reset your password."
       description="To create a password for your account, you must go through the password recovery process."
       :actions="[

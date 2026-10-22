@@ -23,7 +23,7 @@ async function onSubmit(): Promise<void> {
     });
     if (res?.ok) {
       toast.add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: "i-lucide-circle-check",
         title: "You have been registered successfully.",
         color: "success",
         actions: [
@@ -59,7 +59,7 @@ async function onSubmit(): Promise<void> {
           v-model="state.email"
           class="w-full"
           placeholder="you@example.com"
-          icon="i-heroicons-envelope"
+          icon="i-lucide-mail"
           trailing
           type="email"
         />

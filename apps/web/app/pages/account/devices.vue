@@ -24,7 +24,7 @@ const items = (row: any) => [
   [
     {
       label: "Delete",
-      icon: "i-heroicons-trash-20-solid",
+      icon: "i-lucide-trash-2",
       color: 'error' as const,
       onSelect: async () => {
         await $http("devices/disconnect", {
@@ -65,7 +65,7 @@ useSeoMeta({
         <div class="flex justify-end">
           <UDropdownMenu :items="items(row.original)" :content="{ side: 'bottom', align: 'end' }">
             <UButton :disabled="row.original.is_current as boolean" color="neutral" variant="ghost"
-              icon="i-heroicons-ellipsis-horizontal-20-solid" />
+              icon="i-lucide-ellipsis" />
           </UDropdownMenu>
         </div>
       </template>

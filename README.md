@@ -22,6 +22,8 @@ The goal of the project is to create a template for development on Laravel and N
     - [Authentication](#authentication)
     - [Nuxt Middleware](#nuxt-middleware)
     - [Laravel Middleware](#laravel-middleware)
+    - [Image uploads](#image-uploads)
+- [Deployment](#deployment)
 - [Examples](#examples)
     - [Route list](#route-list)
     - [Demo](#demo)
@@ -41,7 +43,7 @@ The goal of the project is to create a template for development on Laravel and N
  - UI library [**Nuxt UI 4**](https://ui.nuxt.com/) based on [**TailwindCSS 4**](https://tailwindcss.com/) and [**Reka UI**](https://reka-ui.com/).
  - [**Pinia**](https://pinia.vuejs.org/ssr/nuxt.html) The intuitive store for Vue.js
  - Integrated pages: login, registration, password recovery, email confirmation, account information update, password change.
- - Temporary uploads with cropping and optimization of images.
+ - Temporary uploads with image optimization and signed URLs via [**imgproxy**](https://imgproxy.net/).
  - Device management
  - Enhanced Fetch Wrappers : Utilizes `$http` and `useHttp`, which extend the capabilities of **Nuxt's** standard `$fetch` and `useFetch`.
  - Monorepo layout (`apps/api` + `apps/web`) with `just` task runner.
@@ -60,7 +62,7 @@ The goal of the project is to create a template for development on Laravel and N
 
 1. `cd apps/api && composer install && cd ../web && bun install && cd ../..`
 2. `cp apps/api/.env.example apps/api/.env`
-3. `cd apps/api && php artisan key:generate && php artisan storage:link`
+3. `cd apps/api && php artisan key:generate && php artisan storage:link`, then `php artisan imgproxy:key` and copy the pair into `.env`
 4. `php artisan migrate && php artisan db:seed`
 5. `php artisan octane:install --server=swoole && php artisan octane:start --host=127.0.0.1 --port=8000`
 6. In another terminal: `cd apps/web && bun run dev`
@@ -95,7 +97,7 @@ just down                  # remove containers
 Quick start:
 
 ```bash
-just init                  # copies .env files, composer install, builds api image, bun install, key:generate, storage:link
+just init                  # copies .env files, composer install, builds api image, bun install, key:generate, imgproxy keys, storage:link
 just up -d
 just a migrate --seed
 ```
@@ -167,7 +169,7 @@ async function onSubmit(): Promise<void> {
       <UInput
         v-model="state.email"
         placeholder="you@example.com"
-        icon="i-heroicons-envelope"
+        icon="i-lucide-mail"
         trailing
         type="email"
         autofocus
@@ -215,6 +217,22 @@ The following middleware is supported:
 ### Laravel Middleware
 
 All built-in middleware from Laravel + middleware based on roles [**Spatie Laravel Permissions Middleware**](https://spatie.be/docs/laravel-permission/v6/basic-usage/middleware)
+
+### Image uploads
+
+Uploads are processed by [**imgproxy**](https://imgproxy.net/) (`imgproxy` service in `docker-compose.yml`), PHP never decodes images.
+
+- `POST /api/v1/upload` stores the original in `storage/app/private/uploads-tmp`, imgproxy applies the `optimize` preset (fit 2560×2560, auto-rotate, strip metadata, WebP q90) and only the result is saved to the `public` disk.
+- Set `UPLOAD_OPTIMIZE=false` to store the original file as is. Limits are in `config/uploads.php`.
+- The API returns signed imgproxy URLs (e.g. `avatar_url` with the `avatar` preset), keys never reach the frontend. Presets live in `config/laravel-imgproxy.php`.
+- `IMGPROXY_URL` is the public address used in URLs, `IMGPROXY_INTERNAL_URL` is used by the API to fetch processed uploads.
+- imgproxy does not cache results: in production put a CDN or a caching reverse proxy in front of it (see [Deployment](#deployment)).
+
+## Deployment
+
+[`deploy/nginx.conf`](deploy/nginx.conf) is an example reverse proxy that serves everything from a single domain: `/` → Nuxt, `/api/` and `/storage/` → Laravel, `/image/` → imgproxy with response caching.
+
+Set `APP_URL` and `FRONTEND_URL` to the same domain and `IMGPROXY_URL=https://example.com/image` in both `.env` files. Expose only nginx to the internet.
 
 ## Examples
 

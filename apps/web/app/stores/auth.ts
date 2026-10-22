@@ -5,6 +5,7 @@ export type User = {
   name: string;
   email: string;
   avatar: string;
+  avatar_url: string | null;
   must_verify_email: boolean;
   has_password: boolean;
   roles: string[];
