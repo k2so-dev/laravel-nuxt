@@ -8,45 +8,54 @@ on:
     paths:
       - '.github/workflows/laravel.yml'
       - 'apps/api/app/**'
+      - 'apps/api/bootstrap/**'
       - 'apps/api/config/**'
-      - 'apps/api/tests/**'
+      - 'apps/api/database/**'
       - 'apps/api/routes/**'
+      - 'apps/api/tests/**'
+      - 'apps/api/composer.json'
+      - 'apps/api/phpunit.xml'
   pull_request:
     branches: [ "main" ]
     paths:
       - '.github/workflows/laravel.yml'
       - 'apps/api/app/**'
+      - 'apps/api/bootstrap/**'
       - 'apps/api/config/**'
-      - 'apps/api/tests/**'
+      - 'apps/api/database/**'
       - 'apps/api/routes/**'
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      - 'apps/api/tests/**'
+      - 'apps/api/composer.json'
+      - 'apps/api/phpunit.xml'
 
 jobs:
   pest:
-    name: Pest
+    name: Pest (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ '8.4', '8.5' ]
     defaults:
       run:
         working-directory: apps/api
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: ${{ matrix.php }}
           coverage: none
           tools: composer:v2
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
+      # composer.lock is not committed, so cache downloads rather than vendor
+      - name: Cache Composer downloads
+        uses: actions/cache@v6
         with:
-          path: apps/api/vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('apps/api/composer.lock') }}
-          restore-keys: ${{ runner.os }}-php-
+          path: ~/.cache/composer
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('apps/api/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-${{ matrix.php }}-
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
